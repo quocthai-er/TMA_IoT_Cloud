@@ -23,10 +23,15 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.io.IOUtils;
+import org.springframework.util.Base64Utils;
 import org.thingsboard.server.common.data.id.CustomerId;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.validation.Length;
 import org.thingsboard.server.common.data.validation.NoXss;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 @EqualsAndHashCode(callSuper = true)
 public class Customer extends ContactBased<CustomerId> implements HasTenantId, ExportableEntity<CustomerId> {
@@ -40,6 +45,9 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, E
     @ApiModelProperty(position = 5, required = true, value = "JSON object with Tenant Id")
     private TenantId tenantId;
 
+    @Length(fieldName = "avatar", max = 1000000)
+    @ApiModelProperty(position = 15, value = "Either URL or Base64 data of the avatar")
+    private String avatar;
     @Getter @Setter
     private CustomerId externalId;
 
@@ -56,6 +64,7 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, E
         this.tenantId = customer.getTenantId();
         this.title = customer.getTitle();
         this.externalId = customer.getExternalId();
+        this.avatar = customer.getAvatar();
     }
 
     public TenantId getTenantId() {
@@ -73,6 +82,31 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, E
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public String getAvatar() {
+        if (avatar == null || avatar.length() == 0) {
+            return getDefaultAvatar();
+        }
+        return avatar;
+    }
+
+    private String getDefaultAvatar() {
+        String defaultAvatar = "";
+        try {
+            //Get default avatar file from dao/src/main/resources/img/avatar.png
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream("img/avatar.png");
+            byte[] avatarBytes = IOUtils.toByteArray(is);
+            //Convert avatar data to base 64 string..
+            defaultAvatar = "data:image/png;base64,".concat(Base64Utils.encodeToString(avatarBytes));
+        } catch (NullPointerException | IOException e) {
+            throw new RuntimeException("Default avatar is not found or its size is too large");
+        }
+        return defaultAvatar;
+    }
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
 
     @ApiModelProperty(position = 1, value = "JSON object with the customer Id. " +
             "Specify this field to update the customer. " +

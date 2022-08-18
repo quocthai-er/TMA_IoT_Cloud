@@ -38,7 +38,8 @@ import java.util.UUID;
 @Entity
 @TypeDef(name = "json", typeClass = JsonStringType.class)
 @Table(name = ModelConstants.CUSTOMER_COLUMN_FAMILY_NAME)
-public final class CustomerEntity extends BaseSqlEntity<Customer> implements SearchTextEntity<Customer> {
+public final class
+CustomerEntity extends BaseSqlEntity<Customer> implements SearchTextEntity<Customer> {
 
     @Column(name = ModelConstants.CUSTOMER_TENANT_ID_PROPERTY)
     private UUID tenantId;
@@ -80,6 +81,9 @@ public final class CustomerEntity extends BaseSqlEntity<Customer> implements Sea
     @Column(name = ModelConstants.EXTERNAL_ID_PROPERTY)
     private UUID externalId;
 
+    @Column(name = ModelConstants.CUSTOMER_AVATAR_PROPERTY)
+    private String avatar;
+
     public CustomerEntity() {
         super();
     }
@@ -103,6 +107,7 @@ public final class CustomerEntity extends BaseSqlEntity<Customer> implements Sea
         if (customer.getExternalId() != null) {
             this.externalId = customer.getExternalId().getId();
         }
+        this.avatar = customer.getAvatar();
     }
 
     @Override
@@ -133,6 +138,7 @@ public final class CustomerEntity extends BaseSqlEntity<Customer> implements Sea
         if (externalId != null) {
             customer.setExternalId(new CustomerId(externalId));
         }
+        customer.setAvatar(avatar);
         return customer;
     }
 
