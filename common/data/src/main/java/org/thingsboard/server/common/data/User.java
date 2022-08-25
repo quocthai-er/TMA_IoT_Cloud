@@ -38,6 +38,7 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
     private TenantId tenantId;
     private CustomerId customerId;
     private String email;
+    private String phone;
     private Authority authority;
     @NoXss
     @Length(fieldName = "first name")
@@ -62,6 +63,7 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
         this.authority = user.getAuthority();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
+        this.phone = user.getPhone();
     }
 
 
@@ -105,6 +107,15 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @ApiModelProperty(position = 11, required = true, value = "Phone number", example = "+1(415)777-7777")
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     @ApiModelProperty(position = 6, accessMode = ApiModelProperty.AccessMode.READ_ONLY, value = "Duplicates the email of the user, readonly", example = "user@example.com")
@@ -173,6 +184,8 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
         builder.append(createdTime);
         builder.append(", id=");
         builder.append(id);
+        builder.append(", phone=");
+        builder.append(phone);
         builder.append("]");
         return builder.toString();
     }

@@ -118,6 +118,11 @@ public class UserDataValidator extends DataValidator<User> {
             throw new DataValidationException("User with email '" + user.getEmail() + "' "
                     + " already present in database!");
         }
+        User existentUserWithPhone = userService.findUserByPhone(tenantId, user.getPhone());
+        if (existentUserWithPhone != null && !isSameData(existentUserWithPhone, user)) {
+            throw new DataValidationException("User with phone '" + user.getPhone() + "' "
+                    + " already present in database!");
+        }
         if (!tenantId.getId().equals(ModelConstants.NULL_UUID)) {
             if (!tenantService.tenantExists(user.getTenantId())) {
                 throw new DataValidationException("User is referencing to non-existent tenant!");

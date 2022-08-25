@@ -32,6 +32,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     UserEntity findByEmail(String email);
 
+    UserEntity findByPhone(String phone);
+
     @Query("SELECT u FROM UserEntity u WHERE u.tenantId = :tenantId " +
             "AND u.customerId = :customerId AND u.authority = :authority " +
             "AND LOWER(u.searchText) LIKE LOWER(CONCAT('%', :searchText, '%'))")
