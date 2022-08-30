@@ -87,7 +87,7 @@ public class ThingsboardInstallService {
     public void performInstall() {
         try {
             if (isUpgrade) {
-                log.info("Starting ThingsBoard Upgrade from version {} ...", upgradeFromVersion);
+                log.info("Starting ThingsBoard Upgrade from version {}", upgradeFromVersion);
 
                 cacheCleanupService.clearCache(upgradeFromVersion);
 
@@ -223,13 +223,13 @@ public class ThingsboardInstallService {
                             dataUpdateService.updateData("3.3.4");
                             log.info("Updating system data...");
                             systemDataLoaderService.updateSystemWidgets();
+                        case "3.3.4.1.test":
+                            log.info("Upgrading ThingsBoard from version 3.3.4 to 3.3.4.1.test ...");
+                            databaseEntitiesUpgradeService.upgradeDatabase("3.3.4.1.test");
                             break;
-
                         //TODO update CacheCleanupService on the next version upgrade
-
                         default:
-                            throw new RuntimeException("Unable to upgrade ThingsBoard, unsupported fromVersion: " + upgradeFromVersion);
-
+                            throw new RuntimeException("Unable to upgrade ThingsBoard, unsupported fromVersion????? cham hoi: " + upgradeFromVersion);
                     }
                 }
                 log.info("Upgrade finished successfully!");

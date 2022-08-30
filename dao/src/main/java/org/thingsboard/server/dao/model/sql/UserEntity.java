@@ -60,6 +60,9 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
     @Column(name = ModelConstants.USER_EMAIL_PROPERTY, unique = true)
     private String email;
 
+    @Column(name = ModelConstants.USER_PHONE_PROPERTY, unique = true)
+    private String phone;
+
     @Column(name = ModelConstants.SEARCH_TEXT_PROPERTY)
     private String searchText;
 
@@ -89,6 +92,7 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
             this.customerId = user.getCustomerId().getId();
         }
         this.email = user.getEmail();
+        this.phone = user.getPhone();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.additionalInfo = user.getAdditionalInfo();
@@ -116,6 +120,7 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
             user.setCustomerId(new CustomerId(customerId));
         }
         user.setEmail(email);
+        user.setPhone(phone);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setAdditionalInfo(additionalInfo);
