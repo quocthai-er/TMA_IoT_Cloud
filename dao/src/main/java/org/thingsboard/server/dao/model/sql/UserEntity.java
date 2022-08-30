@@ -100,7 +100,7 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
 
     @Override
     public String getSearchTextSource() {
-        return email;
+        return phone;
     }
 
     @Override

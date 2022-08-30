@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,7 @@ import org.thingsboard.server.common.data.security.model.JwtToken;
 import org.thingsboard.server.common.data.security.model.SecuritySettings;
 import org.thingsboard.server.common.data.security.model.UserPasswordPolicy;
 import org.thingsboard.server.dao.audit.AuditLogService;
+import org.thingsboard.server.dao.exception.DataValidationException;
 import org.thingsboard.server.queue.util.TbCoreComponent;
 import org.thingsboard.server.service.security.auth.jwt.RefreshTokenRepository;
 import org.thingsboard.server.service.security.auth.rest.RestAuthenticationDetails;
@@ -64,6 +66,8 @@ import ua_parser.Client;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import static org.thingsboard.server.dao.service.DataValidator.validateEmail;
 
 @RestController
 @TbCoreComponent
@@ -198,7 +202,8 @@ public class AuthController extends BaseController {
 
             mailService.sendResetPasswordEmailAsync(resetUrl, email);
         } catch (Exception e) {
-            log.warn("Error occurred: {}", e.getMessage());
+            //log.warn("Error occurred: {}", e.getMessage());
+            throw handleException(e);
         }
     }
 
@@ -242,7 +247,7 @@ public class AuthController extends BaseController {
     public JwtTokenPair activateUser(
             @ApiParam(value = "Activate user request.")
             @RequestBody ActivateUserRequest activateRequest,
-            @RequestParam(required = false, defaultValue = "true") boolean sendActivationMail,
+            @RequestParam(required = false, defaultValue = "false") boolean sendActivationMail,
             HttpServletRequest request) throws ThingsboardException {
         try {
             String activateToken = activateRequest.getActivateToken();
@@ -251,13 +256,18 @@ public class AuthController extends BaseController {
             String encodedPassword = passwordEncoder.encode(password);
             UserCredentials credentials = userService.activateUserCredentials(TenantId.SYS_TENANT_ID, activateToken, encodedPassword);
             User user = userService.findUserById(TenantId.SYS_TENANT_ID, credentials.getUserId());
-            UserPrincipal principal = new UserPrincipal(UserPrincipal.Type.USER_NAME, user.getEmail());
+            UserPrincipal principal = new UserPrincipal(UserPrincipal.Type.USER_NAME, user.getPhone());
             SecurityUser securityUser = new SecurityUser(user, credentials.isEnabled(), principal);
             userService.setUserCredentialsEnabled(user.getTenantId(), user.getId(), true);
             String baseUrl = systemSecurityService.getBaseUrl(user.getTenantId(), user.getCustomerId(), request);
             String loginUrl = String.format("%s/login", baseUrl);
             String email = user.getEmail();
-
+            if (!StringUtils.isEmpty(email)) {
+                sendActivationMail = true;
+            }
+            else {
+                sendActivationMail = false;
+            }
             if (sendActivationMail) {
                 try {
                     mailService.sendAccountActivatedEmail(loginUrl, email);
@@ -302,7 +312,7 @@ public class AuthController extends BaseController {
                 userCredentials.setResetToken(null);
                 userCredentials = userService.replaceUserCredentials(TenantId.SYS_TENANT_ID, userCredentials);
                 User user = userService.findUserById(TenantId.SYS_TENANT_ID, userCredentials.getUserId());
-                UserPrincipal principal = new UserPrincipal(UserPrincipal.Type.USER_NAME, user.getEmail());
+                UserPrincipal principal = new UserPrincipal(UserPrincipal.Type.USER_NAME, user.getPhone());
                 SecurityUser securityUser = new SecurityUser(user, userCredentials.isEnabled(), principal);
                 String baseUrl = systemSecurityService.getBaseUrl(user.getTenantId(), user.getCustomerId(), request);
                 String loginUrl = String.format("%s/login", baseUrl);

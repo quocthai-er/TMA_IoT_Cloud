@@ -107,7 +107,7 @@ public class JwtTokenFactory {
         }
 
         SecurityUser securityUser = new SecurityUser(new UserId(UUID.fromString(claims.get(USER_ID, String.class))));
-        securityUser.setEmail(subject);
+        securityUser.setPhone(subject);
         securityUser.setAuthority(Authority.parse(scopes.get(0)));
         String tenantId = claims.get(TENANT_ID, String.class);
         if (tenantId != null) {
@@ -174,10 +174,12 @@ public class JwtTokenFactory {
     }
 
     private JwtBuilder setUpToken(SecurityUser securityUser, List<String> scopes, long expirationTime) {
-        if (StringUtils.isBlank(securityUser.getEmail())) {
-            throw new IllegalArgumentException("Cannot create JWT Token without username/email");
+//        if (StringUtils.isBlank(securityUser.getEmail())) {
+//            throw new IllegalArgumentException("Cannot create JWT Token without username/email");
+//        }
+        if (StringUtils.isBlank(securityUser.getPhone())) {
+            throw new IllegalArgumentException("Cannot create JWT Token without username/phone number");
         }
-
         UserPrincipal principal = securityUser.getUserPrincipal();
 
         Claims claims = Jwts.claims().setSubject(principal.getValue());

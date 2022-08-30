@@ -68,12 +68,9 @@ public class UserDataValidator extends DataValidator<User> {
 
     @Override
     protected void validateDataImpl(TenantId requestTenantId, User user) {
-        if (StringUtils.isEmpty(user.getEmail())) {
-            throw new DataValidationException("User email should be specified!");
+        if (StringUtils.isEmpty(user.getPhone())) {
+            throw new DataValidationException("Phone number should be specified!");
         }
-
-        validateEmail(user.getEmail());
-
         Authority authority = user.getAuthority();
         if (authority == null) {
             throw new DataValidationException("User authority isn't defined!");
@@ -112,11 +109,14 @@ public class UserDataValidator extends DataValidator<User> {
             default:
                 break;
         }
-
-        User existentUserWithEmail = userService.findUserByEmail(tenantId, user.getEmail());
-        if (existentUserWithEmail != null && !isSameData(existentUserWithEmail, user)) {
-            throw new DataValidationException("User with email '" + user.getEmail() + "' "
-                    + " already present in database!");
+        if (!StringUtils.isEmpty(user.getEmail())) {
+            validateEmail(user.getEmail());
+            //throw new DataValidationException("User email should be specified!");
+            User existentUserWithEmail = userService.findUserByEmail(tenantId, user.getEmail());
+            if (existentUserWithEmail != null && !isSameData(existentUserWithEmail, user)) {
+                throw new DataValidationException("User with email '" + user.getEmail() + "' "
+                        + " already present in database!");
+            }
         }
         User existentUserWithPhone = userService.findUserByPhone(tenantId, user.getPhone());
         if (existentUserWithPhone != null && !isSameData(existentUserWithPhone, user)) {
