@@ -100,7 +100,7 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
         this.customerId = customerId;
     }
 
-    @ApiModelProperty(position = 5, required = true, value = "Email of the user", example = "user@example.com")
+    @ApiModelProperty(position = 5, required = false, value = "Email of the user", example = "user@example.com")
     public String getEmail() {
         return email;
     }
@@ -160,7 +160,7 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
 
     @Override
     public String getSearchText() {
-        return getEmail();
+        return getPhone();
     }
 
     @Override

@@ -160,7 +160,7 @@ public class UserController extends BaseController {
             UserId userId = new UserId(toUUID(strUserId));
             SecurityUser authUser = getCurrentUser();
             User user = checkUserId(userId, Operation.READ);
-            UserPrincipal principal = new UserPrincipal(UserPrincipal.Type.USER_NAME, user.getEmail());
+            UserPrincipal principal = new UserPrincipal(UserPrincipal.Type.USER_NAME, user.getPhone());
             UserCredentials credentials = userService.findUserCredentialsByUserId(authUser.getTenantId(), userId);
             SecurityUser securityUser = new SecurityUser(user, credentials.isEnabled(), principal);
             JwtToken accessToken = tokenFactory.createAccessJwtToken(securityUser);

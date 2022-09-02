@@ -98,9 +98,9 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
     }
 
     private SecurityUser authenticateByUsernameAndPassword(Authentication authentication, UserPrincipal userPrincipal, String username, String password) {
-        User user = userService.findUserByEmail(TenantId.SYS_TENANT_ID, username);
+        User user = userService.findUserByPhone(TenantId.SYS_TENANT_ID, username);
         if (user == null) {
-            user = userService.findUserByPhone(TenantId.SYS_TENANT_ID, username);
+            user = userService.findUserByEmail(TenantId.SYS_TENANT_ID, username);
             if (user == null) {
                 throw new UsernameNotFoundException("User not found: " + username);
             }
