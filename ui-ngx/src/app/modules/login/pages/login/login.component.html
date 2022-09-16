@@ -43,7 +43,7 @@
             </div>
             <mat-form-field>
               <mat-label translate>login.username</mat-label>
-              <input id="username-input" matInput type="email" autofocus formControlName="username" email required/>
+              <input id="username-input" matInput autofocus formControlName="username" required/>
               <mat-icon matPrefix>email</mat-icon>
               <mat-error *ngIf="loginFormGroup.get('username').invalid">
                 {{ 'user.invalid-email-format' | translate }}

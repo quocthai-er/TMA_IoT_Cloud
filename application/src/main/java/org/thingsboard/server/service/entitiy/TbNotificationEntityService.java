@@ -15,19 +15,12 @@
  */
 package org.thingsboard.server.service.entitiy;
 
-import org.thingsboard.server.common.data.Device;
-import org.thingsboard.server.common.data.HasName;
-import org.thingsboard.server.common.data.Tenant;
-import org.thingsboard.server.common.data.User;
+import org.thingsboard.server.common.data.*;
 import org.thingsboard.server.common.data.alarm.Alarm;
 import org.thingsboard.server.common.data.audit.ActionType;
 import org.thingsboard.server.common.data.edge.Edge;
 import org.thingsboard.server.common.data.edge.EdgeEventActionType;
-import org.thingsboard.server.common.data.id.CustomerId;
-import org.thingsboard.server.common.data.id.DeviceId;
-import org.thingsboard.server.common.data.id.EdgeId;
-import org.thingsboard.server.common.data.id.EntityId;
-import org.thingsboard.server.common.data.id.TenantId;
+import org.thingsboard.server.common.data.id.*;
 import org.thingsboard.server.common.data.plugin.ComponentLifecycleEvent;
 import org.thingsboard.server.common.data.relation.EntityRelation;
 import org.thingsboard.server.common.data.rule.RuleChain;
@@ -106,6 +99,8 @@ public interface TbNotificationEntityService {
                                                                               I entityId, E entity, User user,
                                                                               ActionType actionType, boolean sendNotifyMsgToEdge,
                                                                               Exception e, Object... additionalInfo);
+
+    void notifyCrateOrUpdateRole(Role role, ActionType actionType, Exception e);
 
     void notifyRelation(TenantId tenantId, CustomerId customerId, EntityRelation relation, User user,
                         ActionType actionType, Object... additionalInfo);

@@ -116,6 +116,7 @@ import org.thingsboard.server.dao.oauth2.OAuth2Service;
 import org.thingsboard.server.dao.ota.OtaPackageService;
 import org.thingsboard.server.dao.queue.QueueService;
 import org.thingsboard.server.dao.relation.RelationService;
+import org.thingsboard.server.dao.role.RoleService;
 import org.thingsboard.server.dao.rpc.RpcService;
 import org.thingsboard.server.dao.rule.RuleChainService;
 import org.thingsboard.server.dao.tenant.TbTenantProfileCache;
@@ -181,6 +182,9 @@ public abstract class BaseController {
 
     @Autowired
     protected CustomerService customerService;
+
+    @Autowired
+    protected RoleService roleService;
 
     @Autowired
     protected UserService userService;

@@ -26,15 +26,7 @@ import org.springframework.stereotype.Service;
 import org.thingsboard.rule.engine.api.msg.DeviceEdgeUpdateMsg;
 import org.thingsboard.rule.engine.api.msg.DeviceNameOrTypeUpdateMsg;
 import org.thingsboard.server.cluster.TbClusterService;
-import org.thingsboard.server.common.data.ApiUsageState;
-import org.thingsboard.server.common.data.Device;
-import org.thingsboard.server.common.data.DeviceProfile;
-import org.thingsboard.server.common.data.EdgeUtils;
-import org.thingsboard.server.common.data.EntityType;
-import org.thingsboard.server.common.data.HasName;
-import org.thingsboard.server.common.data.TbResource;
-import org.thingsboard.server.common.data.Tenant;
-import org.thingsboard.server.common.data.TenantProfile;
+import org.thingsboard.server.common.data.*;
 import org.thingsboard.server.common.data.edge.EdgeEventActionType;
 import org.thingsboard.server.common.data.edge.EdgeEventType;
 import org.thingsboard.server.common.data.id.DeviceId;
@@ -539,6 +531,7 @@ public class DefaultTbClusterService implements TbClusterService {
         doSendQueueNotifications(ruleEngineMsg, coreMsg, transportMsg);
     }
 
+
     private void doSendQueueNotifications(ToRuleEngineNotificationMsg ruleEngineMsg, ToCoreNotificationMsg coreMsg, ToTransportMsg transportMsg) {
         Set<TransportProtos.ServiceInfo> tbRuleEngineServices = partitionService.getAllServices(ServiceType.TB_RULE_ENGINE);
         for (TransportProtos.ServiceInfo ruleEngineService : tbRuleEngineServices) {
@@ -560,5 +553,15 @@ public class DefaultTbClusterService implements TbClusterService {
                 toTransportNfs.incrementAndGet();
             }
         }
+    }
+
+    @Override
+    public void onRoleUpdated(Role role, Role old) {
+
+    }
+
+    @Override
+    public void onRoleDeleted(Role role, TbQueueCallback callback) {
+
     }
 }

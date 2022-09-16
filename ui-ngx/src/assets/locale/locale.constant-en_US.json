@@ -2526,7 +2526,7 @@
         "passwords-mismatch-error": "Entered passwords must be same!",
         "password-again": "Password again",
         "sign-in": "Please sign in",
-        "username": "Username (email)",
+        "username": "Username (email or phone)",
         "remember-me": "Remember me",
         "forgot-password": "Forgot Password?",
         "password-reset": "Password reset",
