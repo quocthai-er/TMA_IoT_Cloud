@@ -117,6 +117,17 @@ public class DefaultTbNotificationEntityService implements TbNotificationEntityS
     }
 
     @Override
+    public void notifyCreateOrUpdateRole(Role role, Role oldRole, ActionType actionType) {
+        tbClusterService.onRoleUpdated(role, oldRole);
+    }
+
+    @Override
+    public void notifyDeleteRole(Role role) {
+        tbClusterService.onRoleDeleted(role, null);
+    }
+
+
+    @Override
     public <I extends EntityId> void notifySendMsgToEdgeService(TenantId tenantId, I entityId, EdgeEventActionType edgeEventActionType) {
         sendEntityNotificationMsg(tenantId, entityId, edgeEventActionType);
     }
@@ -155,10 +166,6 @@ public class DefaultTbNotificationEntityService implements TbNotificationEntityS
         tbClusterService.broadcastEntityStateChangeEvent(tenant.getId(), tenant.getId(), ComponentLifecycleEvent.DELETED);
     }
 
-    @Override
-    public void notifyCrateOrUpdateRole(Role role, ActionType actionType, Exception e) {
-//        tbClusterServic
-    }
 
     @Override
     public void notifyCreateOrUpdateDevice(TenantId tenantId, DeviceId deviceId, CustomerId customerId,

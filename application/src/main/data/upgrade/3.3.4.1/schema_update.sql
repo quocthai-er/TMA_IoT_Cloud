@@ -23,13 +23,13 @@ ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS phone varchar(255) COLLATE pg_catal
 CREATE TABLE IF NOT EXISTS tb_role (
     id uuid NOT NULL CONSTRAINT role_pkey PRIMARY KEY
     title       varchar(255)   NOT NULL,
-    operations  text[]
+    operations  varchar
 );
 
-ALTER TABLE tb_user
+ALTER TABLE customer
     ADD COLUMN IF NOT EXISTS role_id uuid;
 
-ALTER TABLE tb_user
+ALTER TABLE customer
     ADD CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES tb_role (id);
 --end new
 

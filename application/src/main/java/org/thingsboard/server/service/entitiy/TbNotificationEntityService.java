@@ -78,6 +78,10 @@ public interface TbNotificationEntityService {
 
     void notifyDeleteTenant(Tenant tenant);
 
+    void notifyCreateOrUpdateRole(Role role, Role oldRole, ActionType actionType);
+
+    void notifyDeleteRole(Role role);
+
     void notifyCreateOrUpdateDevice(TenantId tenantId, DeviceId deviceId, CustomerId customerId, Device device,
                                     Device oldDevice, ActionType actionType, User user, Object... additionalInfo);
 
@@ -99,8 +103,6 @@ public interface TbNotificationEntityService {
                                                                               I entityId, E entity, User user,
                                                                               ActionType actionType, boolean sendNotifyMsgToEdge,
                                                                               Exception e, Object... additionalInfo);
-
-    void notifyCrateOrUpdateRole(Role role, ActionType actionType, Exception e);
 
     void notifyRelation(TenantId tenantId, CustomerId customerId, EntityRelation relation, User user,
                         ActionType actionType, Object... additionalInfo);
