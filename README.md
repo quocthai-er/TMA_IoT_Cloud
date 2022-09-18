@@ -12,6 +12,9 @@ Follow this instruction via this link.
 
 [Contribution Guide](https://thingsboard.io/docs/user-guide/contribution/how-to-contribute/)
 
+Summary: \
+`mvn clean install -DskipTests`
+
 ## Step 2 : Custom Source Code
 
 - If customize backend, only run backend and use **Postman** to test API. \

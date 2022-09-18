@@ -150,9 +150,11 @@ public class ModelConstants {
     /**
      * Cassandra role constants.
      */
-    public static final String ROLE_COLUMN_FAMILY_NAME = "role";
+    public static final String ROLE_COLUMN_FAMILY_NAME = "tb_role";
     public static final String ROLE_TILE_PROPERTY = TITLE_PROPERTY;
     public static final String ROLE_OPERATIONS_PROPERTY = "operations";
+
+    public static final String ROLE_TENANT_ID_PROPERTY = TENANT_ID_PROPERTY;
 
     /**
      * Cassandra device constants.

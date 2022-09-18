@@ -484,7 +484,7 @@ public abstract class BaseController {
 
     Role checkRoleId(RoleId roleId, Operation operation) throws ThingsboardException {
         try {
-            validateId(roleId, "Incorrect roleId " + roleId);
+//            validateId(roleId, "Incorrect roleId " + roleId);
             Role role = roleService.findRoleById(roleId);
             checkNotNull(role, "Role with id [" + roleId + "] is not found");
             return role;
