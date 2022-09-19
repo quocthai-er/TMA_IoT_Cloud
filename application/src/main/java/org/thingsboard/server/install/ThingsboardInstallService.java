@@ -223,9 +223,9 @@ public class ThingsboardInstallService {
                             dataUpdateService.updateData("3.3.4");
                             log.info("Updating system data...");
                             systemDataLoaderService.updateSystemWidgets();
-                        case "3.3.4.1.test":
-                            log.info("Upgrading ThingsBoard from version 3.3.4 to 3.3.4.1.test ...");
-                            databaseEntitiesUpgradeService.upgradeDatabase("3.3.4.1.test");
+                        case "3.3.4.1":
+                            log.info("Upgrading ThingsBoard from version 3.3.4 to 3.3.4.1 ...");
+                            databaseEntitiesUpgradeService.upgradeDatabase("3.3.4.1");
                             break;
                         //TODO update CacheCleanupService on the next version upgrade
                         default:
