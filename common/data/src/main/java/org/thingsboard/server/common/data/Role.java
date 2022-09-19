@@ -42,8 +42,8 @@ public class Role extends BaseData<RoleId> implements HasTenantId {
     @Length(fieldName = "title")
     private String title;
 
-    @Length(fieldName = "operations")
-    private transient JsonNode operations;
+    @Length(fieldName = "permissions")
+    private JsonNode permissions;
 
     public Role() {
         super();
@@ -57,7 +57,7 @@ public class Role extends BaseData<RoleId> implements HasTenantId {
         super(role);
         this.tenantId = role.getTenantId();
         this.title = role.getTitle();
-        this.operations = role.getOperations();
+        this.permissions = role.getPermissions();
     }
 
     public TenantId getTenantId() {
@@ -91,15 +91,15 @@ public class Role extends BaseData<RoleId> implements HasTenantId {
     }
 
     @JsonIgnore
-    private byte[] operationsBytes;
+    private byte[] permissionsBytes;
 
-    @ApiModelProperty(position = 4, value = "List operations of role", dataType = "com.fasterxml.jackson.databind.JsonNode")
-    public JsonNode getOperations() {
-        return getJson(() -> operations, () -> operationsBytes);
+    @ApiModelProperty(position = 4, value = "List permissions of role", dataType = "com.fasterxml.jackson.databind.JsonNode")
+    public JsonNode getPermissions() {
+        return getJson(() -> permissions, () -> permissionsBytes);
     }
 
-    public void setOperations(JsonNode addOperations) {
-        setJson(addOperations, json -> this.operations = json, bytes -> this.operationsBytes = bytes);
+    public void setPermissions(JsonNode addPermissions) {
+        setJson(addPermissions, json -> this.permissions = json, bytes -> this.permissionsBytes = bytes);
     }
 
     @Override
@@ -107,8 +107,8 @@ public class Role extends BaseData<RoleId> implements HasTenantId {
         StringBuilder builder = new StringBuilder();
         builder.append("Role [title=");
         builder.append(getTitle());
-        builder.append(", operations=");
-        builder.append(operations);
+        builder.append(", permissions=");
+        builder.append(permissions);
         builder.append("]");
         return builder.toString();
     }

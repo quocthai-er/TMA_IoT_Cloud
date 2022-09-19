@@ -50,8 +50,7 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, H
     @ApiModelProperty(position = 15, value = "Either URL or Base64 data of the avatar")
     private String avatar;
 
-    @Length(fieldName = "role_id", max = 1000000)
-    @ApiModelProperty(position = 15, value = "JSON object with Role Id")
+    @ApiModelProperty(position = 16, value = "JSON object with Role Id")
     private RoleId roleId;
     @Getter @Setter
     private CustomerId externalId;

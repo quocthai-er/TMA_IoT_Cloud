@@ -49,8 +49,8 @@ public class RoleEntity extends BaseSqlEntity<Role> implements SearchTextEntity<
     private String searchText;
 
     @Type(type = "json")
-    @Column(name = ModelConstants.ROLE_OPERATIONS_PROPERTY)
-    private JsonNode operations;
+    @Column(name = ModelConstants.ROLE_PERMISSIONS_PROPERTY)
+    private JsonNode permissions;
 
     @Column(name = ModelConstants.ROLE_TENANT_ID_PROPERTY)
     private UUID tenantId;
@@ -59,7 +59,7 @@ public class RoleEntity extends BaseSqlEntity<Role> implements SearchTextEntity<
 
     public RoleEntity(Role role) {
         this.title = role.getTitle();
-        this.operations = role.getOperations();
+        this.permissions = role.getPermissions();
         this.tenantId = role.getTenantId().getId();
     }
 
@@ -78,7 +78,7 @@ public class RoleEntity extends BaseSqlEntity<Role> implements SearchTextEntity<
         Role role = new Role(new RoleId(this.getUuid()));
         role.setCreatedTime(createdTime);
         role.setTitle(title);
-        role.setOperations(operations);
+        role.setPermissions(permissions);
         role.setTenantId(TenantId.fromUUID(tenantId));
         return role;
     }

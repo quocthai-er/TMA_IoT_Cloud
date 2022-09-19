@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.thingsboard.server.controller;
 
 import io.swagger.annotations.ApiOperation;
@@ -21,19 +22,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.thingsboard.server.common.data.Role;
-import org.thingsboard.server.common.data.User;
 import org.thingsboard.server.common.data.exception.ThingsboardException;
 import org.thingsboard.server.common.data.id.RoleId;
-import org.thingsboard.server.common.data.security.Authority;
 import org.thingsboard.server.queue.util.TbCoreComponent;
 import org.thingsboard.server.service.entitiy.role.TbRoleService;
 import org.thingsboard.server.service.security.permission.Operation;
-import org.thingsboard.server.service.security.permission.Resource;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static org.thingsboard.server.controller.ControllerConstants.ROLE_ID_PARAM_DESCRIPTION;
-import static org.thingsboard.server.controller.ControllerConstants.UUID_WIKI_LINK;
 
 @RestController
 @TbCoreComponent
@@ -47,10 +42,8 @@ public class RoleController extends BaseController{
 
     @ApiOperation(value = "Get Role (getRoleById)",
             notes = "Fetch the User object based on the provided Role Id. " +
-                    "If the user has the authority of 'SYS_ADMIN', the server does not perform additional checks. " +
-                    "If the user has the authority of 'TENANT_ADMIN', the server checks that the requested user is owned by the same tenant. " +
-                    "If the user has the authority of 'CUSTOMER_USER', the server checks that the requested user is owned by the same customer.")
-    @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
+                    "Role Contains a set of permissions. ")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/role/{roleId}", method = RequestMethod.GET)
     @ResponseBody
     public Role getRoleById(
@@ -64,6 +57,18 @@ public class RoleController extends BaseController{
         } catch (Exception e) {
             throw handleException(e);
         }
+    }
+
+    @ApiOperation(value = "Create or update Role (saveRole)",
+            notes =  "Creates or Updates the Role. ")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN')")
+    @RequestMapping(value = "/role", method = RequestMethod.POST)
+    @ResponseBody
+    public Role saveRole(
+            @ApiParam(value = "A JSON value representing the role.")
+            @RequestBody Role role) throws Exception {
+        role.setTenantId(getTenantId());
+        return tbRoleService.save(role);
     }
 
 }

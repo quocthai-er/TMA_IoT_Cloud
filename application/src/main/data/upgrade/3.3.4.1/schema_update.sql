@@ -21,9 +21,9 @@ ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS phone varchar(255) COLLATE pg_catal
 
 --start new
 CREATE TABLE IF NOT EXISTS tb_role (
-    id uuid NOT NULL CONSTRAINT role_pkey PRIMARY KEY
+    id uuid NOT NULL CONSTRAINT role_pkey PRIMARY KEY,
     title       varchar(255)   NOT NULL,
-    operations  varchar,
+    permissions  varchar,
     tenant_id   uuid,
     created_time    bigint,
     search_text varchar(255),

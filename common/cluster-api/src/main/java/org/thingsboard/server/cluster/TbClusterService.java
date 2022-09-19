@@ -85,7 +85,7 @@ public interface TbClusterService extends TbQueueClusterService {
 
     void sendNotificationMsgToEdge(TenantId tenantId, EdgeId edgeId, EntityId entityId, String body, EdgeEventType type, EdgeEventActionType action);
 
-    void onRoleUpdated(Role role, Role old);
+    void onRoleUpdated(Role role);
 
     void onRoleDeleted(Role role, TbQueueCallback callback);
 

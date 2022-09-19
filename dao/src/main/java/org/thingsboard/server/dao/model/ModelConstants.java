@@ -152,7 +152,7 @@ public class ModelConstants {
      */
     public static final String ROLE_COLUMN_FAMILY_NAME = "tb_role";
     public static final String ROLE_TILE_PROPERTY = TITLE_PROPERTY;
-    public static final String ROLE_OPERATIONS_PROPERTY = "operations";
+    public static final String ROLE_PERMISSIONS_PROPERTY = "permissions";
 
     public static final String ROLE_TENANT_ID_PROPERTY = TENANT_ID_PROPERTY;
 

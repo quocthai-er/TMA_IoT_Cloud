@@ -31,11 +31,11 @@ public class DefaultTbRoleService extends AbstractTbEntityService implements TbR
     private final RoleService roleService;
 
     @Override
-    public Role save(Role role, Role oldRole) throws Exception {
+    public Role save(Role role) throws Exception {
         ActionType actionType = role.getId() == null ? ActionType.ADDED : ActionType.UPDATED;
         try {
             Role savedRole = checkNotNull(roleService.saveRole(role));
-            notificationEntityService.notifyCreateOrUpdateRole(role, oldRole, actionType);
+            notificationEntityService.notifyCreateOrUpdateRole(role, actionType);
             return savedRole;
         } catch (Exception e) {
 //            notificationEntityService.logEntityAction();

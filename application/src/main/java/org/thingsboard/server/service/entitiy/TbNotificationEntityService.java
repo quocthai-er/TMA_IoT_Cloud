@@ -78,7 +78,7 @@ public interface TbNotificationEntityService {
 
     void notifyDeleteTenant(Tenant tenant);
 
-    void notifyCreateOrUpdateRole(Role role, Role oldRole, ActionType actionType);
+    void notifyCreateOrUpdateRole(Role role, ActionType actionType);
 
     void notifyDeleteRole(Role role);
 

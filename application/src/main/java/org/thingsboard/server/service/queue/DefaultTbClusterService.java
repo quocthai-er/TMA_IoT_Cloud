@@ -33,7 +33,6 @@ import org.thingsboard.server.common.data.id.DeviceId;
 import org.thingsboard.server.common.data.id.DeviceProfileId;
 import org.thingsboard.server.common.data.id.EdgeId;
 import org.thingsboard.server.common.data.id.EntityId;
-import org.thingsboard.server.common.data.id.QueueId;
 import org.thingsboard.server.common.data.id.RuleChainId;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.plugin.ComponentLifecycleEvent;
@@ -64,7 +63,6 @@ import org.thingsboard.server.service.gateway_device.GatewayNotificationsService
 import org.thingsboard.server.service.ota.OtaPackageStateService;
 import org.thingsboard.server.service.profile.TbDeviceProfileCache;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -556,7 +554,7 @@ public class DefaultTbClusterService implements TbClusterService {
     }
 
     @Override
-    public void onRoleUpdated(Role role, Role old) {
+    public void onRoleUpdated(Role role) {
 
     }
 

@@ -117,8 +117,8 @@ public class DefaultTbNotificationEntityService implements TbNotificationEntityS
     }
 
     @Override
-    public void notifyCreateOrUpdateRole(Role role, Role oldRole, ActionType actionType) {
-        tbClusterService.onRoleUpdated(role, oldRole);
+    public void notifyCreateOrUpdateRole(Role role, ActionType actionType) {
+        tbClusterService.onRoleUpdated(role);
     }
 
     @Override
