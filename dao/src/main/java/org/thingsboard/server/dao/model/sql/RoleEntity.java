@@ -19,7 +19,7 @@ package org.thingsboard.server.dao.model.sql;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.bouncycastle.math.raw.Mod;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.id.RoleId;
@@ -48,8 +48,9 @@ public class RoleEntity extends BaseSqlEntity<Role> implements SearchTextEntity<
     @Column(name = ModelConstants.SEARCH_TEXT_PROPERTY)
     private String searchText;
 
+    @Type(type = "json")
     @Column(name = ModelConstants.ROLE_OPERATIONS_PROPERTY)
-    private transient JsonNode operations;
+    private JsonNode operations;
 
     @Column(name = ModelConstants.ROLE_TENANT_ID_PROPERTY)
     private UUID tenantId;

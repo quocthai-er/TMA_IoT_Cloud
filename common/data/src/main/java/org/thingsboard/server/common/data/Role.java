@@ -16,13 +16,25 @@
 
 package org.thingsboard.server.common.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.extern.slf4j.Slf4j;
 import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.validation.Length;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+@Slf4j
 public class Role extends BaseData<RoleId> implements HasTenantId {
+
+    public static final ObjectMapper mapper = new ObjectMapper();
 
     @ApiModelProperty(position = 5, value = "JSON object with Tenant Id")
     private TenantId tenantId;
@@ -78,13 +90,16 @@ public class Role extends BaseData<RoleId> implements HasTenantId {
         this.title = title;
     }
 
+    @JsonIgnore
+    private byte[] operationsBytes;
+
     @ApiModelProperty(position = 4, value = "List operations of role", dataType = "com.fasterxml.jackson.databind.JsonNode")
     public JsonNode getOperations() {
-        return this.operations;
+        return getJson(() -> operations, () -> operationsBytes);
     }
 
-    public void setOperations(JsonNode operations) {
-        this.operations = operations;
+    public void setOperations(JsonNode addOperations) {
+        setJson(addOperations, json -> this.operations = json, bytes -> this.operationsBytes = bytes);
     }
 
     @Override
@@ -96,6 +111,34 @@ public class Role extends BaseData<RoleId> implements HasTenantId {
         builder.append(operations);
         builder.append("]");
         return builder.toString();
+    }
+
+    public static JsonNode getJson(Supplier<JsonNode> jsonData, Supplier<byte[]> binaryData) {
+        JsonNode json = jsonData.get();
+        if (json != null) {
+            return json;
+        } else {
+            byte[] data = binaryData.get();
+            if (data != null) {
+                try {
+                    return mapper.readTree(new ByteArrayInputStream(data));
+                } catch (IOException e) {
+                    log.warn("Can't deserialize json data: ", e);
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public static void setJson(JsonNode json, Consumer<JsonNode> jsonConsumer, Consumer<byte[]> bytesConsumer) {
+        jsonConsumer.accept(json);
+        try {
+            bytesConsumer.accept(mapper.writeValueAsBytes(json));
+        } catch (JsonProcessingException e) {
+            log.warn("Can't serialize json data: ", e);
+        }
     }
 
 }
