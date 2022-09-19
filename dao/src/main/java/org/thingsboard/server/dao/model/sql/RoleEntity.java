@@ -52,14 +52,14 @@ public class RoleEntity extends BaseSqlEntity<Role> implements SearchTextEntity<
     private transient JsonNode operations;
 
     @Column(name = ModelConstants.ROLE_TENANT_ID_PROPERTY)
-    private TenantId tenantId;
+    private UUID tenantId;
 
     public RoleEntity() {}
 
     public RoleEntity(Role role) {
         this.title = role.getTitle();
         this.operations = role.getOperations();
-        this.tenantId = role.getTenantId();
+        this.tenantId = role.getTenantId().getId();
     }
 
     @Override
@@ -78,7 +78,7 @@ public class RoleEntity extends BaseSqlEntity<Role> implements SearchTextEntity<
         role.setCreatedTime(createdTime);
         role.setTitle(title);
         role.setOperations(operations);
-        role.setTenantId(tenantId);
+        role.setTenantId(TenantId.fromUUID(tenantId));
         return role;
     }
 }

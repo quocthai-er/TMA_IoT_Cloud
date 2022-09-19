@@ -17,10 +17,11 @@
 package org.thingsboard.server.dao.role;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.id.RoleId;
 
-
+@Service
 public class RoleServiceImpl implements RoleService {
 
     @Autowired

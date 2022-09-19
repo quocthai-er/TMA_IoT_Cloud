@@ -487,6 +487,7 @@ public abstract class BaseController {
 //            validateId(roleId, "Incorrect roleId " + roleId);
             Role role = roleService.findRoleById(roleId);
             checkNotNull(role, "Role with id [" + roleId + "] is not found");
+//            accessControlService.checkPermission(getCurrentUser(), Resource.ROLE, operation, roleId, role);
             return role;
         } catch (Exception e) {
             throw handleException(e, false);
