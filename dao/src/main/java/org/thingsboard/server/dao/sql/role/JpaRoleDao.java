@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
+import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.EntityType;
 import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.dao.DaoUtil;
@@ -27,6 +28,7 @@ import org.thingsboard.server.dao.model.sql.RoleEntity;
 import org.thingsboard.server.dao.role.RoleDao;
 import org.thingsboard.server.dao.sql.JpaAbstractSearchTextDao;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -45,6 +47,12 @@ public class JpaRoleDao extends JpaAbstractSearchTextDao<RoleEntity, Role> imple
     public Role findByRoleId(UUID roleId) {
         Role role = DaoUtil.getData(roleRepository.findById(roleId));
         return role;
+    }
+
+    @Override
+    public Optional<Role> findRolesByTenantIdAndTitle(UUID tenantId, String title) {
+        Role role = DaoUtil.getData(roleRepository.findByTenantIdAndTitle(tenantId, title));
+        return Optional.ofNullable(role);
     }
 
     @Override

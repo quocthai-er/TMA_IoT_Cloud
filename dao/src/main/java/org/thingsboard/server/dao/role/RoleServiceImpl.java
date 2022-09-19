@@ -16,11 +16,15 @@
 
 package org.thingsboard.server.dao.role;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.id.RoleId;
+import org.thingsboard.server.dao.service.DataValidator;
 
+@Slf4j
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -29,6 +33,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private DataValidator<Role> roleValidator;
 
     @Override
     public Role findRoleById(RoleId roleId) {
@@ -43,6 +50,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role saveRole(Role role) {
+        log.trace("Executing saveRole [{}]", role);
+        roleValidator.validate(role, Role::getTenantId);
         try {
             Role savedRole = roleDao.save(role.getTenantId(), role);
             return savedRole;

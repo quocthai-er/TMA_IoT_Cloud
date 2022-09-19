@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
@@ -32,6 +33,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Slf4j
+@EqualsAndHashCode(callSuper = true)
 public class Role extends BaseData<RoleId> implements HasTenantId {
 
     public static final ObjectMapper mapper = new ObjectMapper();
@@ -42,7 +44,7 @@ public class Role extends BaseData<RoleId> implements HasTenantId {
     @Length(fieldName = "title")
     private String title;
 
-    @Length(fieldName = "permissions")
+    //@Length(fieldName = "permissions")
     private JsonNode permissions;
 
     public Role() {
@@ -107,6 +109,8 @@ public class Role extends BaseData<RoleId> implements HasTenantId {
         StringBuilder builder = new StringBuilder();
         builder.append("Role [title=");
         builder.append(getTitle());
+        builder.append(", id=");
+        builder.append(id);
         builder.append(", permissions=");
         builder.append(permissions);
         builder.append("]");

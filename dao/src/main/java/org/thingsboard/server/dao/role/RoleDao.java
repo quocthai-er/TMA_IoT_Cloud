@@ -16,10 +16,12 @@
 
 package org.thingsboard.server.dao.role;
 
+import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.dao.Dao;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface RoleDao extends Dao<Role> {
@@ -38,4 +40,13 @@ public interface RoleDao extends Dao<Role> {
      * @return the optional role object
      */
     Role findByRoleId(UUID roleId);
+
+    /**
+     * Find roles by tenantId and role title.
+     *
+     * @param tenantId the tenantId
+     * @param title the role title
+     * @return the optional role object
+     */
+    Optional<Role> findRolesByTenantIdAndTitle(UUID tenantId, String title);
 }

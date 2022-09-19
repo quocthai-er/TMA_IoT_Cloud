@@ -79,6 +79,8 @@ public class EntityIdFactory {
                 return new RpcId(uuid);
             case QUEUE:
                 return new QueueId(uuid);
+            case ROLE:
+                return new RoleId(uuid);
         }
         throw new IllegalArgumentException("EntityType " + type + " is not supported!");
     }

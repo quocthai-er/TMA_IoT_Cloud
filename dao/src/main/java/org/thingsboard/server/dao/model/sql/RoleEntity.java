@@ -58,6 +58,9 @@ public class RoleEntity extends BaseSqlEntity<Role> implements SearchTextEntity<
     public RoleEntity() {}
 
     public RoleEntity(Role role) {
+        if (role.getId() != null) {
+            this.setUuid(role.getId().getId());
+        }
         this.title = role.getTitle();
         this.permissions = role.getPermissions();
         this.tenantId = role.getTenantId().getId();

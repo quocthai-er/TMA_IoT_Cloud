@@ -19,6 +19,7 @@ package org.thingsboard.server.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.thingsboard.server.common.data.Role;
@@ -30,6 +31,7 @@ import org.thingsboard.server.service.security.permission.Operation;
 
 import static org.thingsboard.server.controller.ControllerConstants.ROLE_ID_PARAM_DESCRIPTION;
 
+@Slf4j
 @RestController
 @TbCoreComponent
 @RequiredArgsConstructor

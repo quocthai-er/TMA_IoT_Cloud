@@ -57,7 +57,7 @@ public abstract class JpaAbstractDao<E extends BaseEntity<D>, D>
             throw new IllegalArgumentException("Can't create entity for domain object {" + domain + "}", e);
         }
         setSearchText(entity);
-        log.debug("Saving entity {}", entity);
+        log.info("Saving entity {}", entity);
         if (entity.getUuid() == null) {
             UUID uuid = Uuids.timeBased();
             entity.setUuid(uuid);

@@ -17,6 +17,7 @@
 package org.thingsboard.server.service.entitiy.role;
 
 import org.thingsboard.server.common.data.Role;
+import org.thingsboard.server.service.entitiy.SimpleTbEntityService;
 
 public interface TbRoleService {
 
