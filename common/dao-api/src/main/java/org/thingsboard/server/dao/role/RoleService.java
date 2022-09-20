@@ -16,8 +16,12 @@
 
 package org.thingsboard.server.dao.role;
 
+import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.id.RoleId;
+import org.thingsboard.server.common.data.id.TenantId;
+import org.thingsboard.server.common.data.page.PageData;
+import org.thingsboard.server.common.data.page.PageLink;
 
 import java.util.Optional;
 
@@ -30,4 +34,6 @@ public interface RoleService {
     Role saveRole(Role role);
 
 //    void deleteRole(RoleId roleId);
+    PageData<Role> findRolesByTenantId(TenantId tenantId, PageLink pageLink);
+
 }

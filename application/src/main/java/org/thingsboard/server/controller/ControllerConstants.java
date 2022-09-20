@@ -82,6 +82,8 @@ public class ControllerConstants {
     protected static final String EDGE_TEXT_SEARCH_DESCRIPTION = "The case insensitive 'substring' filter based on the edge name.";
     protected static final String EVENT_TEXT_SEARCH_DESCRIPTION = "The value is not used in searching.";
     protected static final String AUDIT_LOG_TEXT_SEARCH_DESCRIPTION = "The case insensitive 'substring' filter based on one of the next properties: entityType, entityName, userName, actionType, actionStatus.";
+    protected static final String ROLE_TEXT_SEARCH_DESCRIPTION = "The case insensitive 'substring' filter based on the role title.";
+
     protected static final String SORT_PROPERTY_DESCRIPTION = "Property of entity to sort by";
     protected static final String DASHBOARD_SORT_PROPERTY_ALLOWABLE_VALUES = "createdTime, title";
     protected static final String CUSTOMER_SORT_PROPERTY_ALLOWABLE_VALUES = "createdTime, title, email, country, city";
@@ -102,6 +104,8 @@ public class ControllerConstants {
     protected static final String RULE_CHAIN_SORT_PROPERTY_ALLOWABLE_VALUES = "createdTime, name, root";
     protected static final String WIDGET_BUNDLE_SORT_PROPERTY_ALLOWABLE_VALUES = "createdTime, title, tenantId";
     protected static final String AUDIT_LOG_SORT_PROPERTY_ALLOWABLE_VALUES = "createdTime, entityType, entityName, userName, actionType, actionStatus";
+    protected static final String ROLE_SORT_PROPERTY_ALLOWABLE_VALUES = "createdTime, title";
+
     protected static final String SORT_ORDER_DESCRIPTION = "Sort order. ASC (ASCENDING) or DESC (DESCENDING)";
     protected static final String SORT_ORDER_ALLOWABLE_VALUES = "ASC, DESC";
     protected static final String RPC_STATUS_ALLOWABLE_VALUES = "QUEUED, SENT, DELIVERED, SUCCESSFUL, TIMEOUT, EXPIRED, FAILED";

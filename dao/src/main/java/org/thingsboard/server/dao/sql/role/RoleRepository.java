@@ -16,7 +16,11 @@
 
 package org.thingsboard.server.dao.sql.role;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.thingsboard.server.dao.model.sql.CustomerEntity;
 import org.thingsboard.server.dao.model.sql.RoleEntity;
 
@@ -25,5 +29,10 @@ import java.util.UUID;
 public interface RoleRepository extends JpaRepository<RoleEntity, UUID> {
     RoleEntity findByTenantIdAndTitle(UUID tenantId, String title);
 
+    @Query("SELECT r FROM RoleEntity r WHERE r.tenantId = :tenantId " +
+            "AND LOWER(r.searchText) LIKE LOWER(CONCAT('%', :textSearch, '%'))")
+    Page<RoleEntity> findByTenantId(@Param("tenantId") UUID tenantId,
+                                        @Param("textSearch") String textSearch,
+                                        Pageable pageable);
 
 }

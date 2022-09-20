@@ -19,6 +19,8 @@ package org.thingsboard.server.dao.role;
 import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.id.TenantId;
+import org.thingsboard.server.common.data.page.PageData;
+import org.thingsboard.server.common.data.page.PageLink;
 import org.thingsboard.server.dao.Dao;
 
 import java.util.Optional;
@@ -49,4 +51,13 @@ public interface RoleDao extends Dao<Role> {
      * @return the optional role object
      */
     Optional<Role> findRolesByTenantIdAndTitle(UUID tenantId, String title);
+
+    /**
+     * Find roles by tenant id and page link.
+     *
+     * @param tenantId the tenant id
+     * @param pageLink the page link
+     * @return the list of role objects
+     */
+    PageData<Role> findRolesByTenantId(UUID tenantId, PageLink pageLink);
 }

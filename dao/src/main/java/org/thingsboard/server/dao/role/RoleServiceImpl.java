@@ -22,7 +22,11 @@ import org.springframework.stereotype.Service;
 import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.id.RoleId;
+import org.thingsboard.server.common.data.id.TenantId;
+import org.thingsboard.server.common.data.page.PageData;
+import org.thingsboard.server.common.data.page.PageLink;
 import org.thingsboard.server.dao.service.DataValidator;
+import org.thingsboard.server.dao.service.Validator;
 
 @Slf4j
 @Service
@@ -59,6 +63,15 @@ public class RoleServiceImpl implements RoleService {
             throw e;
         }
     }
+
+    @Override
+    public PageData<Role> findRolesByTenantId(TenantId tenantId, PageLink pageLink) {
+        log.trace("Executing findRolesByTenantId, tenantId [{}], pageLink [{}]", tenantId, pageLink);
+        Validator.validateId(tenantId, "Incorrect tenantId " + tenantId);
+        Validator.validatePageLink(pageLink);
+        return roleDao.findRolesByTenantId(tenantId.getId(), pageLink);
+    }
+
 
 //    @Override
 //    public void deleteRole(RoleId roleId) {

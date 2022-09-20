@@ -50,8 +50,8 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, H
     @ApiModelProperty(position = 15, value = "Either URL or Base64 data of the avatar")
     private String avatar;
 
-    @Length(fieldName = "role_id", max = 1000000)
-    @ApiModelProperty(position = 15, value = "JSON object with Role Id")
+    //@Length(fieldName = "role_id", max = 1000000)
+    @ApiModelProperty(position = 16, value = "JSON object with Role Id")
     private RoleId roleId;
     @Getter @Setter
     private CustomerId externalId;
@@ -91,7 +91,7 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, H
 
     public RoleId getRoleId() { return roleId; }
 
-    public  void setRoleId(RoleId roleId) { this.roleId = roleId;}
+    public void setRoleId(RoleId roleId) { this.roleId = roleId;}
 
     public String getAvatar() {
         if (avatar == null || avatar.length() == 0) {
@@ -116,7 +116,6 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, H
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-
 
     @ApiModelProperty(position = 1, value = "JSON object with the customer Id. " +
             "Specify this field to update the customer. " +
@@ -212,8 +211,6 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, H
     public String getSearchText() {
         return getTitle();
     }
-
-
 
     @Override
     public String toString() {

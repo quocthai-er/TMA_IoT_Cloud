@@ -23,11 +23,14 @@ import org.springframework.stereotype.Component;
 import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.EntityType;
 import org.thingsboard.server.common.data.Role;
+import org.thingsboard.server.common.data.page.PageData;
+import org.thingsboard.server.common.data.page.PageLink;
 import org.thingsboard.server.dao.DaoUtil;
 import org.thingsboard.server.dao.model.sql.RoleEntity;
 import org.thingsboard.server.dao.role.RoleDao;
 import org.thingsboard.server.dao.sql.JpaAbstractSearchTextDao;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,4 +60,12 @@ public class JpaRoleDao extends JpaAbstractSearchTextDao<RoleEntity, Role> imple
 
     @Override
     public EntityType getEntityType() { return EntityType.ROLE; }
+
+    @Override
+    public PageData<Role> findRolesByTenantId(UUID tenantId, PageLink pageLink) {
+        return DaoUtil.toPageData(roleRepository.findByTenantId(
+                tenantId,
+                Objects.toString(pageLink.getTextSearch(), ""),
+                DaoUtil.toPageable(pageLink)));
+    }
 }
