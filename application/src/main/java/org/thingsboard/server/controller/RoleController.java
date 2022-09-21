@@ -16,22 +16,28 @@
 
 package org.thingsboard.server.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.exception.ThingsboardException;
+import org.thingsboard.server.common.data.id.CustomerId;
 import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.page.PageData;
 import org.thingsboard.server.common.data.page.PageLink;
 import org.thingsboard.server.queue.util.TbCoreComponent;
 import org.thingsboard.server.service.entitiy.role.TbRoleService;
+import org.thingsboard.server.service.security.model.SecurityUser;
 import org.thingsboard.server.service.security.permission.Operation;
+
+import java.util.Arrays;
 
 import static org.thingsboard.server.controller.ControllerConstants.*;
 import static org.thingsboard.server.controller.ControllerConstants.SORT_ORDER_ALLOWABLE_VALUES;
@@ -62,6 +68,28 @@ public class RoleController extends BaseController{
             Role role = checkRoleId(roleId, Operation.READ);
             return role;
         } catch (Exception e) {
+            throw handleException(e);
+        }
+    }
+
+    @ApiOperation(value = "Check permission (checkPermission) TEST-ONLY")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN')")
+    @RequestMapping(value = "/role/{roleId}/check-permission", method = RequestMethod.GET)
+    @ResponseBody
+    public boolean checkPermission(
+            @ApiParam(value = ROLE_ID_PARAM_DESCRIPTION)
+            @PathVariable(ROLE_ID) String strRoleId,
+            @ApiParam(value = "Resource")
+            @RequestParam String strResource,
+            @ApiParam(value = "Operation")
+            @RequestParam String strOperation) throws ThingsboardException {
+        checkParameter(ROLE_ID, strRoleId);
+        try {
+            //CustomerId customerId = new CustomerId(toUUID(strCustomerId));
+            RoleId roleId = new RoleId(toUUID(strRoleId));
+            return checkPermission(roleId, strResource, strOperation);
+        }
+        catch (Exception e) {
             throw handleException(e);
         }
     }
@@ -102,6 +130,54 @@ public class RoleController extends BaseController{
         } catch (Exception e) {
             throw handleException(e);
         }
+    }
+
+    @ApiOperation(value = "Delete Role (deleteRole)",
+            notes = "Deletes the Role with specific ID. " +
+                    TENANT_AUTHORITY_PARAGRAPH)
+    @PreAuthorize("hasAuthority('TENANT_ADMIN')")
+    @RequestMapping(value = "/role/{roleId}", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deleteRole(@ApiParam(value = ROLE_ID_PARAM_DESCRIPTION)
+                               @PathVariable(ROLE_ID) String strRoleId) throws Exception {
+        checkParameter(ROLE_ID, strRoleId);
+        RoleId roleId = new RoleId(toUUID(strRoleId));
+        Role role = checkRoleId(roleId, Operation.DELETE);
+        tbRoleService.delete(role);
+    }
+
+    private boolean checkPermission(RoleId roleId, String resource, String operation) {
+        Role role = roleService.findRoleById(roleId);
+        if (role == null || role.getPermissions().isMissingNode()) {
+            return false;
+        }
+        boolean hasPermission = false;
+        boolean hasAllPermissions = false;
+        if (!role.getPermissions().path(resource).isMissingNode()) {
+            ArrayNode singleResourcePermissions = (ArrayNode) role.getPermissions().path(resource);
+            hasPermission = isOperationContains(singleResourcePermissions, operation);
+            log.info("Single:" + singleResourcePermissions.asText());
+        }
+        if (hasPermission == false && !role.getPermissions().path("ALL").isMissingNode()) {
+            ArrayNode allResourcesPermissions = (ArrayNode) role.getPermissions().path("ALL");
+            hasAllPermissions = isOperationContains(allResourcesPermissions, operation);
+            log.info("All: " + allResourcesPermissions.asText());
+        }
+        return hasPermission || hasAllPermissions;
+    }
+
+    private boolean isOperationContains(ArrayNode permissions, String operation) {
+        if (permissions != null && permissions.isArray()) {
+            if (permissions.get(0).asText().equals("ALL")) {
+                return true;
+            }
+            for (JsonNode permission : permissions) {
+                if (permission.asText().equals(operation)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

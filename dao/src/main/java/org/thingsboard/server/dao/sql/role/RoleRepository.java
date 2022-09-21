@@ -34,5 +34,7 @@ public interface RoleRepository extends JpaRepository<RoleEntity, UUID> {
     Page<RoleEntity> findByTenantId(@Param("tenantId") UUID tenantId,
                                         @Param("textSearch") String textSearch,
                                         Pageable pageable);
+    @Query("SELECT r from RoleEntity r WHERE r.id = (SELECT c.roleId from CustomerEntity c WHERE c.id = :customerId) ")
+    RoleEntity findByCustomerId(@Param("customerId") UUID customerId);
 
 }

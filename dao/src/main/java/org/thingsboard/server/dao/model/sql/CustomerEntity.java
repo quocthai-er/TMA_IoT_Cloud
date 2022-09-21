@@ -112,7 +112,9 @@ CustomerEntity extends BaseSqlEntity<Customer> implements SearchTextEntity<Custo
             this.externalId = customer.getExternalId().getId();
         }
         this.avatar = customer.getAvatar();
-        this.roleId = customer.getRoleId().getId();
+        if (customer.getRoleId() != null) {
+            this.roleId = customer.getRoleId().getId();
+        }
     }
 
     @Override
@@ -144,7 +146,9 @@ CustomerEntity extends BaseSqlEntity<Customer> implements SearchTextEntity<Custo
             customer.setExternalId(new CustomerId(externalId));
         }
         customer.setAvatar(avatar);
-        customer.setRoleId(new RoleId(roleId));
+        if (roleId != null) {
+            customer.setRoleId(new RoleId(roleId));
+        }
         return customer;
     }
 

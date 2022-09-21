@@ -43,15 +43,15 @@ public class DefaultTbRoleService extends AbstractTbEntityService implements TbR
         }
     }
 
-//    @Override
-//    public void delete(Role role) throws Exception {
-//        RoleId roleId = role.getId();
-//        try {
-//            roleService.deleteRole(roleId);
-//            notificationEntityService.notifyDeleteRole(role);
-//        } catch (Exception e) {
-//            notificationEntityService.logEntityAction();
-//            throw e;
-//        }
-//    }
+    @Override
+    public void delete(Role role) throws Exception {
+        RoleId roleId = role.getId();
+        try {
+            roleService.deleteRole(roleId);
+            //notificationEntityService.notifyDeleteRole(role);
+        } catch (Exception e) {
+            //notificationEntityService.logEntityAction();
+            throw e;
+        }
+    }
 }

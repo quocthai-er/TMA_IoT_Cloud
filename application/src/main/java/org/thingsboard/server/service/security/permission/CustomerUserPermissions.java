@@ -16,10 +16,7 @@
 package org.thingsboard.server.service.security.permission;
 
 import org.springframework.stereotype.Component;
-import org.thingsboard.server.common.data.DashboardInfo;
-import org.thingsboard.server.common.data.HasCustomerId;
-import org.thingsboard.server.common.data.HasTenantId;
-import org.thingsboard.server.common.data.User;
+import org.thingsboard.server.common.data.*;
 import org.thingsboard.server.common.data.id.DashboardId;
 import org.thingsboard.server.common.data.id.EntityId;
 import org.thingsboard.server.common.data.id.UserId;
@@ -28,7 +25,6 @@ import org.thingsboard.server.service.security.model.SecurityUser;
 
 @Component(value = "customerUserPermissions")
 public class CustomerUserPermissions extends AbstractPermissions {
-
     public CustomerUserPermissions() {
         super();
         put(Resource.ALARM, customerAlarmPermissionChecker);

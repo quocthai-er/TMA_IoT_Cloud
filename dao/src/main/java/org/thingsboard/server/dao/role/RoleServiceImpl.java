@@ -16,21 +16,29 @@
 
 package org.thingsboard.server.dao.role;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.Role;
+import org.thingsboard.server.common.data.id.CustomerId;
 import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.page.PageData;
 import org.thingsboard.server.common.data.page.PageLink;
+import org.thingsboard.server.dao.exception.IncorrectParameterException;
 import org.thingsboard.server.dao.service.DataValidator;
 import org.thingsboard.server.dao.service.Validator;
+
+import static org.thingsboard.server.dao.service.Validator.validateId;
 
 @Slf4j
 @Service
 public class RoleServiceImpl implements RoleService {
+
+    public static final String INCORRECT_ROLE_ID = "Incorrect roleId ";
+    public static final String INCORRECT_CUSTOMER_ID = "Incorrect customerId ";
 
     @Autowired
     private RoleDao roleDao;
@@ -72,9 +80,28 @@ public class RoleServiceImpl implements RoleService {
         return roleDao.findRolesByTenantId(tenantId.getId(), pageLink);
     }
 
+    @Override
+    public void deleteRole(RoleId roleId) {
+        log.trace("Executing deleteRole [{}]", roleId);
+        Validator.validateId(roleId, INCORRECT_ROLE_ID + roleId);
+        Role role = findRoleById(roleId);
+        if (role == null) {
+            throw new IncorrectParameterException("Unable to delete non-existent role.");
+        }
+        roleDao.removeById(null, roleId.getId());
+    }
 
-//    @Override
-//    public void deleteRole(RoleId roleId) {
-//
-//    }
+    @Override
+    public ListenableFuture<Role> findRoleByIdAsync(TenantId tenantId, RoleId roleId) {
+        log.trace("Executing findRoleByIdAsync [{}]", roleId);
+        validateId(roleId, INCORRECT_ROLE_ID + roleId);
+        return roleDao.findByIdAsync(tenantId, roleId.getId());
+    }
+
+    @Override
+    public Role findRoleByCustomerId(CustomerId customerId) {
+        log.trace("Executing findRoleByCustomerId [{}]", customerId);
+        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
+        return roleDao.findByCustomerId(customerId.getId());
+    }
 }

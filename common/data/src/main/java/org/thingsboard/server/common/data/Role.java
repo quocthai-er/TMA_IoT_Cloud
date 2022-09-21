@@ -17,6 +17,7 @@
 package org.thingsboard.server.common.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,7 +35,7 @@ import java.util.function.Supplier;
 
 @Slf4j
 @EqualsAndHashCode(callSuper = true)
-public class Role extends BaseData<RoleId> implements HasTenantId {
+public class Role extends BaseData<RoleId> implements HasTenantId, HasName {
 
     public static final ObjectMapper mapper = new ObjectMapper();
 
@@ -92,6 +93,13 @@ public class Role extends BaseData<RoleId> implements HasTenantId {
         this.title = title;
     }
 
+    @ApiModelProperty(position = 4, accessMode = ApiModelProperty.AccessMode.READ_ONLY, value = "Duplicates the title of the role, readonly", example = "MANAGER")
+    @Override
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public String getName() {
+        return title;
+    }
+
     @JsonIgnore
     private byte[] permissionsBytes;
 
@@ -144,5 +152,6 @@ public class Role extends BaseData<RoleId> implements HasTenantId {
             log.warn("Can't serialize json data: ", e);
         }
     }
+
 
 }
