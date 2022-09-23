@@ -118,12 +118,12 @@ public class DefaultTbNotificationEntityService implements TbNotificationEntityS
 
     @Override
     public void notifyCreateOrUpdateRole(Role role, ActionType actionType) {
-        tbClusterService.onRoleUpdated(role);
+        //tbClusterService.onRoleUpdated(role);
     }
 
     @Override
     public void notifyDeleteRole(Role role) {
-        tbClusterService.onRoleDeleted(role, null);
+        //tbClusterService.onRoleDeleted(role, null);
     }
 
 

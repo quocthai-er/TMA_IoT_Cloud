@@ -21,12 +21,12 @@ ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS phone varchar(255) COLLATE pg_catal
 
 --start new
 CREATE TABLE IF NOT EXISTS tb_role (
-    id uuid NOT NULL CONSTRAINT role_pkey PRIMARY KEY
-    title       varchar(255)   NOT NULL,
-    operations  varchar,
-    tenant_id   uuid,
-    created_time    bigint,
-    search_text varchar(255),
+    id uuid NOT NULL CONSTRAINT role_pkey PRIMARY KEY,
+    title varchar(255) NOT NULL,
+    permissions varchar,
+    tenant_id uuid,
+    created_time bigint,
+    search_text varchar(255)
 );
 
 ALTER TABLE customer
@@ -39,7 +39,7 @@ ALTER TABLE customer
 DO
 $$
     BEGIN
-        IF NOT EXISTS(SELECT 1 FROM pg_constraint WHERE conname = 'tb_user_phone_key') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'tb_user_phone_key') THEN
             ALTER TABLE tb_user ADD CONSTRAINT tb_user_phone_key UNIQUE (phone);
         END IF;
     END;

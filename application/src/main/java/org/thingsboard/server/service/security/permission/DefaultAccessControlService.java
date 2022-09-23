@@ -18,6 +18,7 @@ package org.thingsboard.server.service.security.permission;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.thingsboard.server.common.data.HasTenantId;
@@ -43,6 +44,7 @@ public class DefaultAccessControlService implements AccessControlService {
 
     private final Map<Authority, Permissions> authorityPermissions = new HashMap<>();
 
+    @Autowired
     private RoleService roleService;
 
     public DefaultAccessControlService(
@@ -56,7 +58,7 @@ public class DefaultAccessControlService implements AccessControlService {
 
     @Override
     public void checkPermission(SecurityUser user, Resource resource, Operation operation) throws ThingsboardException {
-        if (user.getAuthority() == Authority.CUSTOMER_USER && !checkPermission(user, resource.toString(), operation.toString())) {
+        if (user.getAuthority() == Authority.CUSTOMER_USER && !canAccess(user, resource.toString(), operation.toString())) {
             permissionDenied();
         }
         PermissionChecker permissionChecker = getPermissionChecker(user.getAuthority(), resource);
@@ -69,7 +71,7 @@ public class DefaultAccessControlService implements AccessControlService {
     @SuppressWarnings("unchecked")
     public <I extends EntityId, T extends HasTenantId> void checkPermission(SecurityUser user, Resource resource,
                                                                                             Operation operation, I entityId, T entity) throws ThingsboardException {
-        if (user.getAuthority() == Authority.CUSTOMER_USER && !checkPermission(user, resource.toString(), operation.toString())) {
+        if (user.getAuthority() == Authority.CUSTOMER_USER && !canAccess(user, resource.toString(), operation.toString())) {
             permissionDenied();
         }
         PermissionChecker permissionChecker = getPermissionChecker(user.getAuthority(), resource);
@@ -95,13 +97,13 @@ public class DefaultAccessControlService implements AccessControlService {
                 ThingsboardErrorCode.PERMISSION_DENIED);
     }
 
-    private boolean checkPermission(SecurityUser user, String resource, String operation) {
+    private boolean canAccess(SecurityUser user, String resource, String operation) {
+        boolean hasPermission = false;
+        boolean hasAllPermissions = false;
         Role role = roleService.findRoleByCustomerId(user.getCustomerId());
         if (role == null || role.getPermissions().isMissingNode()) {
             return false;
         }
-        boolean hasPermission = false;
-        boolean hasAllPermissions = false;
         if (!role.getPermissions().path(resource).isMissingNode()) {
             ArrayNode singleResourcePermissions = (ArrayNode) role.getPermissions().path(resource);
             hasPermission = isOperationContained(singleResourcePermissions, operation);

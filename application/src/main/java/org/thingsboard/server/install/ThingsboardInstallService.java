@@ -254,17 +254,17 @@ public class ThingsboardInstallService {
 
                 componentDiscoveryService.discoverComponents();
 
-                systemDataLoaderService.createSysAdmin();
-                systemDataLoaderService.createDefaultTenantProfiles();
-                systemDataLoaderService.createAdminSettings();
-                systemDataLoaderService.loadSystemWidgets();
-                systemDataLoaderService.createOAuth2Templates();
-                systemDataLoaderService.createQueues();
-//                systemDataLoaderService.loadSystemPlugins();
-//                systemDataLoaderService.loadSystemRules();
 
                 if (loadDemo) {
                     log.info("Loading demo data...");
+                    systemDataLoaderService.createSysAdmin();
+                    systemDataLoaderService.createDefaultTenantProfiles();
+                    systemDataLoaderService.createAdminSettings();
+                    systemDataLoaderService.loadSystemWidgets();
+                    systemDataLoaderService.createOAuth2Templates();
+                    systemDataLoaderService.createQueues();
+//                systemDataLoaderService.loadSystemPlugins();
+//                systemDataLoaderService.loadSystemRules();
                     systemDataLoaderService.loadDemoData();
                 }
                 log.info("Installation finished successfully!");

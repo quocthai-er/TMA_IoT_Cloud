@@ -72,22 +72,18 @@ public class RoleController extends BaseController{
         }
     }
 
-    @ApiOperation(value = "Check permission (checkPermission) TEST-ONLY")
-    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN')")
-    @RequestMapping(value = "/role/{roleId}/check-permission", method = RequestMethod.GET)
+    @ApiOperation(value = "Check current (customer) user permission (checkPermission) TEST-ONLY")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @RequestMapping(value = "/role/check-permission", method = RequestMethod.GET)
     @ResponseBody
     public boolean checkPermission(
-            @ApiParam(value = ROLE_ID_PARAM_DESCRIPTION)
-            @PathVariable(ROLE_ID) String strRoleId,
             @ApiParam(value = "Resource")
             @RequestParam String strResource,
             @ApiParam(value = "Operation")
             @RequestParam String strOperation) throws ThingsboardException {
-        checkParameter(ROLE_ID, strRoleId);
         try {
-            //CustomerId customerId = new CustomerId(toUUID(strCustomerId));
-            RoleId roleId = new RoleId(toUUID(strRoleId));
-            return checkPermission(roleId, strResource, strOperation);
+            //RoleId roleId = new RoleId(toUUID(strRoleId));
+            return checkPermission(getCurrentUser().getCustomerId(), strResource, strOperation);
         }
         catch (Exception e) {
             throw handleException(e);
@@ -146,8 +142,8 @@ public class RoleController extends BaseController{
         tbRoleService.delete(role);
     }
 
-    private boolean checkPermission(RoleId roleId, String resource, String operation) {
-        Role role = roleService.findRoleById(roleId);
+    private boolean checkPermission(CustomerId customerId, String resource, String operation) {
+        Role role = roleService.findRoleByCustomerId(customerId);
         if (role == null || role.getPermissions().isMissingNode()) {
             return false;
         }

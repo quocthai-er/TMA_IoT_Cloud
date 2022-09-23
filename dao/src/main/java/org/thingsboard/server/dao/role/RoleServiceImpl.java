@@ -100,7 +100,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role findRoleByCustomerId(CustomerId customerId) {
-        log.trace("Executing findRoleByCustomerId [{}]", customerId);
+        log.info("Executing findRoleByCustomerId [{}]", customerId);
         validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
         return roleDao.findByCustomerId(customerId.getId());
     }
