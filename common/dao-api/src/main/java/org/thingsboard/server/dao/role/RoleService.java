@@ -22,6 +22,7 @@ import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.id.CustomerId;
 import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
+import org.thingsboard.server.common.data.id.UserId;
 import org.thingsboard.server.common.data.page.PageData;
 import org.thingsboard.server.common.data.page.PageLink;
 
@@ -42,7 +43,8 @@ public interface RoleService {
 
     ListenableFuture<Role> findRoleByIdAsync(TenantId tenantId, RoleId roleId);
 
-    Role findRoleByCustomerId(CustomerId customerId);
+//    Role findRoleByCustomerId(CustomerId customerId);
 
+    Role findRoleByUserId(UserId userId);
 
 }

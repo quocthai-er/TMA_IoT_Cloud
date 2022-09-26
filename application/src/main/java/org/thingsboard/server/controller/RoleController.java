@@ -27,14 +27,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.exception.ThingsboardException;
-import org.thingsboard.server.common.data.id.CustomerId;
 import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
+import org.thingsboard.server.common.data.id.UserId;
 import org.thingsboard.server.common.data.page.PageData;
 import org.thingsboard.server.common.data.page.PageLink;
 import org.thingsboard.server.queue.util.TbCoreComponent;
 import org.thingsboard.server.service.entitiy.role.TbRoleService;
-import org.thingsboard.server.service.security.model.SecurityUser;
 import org.thingsboard.server.service.security.permission.Operation;
 
 import java.util.Arrays;
@@ -83,7 +82,7 @@ public class RoleController extends BaseController{
             @RequestParam String strOperation) throws ThingsboardException {
         try {
             //RoleId roleId = new RoleId(toUUID(strRoleId));
-            return checkPermission(getCurrentUser().getCustomerId(), strResource, strOperation);
+            return checkPermission(getCurrentUser().getId(), strResource, strOperation);
         }
         catch (Exception e) {
             throw handleException(e);
@@ -142,8 +141,8 @@ public class RoleController extends BaseController{
         tbRoleService.delete(role);
     }
 
-    private boolean checkPermission(CustomerId customerId, String resource, String operation) {
-        Role role = roleService.findRoleByCustomerId(customerId);
+    private boolean checkPermission(UserId userId, String resource, String operation) {
+        Role role = roleService.findRoleByUserId(userId);
         if (role == null || role.getPermissions().isMissingNode()) {
             return false;
         }

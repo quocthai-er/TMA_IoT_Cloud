@@ -30,9 +30,12 @@ CREATE TABLE IF NOT EXISTS tb_role (
 );
 
 ALTER TABLE customer
+    DROP COLUMN IF EXISTS role_id;
+
+ALTER TABLE tb_user
     ADD COLUMN IF NOT EXISTS role_id uuid;
 
-ALTER TABLE customer
+ALTER TABLE tb_user
     ADD CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES tb_role (id);
 --end new
 
@@ -44,6 +47,7 @@ $$
         END IF;
     END;
 $$;
+
 
 
 

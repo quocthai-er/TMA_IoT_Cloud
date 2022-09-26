@@ -25,6 +25,7 @@ import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.id.CustomerId;
 import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
+import org.thingsboard.server.common.data.id.UserId;
 import org.thingsboard.server.common.data.page.PageData;
 import org.thingsboard.server.common.data.page.PageLink;
 import org.thingsboard.server.dao.exception.IncorrectParameterException;
@@ -39,6 +40,8 @@ public class RoleServiceImpl implements RoleService {
 
     public static final String INCORRECT_ROLE_ID = "Incorrect roleId ";
     public static final String INCORRECT_CUSTOMER_ID = "Incorrect customerId ";
+    public static final String INCORRECT_USER_ID = "Incorrect userId ";
+
 
     @Autowired
     private RoleDao roleDao;
@@ -98,10 +101,17 @@ public class RoleServiceImpl implements RoleService {
         return roleDao.findByIdAsync(tenantId, roleId.getId());
     }
 
+//    @Override
+//    public Role findRoleByCustomerId(CustomerId customerId) {
+//        log.info("Executing findRoleByCustomerId [{}]", customerId);
+//        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
+//        return roleDao.findByCustomerId(customerId.getId());
+//    }
+
     @Override
-    public Role findRoleByCustomerId(CustomerId customerId) {
-        log.info("Executing findRoleByCustomerId [{}]", customerId);
-        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
-        return roleDao.findByCustomerId(customerId.getId());
+    public Role findRoleByUserId(UserId userId) {
+        log.info("Executing findRoleByUserId [{}]", userId);
+        validateId(userId, INCORRECT_CUSTOMER_ID + userId);
+        return roleDao.findByUserId(userId.getId());
     }
 }

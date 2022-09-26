@@ -70,9 +70,15 @@ public class JpaRoleDao extends JpaAbstractSearchTextDao<RoleEntity, Role> imple
                 DaoUtil.toPageable(pageLink)));
     }
 
+//    @Override
+//    public Role findByCustomerId(UUID customerId) {
+//        Role role = DaoUtil.getData(roleRepository.findByCustomerId(customerId));
+//        return role;
+//    }
+
     @Override
-    public Role findByCustomerId(UUID customerId) {
-        Role role = DaoUtil.getData(roleRepository.findByCustomerId(customerId));
+    public Role findByUserId(UUID userId) {
+        Role role = DaoUtil.getData(roleRepository.findByUserId(userId));
         return role;
     }
 }

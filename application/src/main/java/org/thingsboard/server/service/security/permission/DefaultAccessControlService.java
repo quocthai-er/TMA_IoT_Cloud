@@ -100,7 +100,7 @@ public class DefaultAccessControlService implements AccessControlService {
     private boolean canAccess(SecurityUser user, String resource, String operation) {
         boolean hasPermission = false;
         boolean hasAllPermissions = false;
-        Role role = roleService.findRoleByCustomerId(user.getCustomerId());
+        Role role = roleService.findRoleByUserId(user.getId());
         if (role == null || role.getPermissions().isMissingNode()) {
             return false;
         }

@@ -21,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.thingsboard.server.dao.model.sql.CustomerEntity;
 import org.thingsboard.server.dao.model.sql.RoleEntity;
 
 import java.util.UUID;
@@ -34,7 +33,10 @@ public interface RoleRepository extends JpaRepository<RoleEntity, UUID> {
     Page<RoleEntity> findByTenantId(@Param("tenantId") UUID tenantId,
                                         @Param("textSearch") String textSearch,
                                         Pageable pageable);
-    @Query("SELECT r from RoleEntity r WHERE r.id = (SELECT c.roleId from CustomerEntity c WHERE c.id = :customerId) ")
-    RoleEntity findByCustomerId(@Param("customerId") UUID customerId);
+//    @Query("SELECT r from RoleEntity r WHERE r.id = (SELECT c.roleId from CustomerEntity c WHERE c.id = :customerId) ")
+//    RoleEntity findByCustomerId(@Param("customerId") UUID customerId);
+
+    @Query("SELECT r from RoleEntity r WHERE r.id = (SELECT u.roleId from UserEntity u WHERE u.id = :userId) ")
+    RoleEntity findByUserId(@Param("userId") UUID userId);
 
 }

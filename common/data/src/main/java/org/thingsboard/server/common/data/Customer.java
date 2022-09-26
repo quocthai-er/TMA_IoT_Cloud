@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @EqualsAndHashCode(callSuper = true)
-public class Customer extends ContactBased<CustomerId> implements HasTenantId, HasRoleId, ExportableEntity<CustomerId> {
+public class Customer extends ContactBased<CustomerId> implements HasTenantId, ExportableEntity<CustomerId> {
 
     private static final long serialVersionUID = -1599722990298929275L;
 
@@ -51,8 +51,8 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, H
     private String avatar;
 
     //@Length(fieldName = "role_id", max = 1000000)
-    @ApiModelProperty(position = 16, value = "JSON object with Role Id")
-    private RoleId roleId;
+//    @ApiModelProperty(position = 16, value = "JSON object with Role Id")
+//    private RoleId roleId;
     @Getter @Setter
     private CustomerId externalId;
 
@@ -70,7 +70,7 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, H
         this.title = customer.getTitle();
         this.externalId = customer.getExternalId();
         this.avatar = customer.getAvatar();
-        this.roleId = customer.getRoleId();
+//        this.roleId = customer.getRoleId();
     }
 
     public TenantId getTenantId() {
@@ -89,9 +89,9 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, H
         this.title = title;
     }
 
-    public RoleId getRoleId() { return roleId; }
+//    public RoleId getRoleId() { return roleId; }
 
-    public void setRoleId(RoleId roleId) { this.roleId = roleId;}
+//    public void setRoleId(RoleId roleId) { this.roleId = roleId;}
 
     public String getAvatar() {
         if (avatar == null || avatar.length() == 0) {
@@ -241,8 +241,8 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, H
         builder.append(createdTime);
         builder.append(", id=");
         builder.append(id);
-        builder.append(", roleId=");
-        builder.append(roleId);
+//        builder.append(", roleId=");
+//        builder.append(roleId);
         builder.append("]");
         return builder.toString();
     }
