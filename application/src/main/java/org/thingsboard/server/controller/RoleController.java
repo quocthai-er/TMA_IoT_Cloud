@@ -49,6 +49,7 @@ import static org.thingsboard.server.controller.ControllerConstants.SORT_ORDER_A
 public class RoleController extends BaseController{
 
     public static final String ROLE_ID = "roleId";
+    public static final String USER_ID = "userId";
 
     private final TbRoleService tbRoleService;
 
