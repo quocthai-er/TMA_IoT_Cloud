@@ -81,4 +81,11 @@ public class JpaRoleDao extends JpaAbstractSearchTextDao<RoleEntity, Role> imple
         Role role = DaoUtil.getData(roleRepository.findByUserId(userId));
         return role;
     }
+
+    @Override
+    public Role findByRoleTitle(String title) {
+        Role role = DaoUtil.getData(roleRepository.findByTitle(title));
+        return role;
+    }
+
 }

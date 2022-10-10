@@ -39,4 +39,5 @@ public interface RoleRepository extends JpaRepository<RoleEntity, UUID> {
     @Query("SELECT r from RoleEntity r WHERE r.id = (SELECT u.roleId from UserEntity u WHERE u.id = :userId) ")
     RoleEntity findByUserId(@Param("userId") UUID userId);
 
+    RoleEntity findByTitle(String title);
 }

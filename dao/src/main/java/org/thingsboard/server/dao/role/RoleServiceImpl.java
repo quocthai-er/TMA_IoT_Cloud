@@ -42,7 +42,6 @@ public class RoleServiceImpl implements RoleService {
     public static final String INCORRECT_CUSTOMER_ID = "Incorrect customerId ";
     public static final String INCORRECT_USER_ID = "Incorrect userId ";
 
-
     @Autowired
     private RoleDao roleDao;
 
@@ -113,5 +112,11 @@ public class RoleServiceImpl implements RoleService {
         log.info("Executing findRoleByUserId [{}]", userId);
         validateId(userId, INCORRECT_CUSTOMER_ID + userId);
         return roleDao.findByUserId(userId.getId());
+    }
+
+    @Override
+    public Role findByRoleTitle(String title) {
+        log.info("Executing findRoleByTitle [{}]", title);
+        return roleDao.findByRoleTitle(title);
     }
 }

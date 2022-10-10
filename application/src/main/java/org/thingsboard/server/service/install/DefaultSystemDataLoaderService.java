@@ -15,6 +15,7 @@
  */
 package org.thingsboard.server.service.install;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.util.concurrent.FutureCallback;
@@ -30,17 +31,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thingsboard.common.util.ThingsBoardThreadFactory;
-import org.thingsboard.server.common.data.AdminSettings;
-import org.thingsboard.server.common.data.Customer;
-import org.thingsboard.server.common.data.DataConstants;
-import org.thingsboard.server.common.data.Device;
-import org.thingsboard.server.common.data.DeviceProfile;
-import org.thingsboard.server.common.data.DeviceProfileProvisionType;
-import org.thingsboard.server.common.data.DeviceProfileType;
-import org.thingsboard.server.common.data.DeviceTransportType;
-import org.thingsboard.server.common.data.Tenant;
-import org.thingsboard.server.common.data.TenantProfile;
-import org.thingsboard.server.common.data.User;
+import org.thingsboard.server.common.data.*;
 import org.thingsboard.server.common.data.alarm.AlarmSeverity;
 import org.thingsboard.server.common.data.device.profile.AlarmCondition;
 import org.thingsboard.server.common.data.device.profile.AlarmConditionFilter;
@@ -53,10 +44,7 @@ import org.thingsboard.server.common.data.device.profile.DeviceProfileAlarm;
 import org.thingsboard.server.common.data.device.profile.DeviceProfileData;
 import org.thingsboard.server.common.data.device.profile.DisabledDeviceProfileProvisionConfiguration;
 import org.thingsboard.server.common.data.device.profile.SimpleAlarmConditionSpec;
-import org.thingsboard.server.common.data.id.CustomerId;
-import org.thingsboard.server.common.data.id.DeviceId;
-import org.thingsboard.server.common.data.id.DeviceProfileId;
-import org.thingsboard.server.common.data.id.TenantId;
+import org.thingsboard.server.common.data.id.*;
 import org.thingsboard.server.common.data.kv.BaseAttributeKvEntry;
 import org.thingsboard.server.common.data.kv.BasicTsKvEntry;
 import org.thingsboard.server.common.data.kv.BooleanDataEntry;
@@ -89,6 +77,7 @@ import org.thingsboard.server.dao.device.DeviceProfileService;
 import org.thingsboard.server.dao.device.DeviceService;
 import org.thingsboard.server.dao.exception.DataValidationException;
 import org.thingsboard.server.dao.queue.QueueService;
+import org.thingsboard.server.dao.role.RoleService;
 import org.thingsboard.server.dao.rule.RuleChainService;
 import org.thingsboard.server.dao.settings.AdminSettingsService;
 import org.thingsboard.server.dao.tenant.TenantProfileService;
@@ -114,6 +103,8 @@ public class DefaultSystemDataLoaderService implements SystemDataLoaderService {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     public static final String CUSTOMER_CRED = "customer";
+
+    public static final String CUSTOMER_USER_PERMISSIONS_JSON_STRING = "{\"ALL\":[\"READ\",\"RPC_CALL\",\"READ_CREDENTIALS\",\"READ_ATTRIBUTES\",\"READ_TELEMETRY\",\"WRITE_ATTRIBUTES\",\"WRITE_TELEMETRY\",\"UNASSIGN_FROM_CUSTOMER\",\"ASSIGN_TO_CUSTOMER\",\"CREATE\",\"READ\",\"WRITE\",\"DELETE\"],\"DEVICE\":[\"ALL\"],\"ASSET\":[\"ALL\"]}";
     public static final String DEFAULT_DEVICE_TYPE = "default";
     public static final String ACTIVITY_STATE = "active";
 
@@ -159,6 +150,9 @@ public class DefaultSystemDataLoaderService implements SystemDataLoaderService {
     @Autowired
     private TimeseriesService tsService;
 
+    @Autowired
+    private RoleService roleService;
+
     @Value("${state.persistToTelemetry:false}")
     @Getter
     private boolean persistActivityToTelemetry;
@@ -188,7 +182,7 @@ public class DefaultSystemDataLoaderService implements SystemDataLoaderService {
 
     @Override
     public void createSysAdmin() {
-        createUser(Authority.SYS_ADMIN, null, null, "sysadmin@thingsboard.org", "0123456780","sysadmin");
+        createUser(Authority.SYS_ADMIN, null, null,  null, "sysadmin@thingsboard.org", "0","sysadmin");
     }
 
     @Override
@@ -275,7 +269,15 @@ public class DefaultSystemDataLoaderService implements SystemDataLoaderService {
         demoTenant.setTitle("Tenant");
         demoTenant = tenantService.saveTenant(demoTenant);
         installScripts.loadDemoRuleChains(demoTenant.getId());
-        createUser(Authority.TENANT_ADMIN, demoTenant.getId(), null, "tenant@thingsboard.org", "0123456781","tenant");
+        createUser(Authority.TENANT_ADMIN, demoTenant.getId(), null, null,"tenant@thingsboard.org", "1","tenant");
+
+        JsonNode defaultRolePermissions = objectMapper.readTree(this.CUSTOMER_USER_PERMISSIONS_JSON_STRING);
+        Role defaultRole = new Role();
+        defaultRole.setTenantId(demoTenant.getId());
+        defaultRole.setTitle("DEFAULT");
+        defaultRole.setLabel("DEFAULT");
+        defaultRole.setPermissions(defaultRolePermissions);
+        defaultRole = roleService.saveRole(defaultRole);
 
         Customer customerA = new Customer();
         customerA.setTenantId(demoTenant.getId());
@@ -289,10 +291,10 @@ public class DefaultSystemDataLoaderService implements SystemDataLoaderService {
         customerC.setTenantId(demoTenant.getId());
         customerC.setTitle("Customer C");
         customerC = customerService.saveCustomer(customerC);
-        createUser(Authority.CUSTOMER_USER, demoTenant.getId(), customerA.getId(),"customer@thingsboard.org","0123456782", CUSTOMER_CRED);
-        createUser(Authority.CUSTOMER_USER, demoTenant.getId(), customerA.getId(), "customerA@thingsboard.org", "0123456783", CUSTOMER_CRED);
-        createUser(Authority.CUSTOMER_USER, demoTenant.getId(), customerB.getId(), "customerB@thingsboard.org", "0123456784", CUSTOMER_CRED);
-        createUser(Authority.CUSTOMER_USER, demoTenant.getId(), customerC.getId(), "customerC@thingsboard.org", "0123456785", CUSTOMER_CRED);
+        createUser(Authority.CUSTOMER_USER, demoTenant.getId(), customerA.getId(), defaultRole.getId(), "customer@thingsboard.org","2", CUSTOMER_CRED);
+        createUser(Authority.CUSTOMER_USER, demoTenant.getId(), customerA.getId(), defaultRole.getId(),"customerA@thingsboard.org", "3", CUSTOMER_CRED);
+        createUser(Authority.CUSTOMER_USER, demoTenant.getId(), customerB.getId(), defaultRole.getId(),"customerB@thingsboard.org", "4", CUSTOMER_CRED);
+        createUser(Authority.CUSTOMER_USER, demoTenant.getId(), customerC.getId(), defaultRole.getId(),"customerC@thingsboard.org", "5", CUSTOMER_CRED);
 
         DeviceProfile defaultDeviceProfile = this.deviceProfileService.findOrCreateDeviceProfile(demoTenant.getId(), DEFAULT_DEVICE_TYPE);
 
@@ -491,6 +493,7 @@ public class DefaultSystemDataLoaderService implements SystemDataLoaderService {
     private User createUser(Authority authority,
                             TenantId tenantId,
                             CustomerId customerId,
+                            RoleId roleId,
                             String email,
                             String phone,
                             String password) {
@@ -500,6 +503,7 @@ public class DefaultSystemDataLoaderService implements SystemDataLoaderService {
         user.setPhone(phone);
         user.setTenantId(tenantId);
         user.setCustomerId(customerId);
+        user.setRoleId(roleId);
         user = userService.saveUser(user);
         UserCredentials userCredentials = userService.findUserCredentialsByUserId(TenantId.SYS_TENANT_ID, user.getId());
         userCredentials.setPassword(passwordEncoder.encode(password));
@@ -531,6 +535,19 @@ public class DefaultSystemDataLoaderService implements SystemDataLoaderService {
         deviceCredentials.setCredentialsId(accessToken);
         deviceCredentialsService.updateDeviceCredentials(TenantId.SYS_TENANT_ID, deviceCredentials);
         return device;
+    }
+
+    private Role createRole(TenantId tenantId,
+                            String title,
+                            String label,
+                            JsonNode permissions) {
+        Role role = new Role();
+        role.setTenantId(tenantId);
+        role.setTitle(title);
+        role.setLabel(label);
+        role.setPermissions(permissions);
+        role = roleService.saveRole(role);
+        return role;
     }
 
     private void save(DeviceId deviceId, String key, boolean value) {

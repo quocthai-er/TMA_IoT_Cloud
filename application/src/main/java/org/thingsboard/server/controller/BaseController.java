@@ -15,6 +15,7 @@
  */
 package org.thingsboard.server.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.util.concurrent.FutureCallback;
@@ -149,6 +150,10 @@ public abstract class BaseController {
 
     private static final ObjectMapper json = new ObjectMapper();
 
+    public static final String CUSTOMER_USER_DEFAULT_TITLE = "DEFAULT";
+    public static final String CUSTOMER_USER_PERMISSIONS_JSON_STRING = "{\"ALL\":[\"READ\",\"RPC_CALL\",\"READ_CREDENTIALS\",\"READ_ATTRIBUTES\",\"READ_TELEMETRY\",\"WRITE_ATTRIBUTES\",\"WRITE_TELEMETRY\",\"UNASSIGN_FROM_CUSTOMER\",\"ASSIGN_TO_CUSTOMER\",\"CREATE\",\"READ\",\"WRITE\",\"DELETE\"],\"DEVICE\":[\"ALL\"],\"ASSET\":[\"ALL\"]}";
+
+
     @Autowired
     private ThingsboardErrorResponseHandler errorResponseHandler;
 
@@ -163,7 +168,6 @@ public abstract class BaseController {
 
     @Autowired
     protected CustomerService customerService;
-
     @Autowired
     protected RoleService roleService;
 
@@ -489,6 +493,24 @@ public abstract class BaseController {
             checkNotNull(role, "Role with id [" + roleId + "] is not found");
 //            accessControlService.checkPermission(getCurrentUser(), Resource.ROLE, operation, roleId, role);
             return role;
+        } catch (Exception e) {
+            throw handleException(e, false);
+        }
+    }
+
+    Role findOrCreateDefaultRole(TenantId tenantId) throws ThingsboardException {
+        try {
+            Role defaultRole = roleService.findByRoleTitle(this.CUSTOMER_USER_DEFAULT_TITLE);
+            if (defaultRole == null) {
+                JsonNode defaultRolePermissions = json.readTree(this.CUSTOMER_USER_PERMISSIONS_JSON_STRING);
+                defaultRole = new Role();
+                defaultRole.setTenantId(tenantId);
+                defaultRole.setTitle(this.CUSTOMER_USER_DEFAULT_TITLE);
+                defaultRole.setLabel(this.CUSTOMER_USER_DEFAULT_TITLE);
+                defaultRole.setPermissions(defaultRolePermissions);
+                defaultRole = roleService.saveRole(defaultRole);
+            }
+            return defaultRole;
         } catch (Exception e) {
             throw handleException(e, false);
         }

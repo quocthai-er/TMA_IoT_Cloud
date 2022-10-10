@@ -45,6 +45,9 @@ public class Role extends BaseData<RoleId> implements HasTenantId, HasName {
     @Length(fieldName = "title")
     private String title;
 
+    @Length(fieldName = "label")
+    private String label;
+
     //@Length(fieldName = "permissions")
     private JsonNode permissions;
 
@@ -60,6 +63,7 @@ public class Role extends BaseData<RoleId> implements HasTenantId, HasName {
         super(role);
         this.tenantId = role.getTenantId();
         this.title = role.getTitle();
+        this.label = role.getLabel();
         this.permissions = role.getPermissions();
     }
 
@@ -93,6 +97,14 @@ public class Role extends BaseData<RoleId> implements HasTenantId, HasName {
         this.title = title;
     }
 
+    @ApiModelProperty(position = 3, value = "Label of the role", example = "MANAGER")
+    public String getLabel() {
+        return this.label;
+    }
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     @ApiModelProperty(position = 4, accessMode = ApiModelProperty.AccessMode.READ_ONLY, value = "Duplicates the title of the role, readonly", example = "MANAGER")
     @Override
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -117,6 +129,8 @@ public class Role extends BaseData<RoleId> implements HasTenantId, HasName {
         StringBuilder builder = new StringBuilder();
         builder.append("Role [title=");
         builder.append(getTitle());
+        builder.append(", label=");
+        builder.append(getLabel());
         builder.append(", id=");
         builder.append(id);
         builder.append(", permissions=");

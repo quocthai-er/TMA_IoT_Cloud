@@ -45,6 +45,9 @@ public class RoleEntity extends BaseSqlEntity<Role> implements SearchTextEntity<
     @Column(name = ModelConstants.ROLE_TILE_PROPERTY)
     private String title;
 
+    @Column(name = ModelConstants.ROLE_LABEL_PROPERTY)
+    private String label;
+
     @Column(name = ModelConstants.SEARCH_TEXT_PROPERTY)
     private String searchText;
 
@@ -62,6 +65,7 @@ public class RoleEntity extends BaseSqlEntity<Role> implements SearchTextEntity<
             this.setUuid(role.getId().getId());
         }
         this.title = role.getTitle();
+        this.label = role.getLabel();
         this.permissions = role.getPermissions();
         this.tenantId = role.getTenantId().getId();
     }
@@ -81,6 +85,7 @@ public class RoleEntity extends BaseSqlEntity<Role> implements SearchTextEntity<
         Role role = new Role(new RoleId(this.getUuid()));
         role.setCreatedTime(createdTime);
         role.setTitle(title);
+        role.setLabel(label);
         role.setPermissions(permissions);
         role.setTenantId(TenantId.fromUUID(tenantId));
         return role;
