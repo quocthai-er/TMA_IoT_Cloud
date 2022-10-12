@@ -42,6 +42,7 @@ public enum Resource {
     EDGE(EntityType.EDGE),
     RPC(EntityType.RPC),
     QUEUE(EntityType.QUEUE),
+    ROLE(EntityType.ROLE),
     VERSION_CONTROL;
 
     private final EntityType entityType;

@@ -48,5 +48,6 @@ public interface RoleService {
     Role findRoleByUserId(UserId userId);
 
     Role findByRoleTitle(String title);
+    Role findRoleByTenantIdAndTitle(TenantId tenantId, String title);
 
 }

@@ -51,8 +51,8 @@ $$;
 DO
 $$
     BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'tb_role_title_key') THEN
-            ALTER TABLE tb_role ADD CONSTRAINT tb_role_title_key UNIQUE (title);
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_role_id') THEN
+            ALTER TABLE tb_user ADD CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES tb_role (id);
         END IF;
     END;
 $$;
@@ -60,8 +60,8 @@ $$;
 DO
 $$
     BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_role_id') THEN
-            ALTER TABLE tb_user ADD CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES tb_role (id);
+        IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'tb_role_title_key') THEN
+            ALTER TABLE tb_role DROP CONSTRAINT tb_role_title_key;
         END IF;
     END;
 $$;

@@ -35,6 +35,7 @@ import org.thingsboard.server.common.data.page.PageLink;
 import org.thingsboard.server.queue.util.TbCoreComponent;
 import org.thingsboard.server.service.entitiy.role.TbRoleService;
 import org.thingsboard.server.service.security.permission.Operation;
+import org.thingsboard.server.service.security.permission.Resource;
 
 import java.util.Arrays;
 
@@ -99,11 +100,12 @@ public class RoleController extends BaseController{
             @ApiParam(value = "A JSON value representing the role.")
             @RequestBody Role role) throws Exception {
         role.setTenantId(getTenantId());
+        checkEntity(role.getId(), role, Resource.ROLE);
         return tbRoleService.save(role);
     }
 
     @ApiOperation(value = "Get Roles (getRoles)",
-            notes = "Returns a page of roles. " +
+            notes = "Returns a page of roles owned by tenant. " +
                     PAGE_DATA_PARAMETERS + TENANT_AUTHORITY_PARAGRAPH)
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/roles", params = {"pageSize", "page"}, method = RequestMethod.GET)

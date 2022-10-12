@@ -357,7 +357,7 @@ CREATE TABLE IF NOT EXISTS relation (
 
 CREATE TABLE IF NOT EXISTS tb_role (
     id uuid NOT NULL CONSTRAINT role_pkey PRIMARY KEY,
-    title varchar(255) UNIQUE NOT NULL,
+    title varchar(255) NOT NULL,
     label varchar(255),
     permissions varchar,
     tenant_id uuid,
