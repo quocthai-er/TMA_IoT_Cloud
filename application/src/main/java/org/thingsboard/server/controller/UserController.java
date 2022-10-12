@@ -20,6 +20,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.XSlf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.thingsboard.rule.engine.api.MailService;
+import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.User;
 import org.thingsboard.server.common.data.exception.ThingsboardErrorCode;
 import org.thingsboard.server.common.data.exception.ThingsboardException;
@@ -78,7 +81,7 @@ import static org.thingsboard.server.controller.ControllerConstants.USER_ID_PARA
 import static org.thingsboard.server.controller.ControllerConstants.USER_SORT_PROPERTY_ALLOWABLE_VALUES;
 import static org.thingsboard.server.controller.ControllerConstants.USER_TEXT_SEARCH_DESCRIPTION;
 import static org.thingsboard.server.controller.ControllerConstants.UUID_WIKI_LINK;
-
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @TbCoreComponent
@@ -88,11 +91,9 @@ public class UserController extends BaseController {
     public static final String USER_ID = "userId";
     public static final String YOU_DON_T_HAVE_PERMISSION_TO_PERFORM_THIS_OPERATION = "You don't have permission to perform this operation!";
     public static final String ACTIVATE_URL_PATTERN = "%s/api/noauth/activate?activateToken=%s";
-
     @Value("${security.user_token_access_enabled}")
     @Getter
     private boolean userTokenAccessEnabled;
-
     private final MailService mailService;
     private final JwtTokenFactory tokenFactory;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -191,6 +192,11 @@ public class UserController extends BaseController {
             user.setTenantId(getCurrentUser().getTenantId());
         }
         checkEntity(user.getId(), user, Resource.USER);
+        if (Authority.CUSTOMER_USER.equals(user.getAuthority()) && user.getRoleId() == null) {
+            Role defaultRole = findOrCreateDefaultRole(user.getTenantId());
+            user.setRoleId(defaultRole.getId());
+        }
+        log.info("info " + user);
         return tbUserService.save(getTenantId(), getCurrentUser().getCustomerId(), user, sendActivationMail, request, getCurrentUser());
     }
 

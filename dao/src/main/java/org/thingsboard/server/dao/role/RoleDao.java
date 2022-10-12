@@ -61,15 +61,6 @@ public interface RoleDao extends Dao<Role> {
      */
     PageData<Role> findRolesByTenantId(UUID tenantId, PageLink pageLink);
 
-
-//    /**
-//     * Find roles by customer id.
-//     *
-//     * @param customerId the customer id
-//     * @return the optional role object
-//     */
-//    Role findByCustomerId(UUID customerId);
-
     /**
      * Find roles by user id.
      *
@@ -77,4 +68,12 @@ public interface RoleDao extends Dao<Role> {
      * @return the optional role object
      */
     Role findByUserId(UUID userId);
+
+    /**
+     * Find role by title.
+     *
+     * @param title the role title
+     * @return the optional role object
+     */
+    Role findByRoleTitle(String title);
 }
