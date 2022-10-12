@@ -49,6 +49,14 @@
     <div fxLayout="row" fxLayoutGap="8px"
          fxLayout.xs="column" fxLayoutGap.xs="0">
       <mat-form-field fxFlex class="mat-block">
+        <mat-label>Phone</mat-label>
+        <input matInput
+               formControlName="phone">
+      </mat-form-field>
+    </div>
+    <div fxLayout="row" fxLayoutGap="8px"
+         fxLayout.xs="column" fxLayoutGap.xs="0">
+      <mat-form-field fxFlex class="mat-block">
         <mat-label>User activation method</mat-label>
         <mat-select matInput formControlName="userActivationMethod">
           <mat-option *ngFor="let activationMethod of activationMethods" [value]="activationMethod.value">

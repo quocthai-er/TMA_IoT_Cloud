@@ -3268,6 +3268,8 @@
         "invalid-email-format": "Invalid email format.",
         "first-name": "First Name",
         "last-name": "Last Name",
+        "phone": "Phone",
+        "phone-required": "Phone is required.",
         "description": "Description",
         "default-dashboard": "Default dashboard",
         "always-fullscreen": "Always fullscreen",
