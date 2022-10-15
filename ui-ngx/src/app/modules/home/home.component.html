@@ -16,23 +16,14 @@
 
 -->
 <mat-sidenav-container>
-  <mat-sidenav #sidenav class="tb-site-sidenav mat-elevation-z2"
+  <!-- <mat-sidenav #sidenav class="tb-site-sidenav mat-elevation-z2"
                [disableClose]="sidenavOpened"
                (click)="sidenavClicked()"
                [mode]="sidenavMode"
                [opened]="sidenavOpened && !forceFullscreen">
-    <header class="tb-nav-header">
-      <mat-toolbar color="primary" class="tb-nav-header-toolbar">
-        <div fxFlex="auto" fxLayout="row">
-          <img [src]="logo"
-               aria-label="logo" class="tb-logo-title"/>
-        </div>
-      </mat-toolbar>
-    </header>
     <mat-toolbar color="primary" fxFlex="0%" class="tb-side-menu-toolbar" fxLayout="column" role="navigation">
-      <tb-side-menu></tb-side-menu>
     </mat-toolbar>
-  </mat-sidenav>
+  </mat-sidenav> -->
   <mat-sidenav-content>
     <div fxLayout="column" role="main" style="height: 100%;">
       <mat-toolbar fxLayout="row" color="primary" class="mat-elevation-z1 tb-primary-toolbar">
@@ -51,9 +42,11 @@
                 (click)="closeSearch()">
           <mat-icon class="material-icons">arrow_back</mat-icon>
         </button>
-        <tb-breadcrumb [fxShow]="!displaySearchMode()"
+        <!-- <tb-breadcrumb [fxShow]="!displaySearchMode()"
              fxFlex [activeComponent]="activeComponent" class="mat-toolbar-tools">
-        </tb-breadcrumb>
+        </tb-breadcrumb> -->
+
+      <tb-side-menu></tb-side-menu>
         <div [fxShow]="displaySearchMode()" fxFlex fxLayout="row" class="tb-dark">
           <mat-form-field fxFlex floatLabel="always">
             <mat-label></mat-label>
