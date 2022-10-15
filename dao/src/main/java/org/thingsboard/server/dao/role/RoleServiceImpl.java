@@ -32,6 +32,8 @@ import org.thingsboard.server.dao.exception.IncorrectParameterException;
 import org.thingsboard.server.dao.service.DataValidator;
 import org.thingsboard.server.dao.service.Validator;
 
+import java.util.Optional;
+
 import static org.thingsboard.server.dao.service.Validator.validateId;
 
 @Slf4j
@@ -40,7 +42,7 @@ public class RoleServiceImpl implements RoleService {
 
     public static final String INCORRECT_ROLE_ID = "Incorrect roleId ";
     public static final String INCORRECT_CUSTOMER_ID = "Incorrect customerId ";
-    public static final String INCORRECT_USER_ID = "Incorrect userId ";
+    public static final String INCORRECT_TENANT_ID = "Incorrect tenantId ";
 
     @Autowired
     private RoleDao roleDao;
@@ -118,5 +120,12 @@ public class RoleServiceImpl implements RoleService {
     public Role findByRoleTitle(String title) {
         log.info("Executing findRoleByTitle [{}]", title);
         return roleDao.findByRoleTitle(title);
+    }
+
+    @Override
+    public Role findRoleByTenantIdAndTitle(TenantId tenantId, String title) {
+        log.trace("Executing findRoleByTenantIdAndTitle [{}] [{}]", tenantId, title);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        return roleDao.findRoleByTenantIdAndTitle(tenantId.getId(), title);
     }
 }

@@ -76,4 +76,7 @@ public interface RoleDao extends Dao<Role> {
      * @return the optional role object
      */
     Role findByRoleTitle(String title);
+
+    Role findRoleByTenantIdAndTitle(UUID tenantId, String title);
+
 }

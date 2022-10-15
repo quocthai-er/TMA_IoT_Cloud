@@ -491,7 +491,7 @@ public abstract class BaseController {
 //            validateId(roleId, "Incorrect roleId " + roleId);
             Role role = roleService.findRoleById(roleId);
             checkNotNull(role, "Role with id [" + roleId + "] is not found");
-//            accessControlService.checkPermission(getCurrentUser(), Resource.ROLE, operation, roleId, role);
+            accessControlService.checkPermission(getCurrentUser(), Resource.ROLE, operation, roleId, role);
             return role;
         } catch (Exception e) {
             throw handleException(e, false);
@@ -500,7 +500,7 @@ public abstract class BaseController {
 
     Role findOrCreateDefaultRole(TenantId tenantId) throws ThingsboardException {
         try {
-            Role defaultRole = roleService.findByRoleTitle(this.CUSTOMER_USER_DEFAULT_TITLE);
+            Role defaultRole = roleService.findRoleByTenantIdAndTitle(tenantId, this.CUSTOMER_USER_DEFAULT_TITLE);
             if (defaultRole == null) {
                 JsonNode defaultRolePermissions = json.readTree(this.CUSTOMER_USER_PERMISSIONS_JSON_STRING);
                 defaultRole = new Role();
@@ -598,8 +598,11 @@ public abstract class BaseController {
                 case QUEUE:
                     checkQueueId(new QueueId(entityId.getId()), operation);
                     return;
+                case ROLE:
+                    checkRoleId(new RoleId(entityId.getId()), operation);
+                    return;
                 default:
-                    throw new IllegalArgumentException("Unsupported entity type: " + entityId.getEntityType());
+                    throw new IllegalArgumentException("Unsupported entity type here: " + entityId.getEntityType());
             }
         } catch (Exception e) {
             throw handleException(e, false);
