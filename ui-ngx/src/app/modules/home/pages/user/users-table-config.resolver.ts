@@ -84,9 +84,11 @@ export class UsersTableConfigResolver implements Resolve<EntityTableConfig<User>
 
     this.config.columns.push(
       new DateEntityTableColumn<User>('createdTime', 'common.created-time', this.datePipe, '150px'),
-      new EntityTableColumn<User>('firstName', 'user.first-name', '33%'),
-      new EntityTableColumn<User>('lastName', 'user.last-name', '33%'),
-      new EntityTableColumn<User>('email', 'user.email', '33%')
+      new EntityTableColumn<User>('firstName', 'user.first-name', '20%'),
+      new EntityTableColumn<User>('lastName', 'user.last-name', '20%'),
+      new EntityTableColumn<User>('phone', 'user.phone', '20%'),
+      new EntityTableColumn<User>('role', 'user.role', '20%'),
+      new EntityTableColumn<User>('email', 'user.email', '20%')
     );
 
     this.config.deleteEnabled = user => user && user.id && user.id.id !== this.authUser.id.id;
