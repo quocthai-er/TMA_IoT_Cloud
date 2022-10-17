@@ -79,12 +79,12 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
       return JSON.stringify(user);
     }));
 
-    const isGtSm = this.breakpointObserver.isMatched(MediaBreakpoints['gt-sm']);
+    const isGtSm = this.breakpointObserver.isMatched(MediaBreakpoints['gt-xl']);
     this.sidenavMode = isGtSm ? 'side' : 'over';
     this.sidenavOpened = isGtSm;
 
     this.breakpointObserver
-      .observe(MediaBreakpoints['gt-sm'])
+      .observe(MediaBreakpoints['gt-xl'])
       .subscribe((state: BreakpointState) => {
           if (state.matches) {
             this.sidenavMode = 'side';

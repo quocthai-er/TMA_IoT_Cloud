@@ -15,9 +15,9 @@
     limitations under the License.
 
 -->
-<a mat-button routerLinkActive="tb-active" [routerLinkActiveOptions]="{paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored'}" routerLink="{{section.path}}">
-  <mat-icon *ngIf="!section.isMdiIcon && section.icon != null"
-  matTooltip="{{section.name | translate}}" class="material-icons">{{section.icon}}</mat-icon>
-  <mat-icon *ngIf="section.isMdiIcon && section.icon != null" [svgIcon]="section.icon"></mat-icon>
-  <span matTooltip="{{section.name | translate}}">{{section.name | translate}}</span>
-</a>
+<ul fxFlex fxLayout="column" fxLayoutAlign="start stretch" class="tb-side-menu">
+  <li *ngFor="let section of menuSections$ | async; trackBy: trackByMenuSection" [ngSwitch]="section.type === 'link'">
+    <tb-menu-link *ngSwitchCase="true" [section]="section"></tb-menu-link>
+    <tb-menu-toggle *ngSwitchCase="false" [section]="section"></tb-menu-toggle>
+  </li>
+</ul>
