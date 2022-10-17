@@ -172,7 +172,7 @@ public class UserServiceImpl extends AbstractEntityService implements UserServic
     }
 
     @Override
-    public UserCredentials requestPasswordReset(TenantId tenantId, String email) {
+    public UserCredentials requestPasswordResetByEmail(TenantId tenantId, String email) {
         log.trace("Executing requestPasswordReset email [{}]", email);
         DataValidator.validateEmail(email);
         User user = findUserByEmail(tenantId, email);
@@ -182,6 +182,21 @@ public class UserServiceImpl extends AbstractEntityService implements UserServic
         UserCredentials userCredentials = userCredentialsDao.findByUserId(tenantId, user.getUuidId());
         if (!userCredentials.isEnabled()) {
             throw new DisabledException(String.format("User credentials not enabled [%s]", email));
+        }
+        userCredentials.setResetToken(RandomStringUtils.randomAlphanumeric(DEFAULT_TOKEN_LENGTH));
+        return saveUserCredentials(tenantId, userCredentials);
+    }
+
+    @Override
+    public UserCredentials requestPasswordResetByPhoneNumber(TenantId tenantId, String phone) {
+        log.trace("Executing requestPasswordReset email [{}]", phone);
+        User user = findUserByPhone(tenantId, phone);
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("Unable to find user by phone [%s]", phone));
+        }
+        UserCredentials userCredentials = userCredentialsDao.findByUserId(tenantId, user.getUuidId());
+        if (!userCredentials.isEnabled()) {
+            throw new DisabledException(String.format("User credentials not enabled [%s]", phone));
         }
         userCredentials.setResetToken(RandomStringUtils.randomAlphanumeric(DEFAULT_TOKEN_LENGTH));
         return saveUserCredentials(tenantId, userCredentials);

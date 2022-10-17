@@ -47,7 +47,9 @@ public interface UserService {
 	
 	UserCredentials activateUserCredentials(TenantId tenantId, String activateToken, String password);
 	
-	UserCredentials requestPasswordReset(TenantId tenantId, String email);
+	UserCredentials requestPasswordResetByEmail(TenantId tenantId, String email);
+
+    UserCredentials requestPasswordResetByPhoneNumber(TenantId tenantId, String email);
 
     UserCredentials requestExpiredPasswordReset(TenantId tenantId, UserCredentialsId userCredentialsId);
 

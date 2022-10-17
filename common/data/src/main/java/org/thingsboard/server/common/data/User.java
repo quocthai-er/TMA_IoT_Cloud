@@ -46,6 +46,8 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
 
     private RoleId roleId;
 
+    private String roleTitle;
+
     public User() {
         super();
     }
@@ -64,9 +66,8 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
         this.lastName = user.getLastName();
         this.phone = user.getPhone();
         this.roleId = user.getRoleId();
-
+        this.roleTitle = user.getRoleTitle();
     }
-
 
     @ApiModelProperty(position = 1, value = "JSON object with the User Id. " +
             "Specify this field to update the device. " +
@@ -167,7 +168,12 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
     @ApiModelProperty(position = 12, value = "JSON object with Role Id")
     public RoleId getRoleId() { return roleId; }
 
+    @ApiModelProperty(position = 13, value = "Title of user role")
+    public String getRoleTitle() { return roleTitle; }
+
     public void setRoleId(RoleId roleId) { this.roleId = roleId;}
+
+    public void setRoleTitle(String roleTitle) { this.roleTitle = roleTitle;}
 
     @Override
     public String toString() {
@@ -194,6 +200,8 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
         builder.append(phone);
         builder.append(", roleId=");
         builder.append(roleId);
+        builder.append(", roleTitle=");
+        builder.append(roleTitle);
         builder.append("]");
         return builder.toString();
     }
