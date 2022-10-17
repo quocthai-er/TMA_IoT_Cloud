@@ -87,7 +87,7 @@ export class UsersTableConfigResolver implements Resolve<EntityTableConfig<User>
       new EntityTableColumn<User>('firstName', 'user.first-name', '20%'),
       new EntityTableColumn<User>('lastName', 'user.last-name', '20%'),
       new EntityTableColumn<User>('phone', 'user.phone', '20%'),
-      new EntityTableColumn<User>('role', 'user.role', '20%'),
+      new EntityTableColumn<User>('role', 'user.roleTitle', '20%'),
       new EntityTableColumn<User>('email', 'user.email', '20%')
     );
 
