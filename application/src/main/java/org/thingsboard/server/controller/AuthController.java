@@ -95,7 +95,7 @@ public class AuthController extends BaseController {
         try {
             SecurityUser securityUser = getCurrentUser();
             User user = userService.findUserById(securityUser.getTenantId(), securityUser.getId());
-            if (user.getAuthority().equals(Authority.CUSTOMER_USER)) {
+            if (user.getRoleId() != null) {
                 Role role = roleService.findRoleById(user.getRoleId());
                 if (role != null) {
                     user.setRoleTitle(role.getTitle());

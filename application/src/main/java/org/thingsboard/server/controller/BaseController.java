@@ -77,6 +77,7 @@ import org.thingsboard.server.common.data.rpc.Rpc;
 import org.thingsboard.server.common.data.rule.RuleChain;
 import org.thingsboard.server.common.data.rule.RuleChainType;
 import org.thingsboard.server.common.data.rule.RuleNode;
+import org.thingsboard.server.common.data.security.Authority;
 import org.thingsboard.server.common.data.widget.WidgetTypeDetails;
 import org.thingsboard.server.common.data.widget.WidgetsBundle;
 import org.thingsboard.server.dao.asset.AssetService;
@@ -521,9 +522,11 @@ public abstract class BaseController {
             validateId(userId, "Incorrect userId " + userId);
             User user = userService.findUserById(getCurrentUser().getTenantId(), userId);
             checkNotNull(user, "User with id [" + userId + "] is not found");
-            Role role = roleService.findRoleById(user.getRoleId());
-            if (role != null) {
-                user.setRoleTitle(role.getTitle());
+            if (user.getRoleId() != null) {
+                Role role = roleService.findRoleById(user.getRoleId());
+                if (role != null) {
+                    user.setRoleTitle(role.getTitle());
+                }
             }
             accessControlService.checkPermission(getCurrentUser(), Resource.USER, operation, userId, user);
             return user;
