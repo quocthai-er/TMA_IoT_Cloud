@@ -51,7 +51,6 @@ public class RoleController extends BaseController{
 
     public static final String ROLE_ID = "roleId";
     public static final String USER_ID = "userId";
-
     private final TbRoleService tbRoleService;
 
     @ApiOperation(value = "Get Role (getRoleById)",
@@ -92,7 +91,8 @@ public class RoleController extends BaseController{
     }
 
     @ApiOperation(value = "Create or update Role (saveRole)",
-            notes =  "Creates or Updates the Role. ")
+            notes =  "Creates or Updates the Role. You may find the example of default role below: \n\n" +
+                    DEFAULT_ROLE_PERMISSIONS_DATA_EXAMPLE)
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/role", method = RequestMethod.POST)
     @ResponseBody

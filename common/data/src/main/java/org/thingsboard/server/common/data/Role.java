@@ -115,7 +115,7 @@ public class Role extends BaseData<RoleId> implements HasTenantId, HasName {
     @JsonIgnore
     private byte[] permissionsBytes;
 
-    @ApiModelProperty(position = 4, value = "List permissions of role", dataType = "com.fasterxml.jackson.databind.JsonNode")
+    @ApiModelProperty(position = 5, value = "List permissions of role", dataType = "com.fasterxml.jackson.databind.JsonNode")
     public JsonNode getPermissions() {
         return getJson(() -> permissions, () -> permissionsBytes);
     }

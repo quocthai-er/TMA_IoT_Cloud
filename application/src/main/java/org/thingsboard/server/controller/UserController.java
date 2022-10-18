@@ -196,7 +196,6 @@ public class UserController extends BaseController {
             Role defaultRole = findOrCreateDefaultRole(user.getTenantId());
             user.setRoleId(defaultRole.getId());
         }
-        log.info("info " + user);
         return tbUserService.save(getTenantId(), getCurrentUser().getCustomerId(), user, sendActivationMail, request, getCurrentUser());
     }
 
