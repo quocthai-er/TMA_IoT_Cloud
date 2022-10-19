@@ -39,6 +39,7 @@ public class CustomerUserPermissions extends AbstractPermissions {
         put(Resource.EDGE, customerEntityPermissionChecker);
         put(Resource.RPC, rpcPermissionChecker);
         put(Resource.DEVICE_PROFILE, deviceProfilePermissionChecker);
+        put(Resource.ROLE, rolePermissionChecker);
     }
 
     private static final PermissionChecker customerAlarmPermissionChecker = new PermissionChecker() {
@@ -163,5 +164,21 @@ public class CustomerUserPermissions extends AbstractPermissions {
             }
             return user.getTenantId().equals(entity.getTenantId());
         }
+    };
+
+    private static final PermissionChecker rolePermissionChecker = new PermissionChecker.GenericPermissionChecker(Operation.READ) {
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public boolean hasPermission(SecurityUser user, Operation operation, EntityId entityId, HasTenantId entity) {
+            if (!super.hasPermission(user, operation, entityId, entity)) {
+                return false;
+            }
+            if (entity.getTenantId() == null || entity.getTenantId().isNullUid()) {
+                return true;
+            }
+            return user.getTenantId().equals(entity.getTenantId());
+        }
+
     };
 }

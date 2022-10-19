@@ -39,7 +39,7 @@ public class Role extends BaseData<RoleId> implements HasTenantId, HasName {
 
     public static final ObjectMapper mapper = new ObjectMapper();
 
-    @ApiModelProperty(position = 5, value = "JSON object with Tenant Id")
+    @ApiModelProperty(position = 7, value = "JSON object with Tenant Id")
     private TenantId tenantId;
 
     @Length(fieldName = "title")
@@ -48,7 +48,7 @@ public class Role extends BaseData<RoleId> implements HasTenantId, HasName {
     @Length(fieldName = "label")
     private String label;
 
-    //@Length(fieldName = "permissions")
+//    @Length(fieldName = "permissions")
     private JsonNode permissions;
 
     public Role() {
@@ -83,6 +83,7 @@ public class Role extends BaseData<RoleId> implements HasTenantId, HasName {
     public RoleId getId() { return super.getId(); }
 
     @ApiModelProperty(position = 2, value = "Timestamp of the role creation, in milliseconds", example = "1609459200000", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Override
     public long getCreatedTime() {
         return super.getCreatedTime();
@@ -97,7 +98,7 @@ public class Role extends BaseData<RoleId> implements HasTenantId, HasName {
         this.title = title;
     }
 
-    @ApiModelProperty(position = 3, value = "Label of the role", example = "MANAGER")
+    @ApiModelProperty(position = 4, value = "Label of the role", example = "MANAGER")
     public String getLabel() {
         return this.label;
     }
@@ -105,7 +106,7 @@ public class Role extends BaseData<RoleId> implements HasTenantId, HasName {
         this.label = label;
     }
 
-    @ApiModelProperty(position = 4, accessMode = ApiModelProperty.AccessMode.READ_ONLY, value = "Duplicates the title of the role, readonly", example = "MANAGER")
+    @ApiModelProperty(position = 5, accessMode = ApiModelProperty.AccessMode.READ_ONLY, value = "Duplicates the title of the role, readonly", example = "MANAGER")
     @Override
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public String getName() {
@@ -115,7 +116,7 @@ public class Role extends BaseData<RoleId> implements HasTenantId, HasName {
     @JsonIgnore
     private byte[] permissionsBytes;
 
-    @ApiModelProperty(position = 5, value = "List permissions of role", dataType = "com.fasterxml.jackson.databind.JsonNode")
+    @ApiModelProperty(position = 7, value = "List permissions of role", dataType = "com.fasterxml.jackson.databind.JsonNode")
     public JsonNode getPermissions() {
         return getJson(() -> permissions, () -> permissionsBytes);
     }

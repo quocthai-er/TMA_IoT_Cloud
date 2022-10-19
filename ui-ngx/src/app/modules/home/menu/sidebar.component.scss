@@ -13,17 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-:host-context(.login-logo) {
-  img.tb-logo-title {
-    width: 280px;
-    height: 100%;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    transform: none;
-
-    &:focus {
-      outline: 0;
-    }
-  }
-}

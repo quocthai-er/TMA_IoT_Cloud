@@ -56,7 +56,7 @@ public class RoleController extends BaseController{
     @ApiOperation(value = "Get Role (getRoleById)",
             notes = "Fetch the User object based on the provided Role Id. " +
                     "Role Contains a set of permissions. ")
-    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/role/{roleId}", method = RequestMethod.GET)
     @ResponseBody
     public Role getRoleById(
