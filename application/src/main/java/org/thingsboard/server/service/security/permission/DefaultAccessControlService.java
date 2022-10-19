@@ -15,14 +15,20 @@
  */
 package org.thingsboard.server.service.security.permission;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.thingsboard.server.common.data.HasTenantId;
+import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.exception.ThingsboardErrorCode;
 import org.thingsboard.server.common.data.exception.ThingsboardException;
 import org.thingsboard.server.common.data.id.EntityId;
+import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.security.Authority;
+import org.thingsboard.server.dao.role.RoleService;
 import org.thingsboard.server.service.security.model.SecurityUser;
 
 import java.util.*;
@@ -38,6 +44,9 @@ public class DefaultAccessControlService implements AccessControlService {
 
     private final Map<Authority, Permissions> authorityPermissions = new HashMap<>();
 
+    @Autowired
+    private RoleService roleService;
+
     public DefaultAccessControlService(
             @Qualifier("sysAdminPermissions") Permissions sysAdminPermissions,
             @Qualifier("tenantAdminPermissions") Permissions tenantAdminPermissions,
@@ -49,6 +58,9 @@ public class DefaultAccessControlService implements AccessControlService {
 
     @Override
     public void checkPermission(SecurityUser user, Resource resource, Operation operation) throws ThingsboardException {
+        if (user.getAuthority() == Authority.CUSTOMER_USER && !canAccess(user, resource.toString(), operation.toString())) {
+            permissionDenied();
+        }
         PermissionChecker permissionChecker = getPermissionChecker(user.getAuthority(), resource);
         if (!permissionChecker.hasPermission(user, operation)) {
             permissionDenied();
@@ -59,6 +71,9 @@ public class DefaultAccessControlService implements AccessControlService {
     @SuppressWarnings("unchecked")
     public <I extends EntityId, T extends HasTenantId> void checkPermission(SecurityUser user, Resource resource,
                                                                                             Operation operation, I entityId, T entity) throws ThingsboardException {
+        if (user.getAuthority() == Authority.CUSTOMER_USER && !canAccess(user, resource.toString(), operation.toString())) {
+            permissionDenied();
+        }
         PermissionChecker permissionChecker = getPermissionChecker(user.getAuthority(), resource);
         if (!permissionChecker.hasPermission(user, operation, entityId, entity)) {
             permissionDenied();
@@ -80,6 +95,40 @@ public class DefaultAccessControlService implements AccessControlService {
     private void permissionDenied() throws ThingsboardException {
         throw new ThingsboardException(YOU_DON_T_HAVE_PERMISSION_TO_PERFORM_THIS_OPERATION,
                 ThingsboardErrorCode.PERMISSION_DENIED);
+    }
+
+    private boolean canAccess(SecurityUser user, String resource, String operation) {
+        boolean hasPermission = false;
+        boolean hasAllPermissions = false;
+        Role role = roleService.findRoleByUserId(user.getId());
+        if (role == null || role.getPermissions().isMissingNode()) {
+            return false;
+        }
+        if (!role.getPermissions().path(resource).isMissingNode()) {
+            ArrayNode singleResourcePermissions = (ArrayNode) role.getPermissions().path(resource);
+            hasPermission = isOperationContained(singleResourcePermissions, operation);
+            log.info("Single:" + singleResourcePermissions.asText());
+        }
+        if (hasPermission == false && !role.getPermissions().path("ALL").isMissingNode()) {
+            ArrayNode allResourcesPermissions = (ArrayNode) role.getPermissions().path("ALL");
+            hasAllPermissions = isOperationContained(allResourcesPermissions, operation);
+            log.info("All: " + allResourcesPermissions.asText());
+        }
+        return hasPermission || hasAllPermissions;
+    }
+
+    private boolean isOperationContained(ArrayNode permissions, String operation) {
+        if (permissions != null && permissions.isArray()) {
+            if (permissions.get(0).asText().equals("ALL")) {
+                return true;
+            }
+            for (JsonNode permission : permissions) {
+                if (permission.asText().equals(operation)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

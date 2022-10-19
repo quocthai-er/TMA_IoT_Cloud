@@ -74,6 +74,9 @@ public class ModelConstants {
     public static final String USER_BY_TENANT_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME = "user_by_tenant_and_search_text";
     public static final String USER_BY_CUSTOMER_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME = "user_by_customer_and_search_text";
 
+    public static final String USER_ROLE_ID_PROPERTY = "role_id";
+
+
     /**
      * Cassandra user_credentials constants.
      */
@@ -142,9 +145,21 @@ public class ModelConstants {
     public static final String CUSTOMER_ADDITIONAL_INFO_PROPERTY = ADDITIONAL_INFO_PROPERTY;
     public static final String CUSTOMER_AVATAR_PROPERTY = "avatar";
 
+    //public static final String CUSTOMER_ROLE_ID_PROPERTY = "role_id";
+
     public static final String CUSTOMER_BY_TENANT_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME = "customer_by_tenant_and_search_text";
     public static final String CUSTOMER_BY_TENANT_AND_TITLE_VIEW_NAME = "customer_by_tenant_and_title";
 
+    /**
+     * Cassandra role constants.
+     */
+    public static final String ROLE_COLUMN_FAMILY_NAME = "tb_role";
+    public static final String ROLE_TILE_PROPERTY = TITLE_PROPERTY;
+
+    public static final String ROLE_LABEL_PROPERTY = "label";
+    public static final String ROLE_PERMISSIONS_PROPERTY = "permissions";
+
+    public static final String ROLE_TENANT_ID_PROPERTY = TENANT_ID_PROPERTY;
 
     /**
      * Cassandra device constants.

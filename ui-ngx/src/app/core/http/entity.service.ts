@@ -696,6 +696,7 @@ export class EntityService {
       case EntityType.USER:
         entityFieldKeys.push(entityFields.name.keyName);
         entityFieldKeys.push(entityFields.email.keyName);
+        entityFieldKeys.push(entityFields.phone.keyName);
         entityFieldKeys.push(entityFields.firstName.keyName);
         entityFieldKeys.push(entityFields.lastName.keyName);
         break;

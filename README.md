@@ -12,6 +12,9 @@ Follow this instruction via this link.
 
 [Contribution Guide](https://thingsboard.io/docs/user-guide/contribution/how-to-contribute/)
 
+Summary: \
+`mvn clean install -DskipTests`
+
 ## Step 2 : Custom Source Code
 
 - If customize backend, only run backend and use **Postman** to test API. \
@@ -20,6 +23,38 @@ Follow this instruction via this link.
 `yarn start`
 
 ---------------------------------
+
+# Custom Only Frontend
+
+## Step 1: Download source code 
+
+## Step 2: Install Windows
+
+[Install Thingsboard Windows](https://thingsboard.io/docs/user-guide/install/windows/)
+
+Read via link, this follow instruction below is simple
+
+### Step 2.1: Install Java 11 (OpenJDK), PostgreSQL JDBC
+
+### Step 2.2: Thingsboard Service Installation
+
+Instead of using thingsboard-windows.zip original by thingsboard, contact the builder to send .zip file
+
+### Step 2.3: Config Thingsboard database
+
+### Step 2.4: Run installation script
+
+Command Prompt Administrator
+
+`C:\Program Files (x86)\thingsboard>install.bat` \
+`C:\Program Files (x86)\thingsboard>upgrade.bat` \
+`C:\Program Files (x86)\thingsboard>install.bat --loadDemo`
+
+### Step 2.5: Start Thingsboard Service
+
+`net start thingsboard`
+
+
 
 ThingsBoard is an open-source IoT platform for data collection, processing, visualization, and device management.
 

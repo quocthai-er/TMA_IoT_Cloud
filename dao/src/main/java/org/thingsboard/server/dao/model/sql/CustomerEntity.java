@@ -22,6 +22,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.id.CustomerId;
+import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.dao.model.BaseSqlEntity;
 import org.thingsboard.server.dao.model.ModelConstants;
@@ -84,6 +85,9 @@ CustomerEntity extends BaseSqlEntity<Customer> implements SearchTextEntity<Custo
     @Column(name = ModelConstants.CUSTOMER_AVATAR_PROPERTY)
     private String avatar;
 
+//    @Column(name = ModelConstants.CUSTOMER_ROLE_ID_PROPERTY)
+//    private UUID roleId;
+
     public CustomerEntity() {
         super();
     }
@@ -108,6 +112,9 @@ CustomerEntity extends BaseSqlEntity<Customer> implements SearchTextEntity<Custo
             this.externalId = customer.getExternalId().getId();
         }
         this.avatar = customer.getAvatar();
+//        if (customer.getRoleId() != null) {
+//            this.roleId = customer.getRoleId().getId();
+//        }
     }
 
     @Override
@@ -138,7 +145,10 @@ CustomerEntity extends BaseSqlEntity<Customer> implements SearchTextEntity<Custo
         if (externalId != null) {
             customer.setExternalId(new CustomerId(externalId));
         }
-        customer.setAvatar(avatar);
+//        customer.setAvatar(avatar);
+//        if (roleId != null) {
+//            customer.setRoleId(new RoleId(roleId));
+//        }
         return customer;
     }
 

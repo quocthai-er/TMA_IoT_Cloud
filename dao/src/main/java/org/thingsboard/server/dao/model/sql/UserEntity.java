@@ -22,6 +22,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.thingsboard.server.common.data.User;
 import org.thingsboard.server.common.data.id.CustomerId;
+import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.id.UserId;
 import org.thingsboard.server.common.data.security.Authority;
@@ -76,6 +77,9 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
     @Column(name = ModelConstants.USER_ADDITIONAL_INFO_PROPERTY)
     private JsonNode additionalInfo;
 
+    @Column(name = ModelConstants.USER_ROLE_ID_PROPERTY)
+    private UUID roleId;
+
     public UserEntity() {
     }
 
@@ -96,6 +100,9 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.additionalInfo = user.getAdditionalInfo();
+        if (user.getRoleId() != null) {
+            this.roleId = user.getRoleId().getId();
+        }
     }
 
     @Override
@@ -124,6 +131,9 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setAdditionalInfo(additionalInfo);
+        if (roleId != null) {
+            user.setRoleId(new RoleId(roleId));
+        }
         return user;
     }
 

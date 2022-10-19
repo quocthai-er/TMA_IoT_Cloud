@@ -15,19 +15,12 @@
  */
 package org.thingsboard.server.service.entitiy;
 
-import org.thingsboard.server.common.data.Device;
-import org.thingsboard.server.common.data.HasName;
-import org.thingsboard.server.common.data.Tenant;
-import org.thingsboard.server.common.data.User;
+import org.thingsboard.server.common.data.*;
 import org.thingsboard.server.common.data.alarm.Alarm;
 import org.thingsboard.server.common.data.audit.ActionType;
 import org.thingsboard.server.common.data.edge.Edge;
 import org.thingsboard.server.common.data.edge.EdgeEventActionType;
-import org.thingsboard.server.common.data.id.CustomerId;
-import org.thingsboard.server.common.data.id.DeviceId;
-import org.thingsboard.server.common.data.id.EdgeId;
-import org.thingsboard.server.common.data.id.EntityId;
-import org.thingsboard.server.common.data.id.TenantId;
+import org.thingsboard.server.common.data.id.*;
 import org.thingsboard.server.common.data.plugin.ComponentLifecycleEvent;
 import org.thingsboard.server.common.data.relation.EntityRelation;
 import org.thingsboard.server.common.data.rule.RuleChain;
@@ -84,6 +77,10 @@ public interface TbNotificationEntityService {
     void notifyCreateOrUpdateTenant(Tenant tenant, ComponentLifecycleEvent event);
 
     void notifyDeleteTenant(Tenant tenant);
+
+    void notifyCreateOrUpdateRole(Role role, ActionType actionType);
+
+    void notifyDeleteRole(Role role);
 
     void notifyCreateOrUpdateDevice(TenantId tenantId, DeviceId deviceId, CustomerId customerId, Device device,
                                     Device oldDevice, ActionType actionType, User user, Object... additionalInfo);

@@ -145,6 +145,7 @@ CREATE TABLE IF NOT EXISTS customer (
     tenant_id uuid,
     title varchar(255),
     zip varchar(255),
+    avatar varchar(1000000),
     external_id uuid,
     CONSTRAINT customer_external_id_unq_key UNIQUE (tenant_id, external_id)
 );
@@ -354,6 +355,16 @@ CREATE TABLE IF NOT EXISTS relation (
 -- CREATE TABLE dashboard_relations PARTITION OF relation FOR VALUES IN ('DASHBOARD');
 -- CREATE TABLE rule_relations PARTITION OF relation FOR VALUES IN ('RULE_CHAIN', 'RULE_NODE');
 
+CREATE TABLE IF NOT EXISTS tb_role (
+    id uuid NOT NULL CONSTRAINT role_pkey PRIMARY KEY,
+    title varchar(255) NOT NULL,
+    label varchar(255),
+    permissions varchar,
+    tenant_id uuid,
+    created_time bigint,
+    search_text varchar(255)
+);
+
 CREATE TABLE IF NOT EXISTS tb_user (
     id uuid NOT NULL CONSTRAINT tb_user_pkey PRIMARY KEY,
     created_time bigint NOT NULL,
@@ -361,10 +372,13 @@ CREATE TABLE IF NOT EXISTS tb_user (
     authority varchar(255),
     customer_id uuid,
     email varchar(255) UNIQUE,
+    phone varchar(255) UNIQUE,
     first_name varchar(255),
     last_name varchar(255),
     search_text varchar(255),
-    tenant_id uuid
+    tenant_id uuid,
+    role_id uuid,
+    CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES tb_role (id)
 );
 
 CREATE TABLE IF NOT EXISTS tenant_profile (

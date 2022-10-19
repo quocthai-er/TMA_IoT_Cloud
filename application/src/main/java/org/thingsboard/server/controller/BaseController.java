@@ -15,6 +15,7 @@
  */
 package org.thingsboard.server.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.util.concurrent.FutureCallback;
@@ -53,6 +54,7 @@ import org.thingsboard.server.common.data.Tenant;
 import org.thingsboard.server.common.data.TenantInfo;
 import org.thingsboard.server.common.data.TenantProfile;
 import org.thingsboard.server.common.data.User;
+import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.alarm.Alarm;
 import org.thingsboard.server.common.data.alarm.AlarmInfo;
 import org.thingsboard.server.common.data.asset.Asset;
@@ -63,27 +65,7 @@ import org.thingsboard.server.common.data.edge.EdgeEventType;
 import org.thingsboard.server.common.data.edge.EdgeInfo;
 import org.thingsboard.server.common.data.exception.ThingsboardErrorCode;
 import org.thingsboard.server.common.data.exception.ThingsboardException;
-import org.thingsboard.server.common.data.id.AlarmId;
-import org.thingsboard.server.common.data.id.AssetId;
-import org.thingsboard.server.common.data.id.CustomerId;
-import org.thingsboard.server.common.data.id.DashboardId;
-import org.thingsboard.server.common.data.id.DeviceId;
-import org.thingsboard.server.common.data.id.DeviceProfileId;
-import org.thingsboard.server.common.data.id.EdgeId;
-import org.thingsboard.server.common.data.id.EntityId;
-import org.thingsboard.server.common.data.id.EntityIdFactory;
-import org.thingsboard.server.common.data.id.EntityViewId;
-import org.thingsboard.server.common.data.id.OtaPackageId;
-import org.thingsboard.server.common.data.id.QueueId;
-import org.thingsboard.server.common.data.id.RpcId;
-import org.thingsboard.server.common.data.id.RuleChainId;
-import org.thingsboard.server.common.data.id.RuleNodeId;
-import org.thingsboard.server.common.data.id.TbResourceId;
-import org.thingsboard.server.common.data.id.TenantId;
-import org.thingsboard.server.common.data.id.TenantProfileId;
-import org.thingsboard.server.common.data.id.UserId;
-import org.thingsboard.server.common.data.id.WidgetTypeId;
-import org.thingsboard.server.common.data.id.WidgetsBundleId;
+import org.thingsboard.server.common.data.id.*;
 import org.thingsboard.server.common.data.page.PageDataIterableByTenantIdEntityId;
 import org.thingsboard.server.common.data.page.PageLink;
 import org.thingsboard.server.common.data.page.SortOrder;
@@ -95,6 +77,7 @@ import org.thingsboard.server.common.data.rpc.Rpc;
 import org.thingsboard.server.common.data.rule.RuleChain;
 import org.thingsboard.server.common.data.rule.RuleChainType;
 import org.thingsboard.server.common.data.rule.RuleNode;
+import org.thingsboard.server.common.data.security.Authority;
 import org.thingsboard.server.common.data.widget.WidgetTypeDetails;
 import org.thingsboard.server.common.data.widget.WidgetsBundle;
 import org.thingsboard.server.dao.asset.AssetService;
@@ -116,6 +99,7 @@ import org.thingsboard.server.dao.oauth2.OAuth2Service;
 import org.thingsboard.server.dao.ota.OtaPackageService;
 import org.thingsboard.server.dao.queue.QueueService;
 import org.thingsboard.server.dao.relation.RelationService;
+import org.thingsboard.server.dao.role.RoleService;
 import org.thingsboard.server.dao.rpc.RpcService;
 import org.thingsboard.server.dao.rule.RuleChainService;
 import org.thingsboard.server.dao.tenant.TbTenantProfileCache;
@@ -167,6 +151,10 @@ public abstract class BaseController {
 
     private static final ObjectMapper json = new ObjectMapper();
 
+    public static final String CUSTOMER_USER_DEFAULT_TITLE = "DEFAULT";
+    public static final String CUSTOMER_USER_PERMISSIONS_JSON_STRING = "{\"ALL\":[\"READ\",\"RPC_CALL\",\"READ_CREDENTIALS\",\"READ_ATTRIBUTES\",\"READ_TELEMETRY\",\"WRITE_ATTRIBUTES\",\"WRITE_TELEMETRY\",\"UNASSIGN_FROM_CUSTOMER\",\"ASSIGN_TO_CUSTOMER\",\"CREATE\",\"READ\",\"WRITE\",\"DELETE\"],\"DEVICE\":[\"ALL\"],\"ASSET\":[\"ALL\"]}";
+
+
     @Autowired
     private ThingsboardErrorResponseHandler errorResponseHandler;
 
@@ -181,6 +169,8 @@ public abstract class BaseController {
 
     @Autowired
     protected CustomerService customerService;
+    @Autowired
+    protected RoleService roleService;
 
     @Autowired
     protected UserService userService;
@@ -497,11 +487,47 @@ public abstract class BaseController {
         }
     }
 
+    Role checkRoleId(RoleId roleId, Operation operation) throws ThingsboardException {
+        try {
+//            validateId(roleId, "Incorrect roleId " + roleId);
+            Role role = roleService.findRoleById(roleId);
+            checkNotNull(role, "Role with id [" + roleId + "] is not found");
+            accessControlService.checkPermission(getCurrentUser(), Resource.ROLE, operation, roleId, role);
+            return role;
+        } catch (Exception e) {
+            throw handleException(e, false);
+        }
+    }
+
+    Role findOrCreateDefaultRole(TenantId tenantId) throws ThingsboardException {
+        try {
+            Role defaultRole = roleService.findRoleByTenantIdAndTitle(tenantId, this.CUSTOMER_USER_DEFAULT_TITLE);
+            if (defaultRole == null) {
+                JsonNode defaultRolePermissions = json.readTree(this.CUSTOMER_USER_PERMISSIONS_JSON_STRING);
+                defaultRole = new Role();
+                defaultRole.setTenantId(tenantId);
+                defaultRole.setTitle(this.CUSTOMER_USER_DEFAULT_TITLE);
+                defaultRole.setLabel(this.CUSTOMER_USER_DEFAULT_TITLE);
+                defaultRole.setPermissions(defaultRolePermissions);
+                defaultRole = roleService.saveRole(defaultRole);
+            }
+            return defaultRole;
+        } catch (Exception e) {
+            throw handleException(e, false);
+        }
+    }
+
     User checkUserId(UserId userId, Operation operation) throws ThingsboardException {
         try {
             validateId(userId, "Incorrect userId " + userId);
             User user = userService.findUserById(getCurrentUser().getTenantId(), userId);
             checkNotNull(user, "User with id [" + userId + "] is not found");
+            if (user.getRoleId() != null) {
+                Role role = roleService.findRoleById(user.getRoleId());
+                if (role != null) {
+                    user.setRoleTitle(role.getTitle());
+                }
+            }
             accessControlService.checkPermission(getCurrentUser(), Resource.USER, operation, userId, user);
             return user;
         } catch (Exception e) {
@@ -579,8 +605,11 @@ public abstract class BaseController {
                 case QUEUE:
                     checkQueueId(new QueueId(entityId.getId()), operation);
                     return;
+                case ROLE:
+                    checkRoleId(new RoleId(entityId.getId()), operation);
+                    return;
                 default:
-                    throw new IllegalArgumentException("Unsupported entity type: " + entityId.getEntityType());
+                    throw new IllegalArgumentException("Unsupported entity type here: " + entityId.getEntityType());
             }
         } catch (Exception e) {
             throw handleException(e, false);

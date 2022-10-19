@@ -16,10 +16,7 @@
 package org.thingsboard.server.service.security.permission;
 
 import org.springframework.stereotype.Component;
-import org.thingsboard.server.common.data.DashboardInfo;
-import org.thingsboard.server.common.data.HasCustomerId;
-import org.thingsboard.server.common.data.HasTenantId;
-import org.thingsboard.server.common.data.User;
+import org.thingsboard.server.common.data.*;
 import org.thingsboard.server.common.data.id.DashboardId;
 import org.thingsboard.server.common.data.id.EntityId;
 import org.thingsboard.server.common.data.id.UserId;
@@ -28,7 +25,6 @@ import org.thingsboard.server.service.security.model.SecurityUser;
 
 @Component(value = "customerUserPermissions")
 public class CustomerUserPermissions extends AbstractPermissions {
-
     public CustomerUserPermissions() {
         super();
         put(Resource.ALARM, customerAlarmPermissionChecker);
@@ -43,6 +39,7 @@ public class CustomerUserPermissions extends AbstractPermissions {
         put(Resource.EDGE, customerEntityPermissionChecker);
         put(Resource.RPC, rpcPermissionChecker);
         put(Resource.DEVICE_PROFILE, deviceProfilePermissionChecker);
+        put(Resource.ROLE, rolePermissionChecker);
     }
 
     private static final PermissionChecker customerAlarmPermissionChecker = new PermissionChecker() {
@@ -61,7 +58,7 @@ public class CustomerUserPermissions extends AbstractPermissions {
     private static final PermissionChecker customerEntityPermissionChecker =
             new PermissionChecker.GenericPermissionChecker(Operation.READ, Operation.READ_CREDENTIALS,
                     Operation.READ_ATTRIBUTES, Operation.READ_TELEMETRY, Operation.RPC_CALL, Operation.CLAIM_DEVICES,
-                    Operation.WRITE, Operation.WRITE_ATTRIBUTES, Operation.WRITE_TELEMETRY) {
+                    Operation.WRITE, Operation.WRITE_ATTRIBUTES, Operation.WRITE_TELEMETRY, Operation.DELETE) {
 
                 @Override
                 @SuppressWarnings("unchecked")
@@ -167,5 +164,21 @@ public class CustomerUserPermissions extends AbstractPermissions {
             }
             return user.getTenantId().equals(entity.getTenantId());
         }
+    };
+
+    private static final PermissionChecker rolePermissionChecker = new PermissionChecker.GenericPermissionChecker(Operation.READ) {
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public boolean hasPermission(SecurityUser user, Operation operation, EntityId entityId, HasTenantId entity) {
+            if (!super.hasPermission(user, operation, entityId, entity)) {
+                return false;
+            }
+            if (entity.getTenantId() == null || entity.getTenantId().isNullUid()) {
+                return true;
+            }
+            return user.getTenantId().equals(entity.getTenantId());
+        }
+
     };
 }

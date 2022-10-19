@@ -36,12 +36,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.thingsboard.common.util.JacksonUtil;
 import org.thingsboard.rule.engine.api.MailService;
+import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.User;
 import org.thingsboard.server.common.data.audit.ActionType;
 import org.thingsboard.server.common.data.edge.EdgeEventActionType;
 import org.thingsboard.server.common.data.exception.ThingsboardErrorCode;
 import org.thingsboard.server.common.data.exception.ThingsboardException;
 import org.thingsboard.server.common.data.id.TenantId;
+import org.thingsboard.server.common.data.security.Authority;
 import org.thingsboard.server.common.data.security.UserCredentials;
 import org.thingsboard.server.common.data.security.event.UserAuthDataChangedEvent;
 import org.thingsboard.server.common.data.security.model.JwtToken;
@@ -92,7 +94,14 @@ public class AuthController extends BaseController {
     User getUser() throws ThingsboardException {
         try {
             SecurityUser securityUser = getCurrentUser();
-            return userService.findUserById(securityUser.getTenantId(), securityUser.getId());
+            User user = userService.findUserById(securityUser.getTenantId(), securityUser.getId());
+            if (user.getRoleId() != null) {
+                Role role = roleService.findRoleById(user.getRoleId());
+                if (role != null) {
+                    user.setRoleTitle(role.getTitle());
+                }
+            }
+            return user;
         } catch (Exception e) {
             throw handleException(e);
         }
@@ -183,18 +192,36 @@ public class AuthController extends BaseController {
         return new ResponseEntity<>(headers, responseStatus);
     }
 
-    @ApiOperation(value = "Request reset password email (requestResetPasswordByEmail)",
+    @ApiOperation(value = "Request reset password by phone number (resetPasswordByPhoneNumber)",
+            notes = "Request to get the reset password token if the user with specified phone number is present in the database. " +
+                    "Always return '200 OK' status for security purposes.")
+    @RequestMapping(value = "/noauth/resetPasswordByPhoneNumber", method = RequestMethod.POST, produces = "text/plain")
+    @ResponseStatus(value = HttpStatus.OK)
+    public String resetPasswordByPhoneNumber(
+            @ApiParam(value = "The JSON object representing the reset password phone number request.")
+            @RequestParam (value = "phone") String phone,
+            HttpServletRequest request) throws ThingsboardException {
+        try {
+            UserCredentials userCredentials = userService.requestPasswordResetByPhoneNumber(TenantId.SYS_TENANT_ID, phone);
+            return userCredentials.getResetToken();
+        } catch (Exception e) {
+            //log.warn("Error occurred: {}", e.getMessage());
+            throw handleException(e);
+        }
+    }
+
+    @ApiOperation(value = "Request reset password by email (resetPasswordByEmail)",
             notes = "Request to send the reset password email if the user with specified email address is present in the database. " +
                     "Always return '200 OK' status for security purposes.")
     @RequestMapping(value = "/noauth/resetPasswordByEmail", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public void requestResetPasswordByEmail(
+    public void resetPasswordByEmail(
             @ApiParam(value = "The JSON object representing the reset password email request.")
             @RequestBody ResetPasswordEmailRequest resetPasswordByEmailRequest,
             HttpServletRequest request) throws ThingsboardException {
         try {
             String email = resetPasswordByEmailRequest.getEmail();
-            UserCredentials userCredentials = userService.requestPasswordReset(TenantId.SYS_TENANT_ID, email);
+            UserCredentials userCredentials = userService.requestPasswordResetByEmail(TenantId.SYS_TENANT_ID, email);
             User user = userService.findUserById(TenantId.SYS_TENANT_ID, userCredentials.getUserId());
             String baseUrl = systemSecurityService.getBaseUrl(user.getTenantId(), user.getCustomerId(), request);
             String resetUrl = String.format("%s/api/noauth/resetPassword?resetToken=%s", baseUrl,
@@ -314,10 +341,10 @@ public class AuthController extends BaseController {
                 User user = userService.findUserById(TenantId.SYS_TENANT_ID, userCredentials.getUserId());
                 UserPrincipal principal = new UserPrincipal(UserPrincipal.Type.USER_NAME, user.getPhone());
                 SecurityUser securityUser = new SecurityUser(user, userCredentials.isEnabled(), principal);
-                String baseUrl = systemSecurityService.getBaseUrl(user.getTenantId(), user.getCustomerId(), request);
-                String loginUrl = String.format("%s/login", baseUrl);
-                String email = user.getEmail();
-                mailService.sendPasswordWasResetEmail(loginUrl, email);
+                //String baseUrl = systemSecurityService.getBaseUrl(user.getTenantId(), user.getCustomerId(), request);
+                //String loginUrl = String.format("%s/login", baseUrl);
+                //String email = user.getEmail();
+                //mailService.sendPasswordWasResetEmail(loginUrl, email);
 
                 eventPublisher.publishEvent(new UserAuthDataChangedEvent(securityUser.getId()));
                 JwtToken accessToken = tokenFactory.createAccessJwtToken(securityUser);

@@ -26,6 +26,7 @@ import lombok.Setter;
 import org.apache.commons.io.IOUtils;
 import org.springframework.util.Base64Utils;
 import org.thingsboard.server.common.data.id.CustomerId;
+import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.validation.Length;
 import org.thingsboard.server.common.data.validation.NoXss;
@@ -48,6 +49,10 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, E
     @Length(fieldName = "avatar", max = 1000000)
     @ApiModelProperty(position = 15, value = "Either URL or Base64 data of the avatar")
     private String avatar;
+
+    //@Length(fieldName = "role_id", max = 1000000)
+//    @ApiModelProperty(position = 16, value = "JSON object with Role Id")
+//    private RoleId roleId;
     @Getter @Setter
     private CustomerId externalId;
 
@@ -65,6 +70,7 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, E
         this.title = customer.getTitle();
         this.externalId = customer.getExternalId();
         this.avatar = customer.getAvatar();
+//        this.roleId = customer.getRoleId();
     }
 
     public TenantId getTenantId() {
@@ -82,6 +88,10 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, E
     public void setTitle(String title) {
         this.title = title;
     }
+
+//    public RoleId getRoleId() { return roleId; }
+
+//    public void setRoleId(RoleId roleId) { this.roleId = roleId;}
 
     public String getAvatar() {
         if (avatar == null || avatar.length() == 0) {
@@ -106,7 +116,6 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, E
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-
 
     @ApiModelProperty(position = 1, value = "JSON object with the customer Id. " +
             "Specify this field to update the customer. " +
@@ -232,7 +241,10 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, E
         builder.append(createdTime);
         builder.append(", id=");
         builder.append(id);
+//        builder.append(", roleId=");
+//        builder.append(roleId);
         builder.append("]");
         return builder.toString();
     }
+
 }

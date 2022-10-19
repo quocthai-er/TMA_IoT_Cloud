@@ -31,6 +31,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.thingsboard.server.common.data.id.CustomerId;
+import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.id.UserId;
 import org.thingsboard.server.common.data.security.Authority;
@@ -60,7 +61,7 @@ public class JwtTokenFactory {
     private static final String IS_PUBLIC = "isPublic";
     private static final String TENANT_ID = "tenantId";
     private static final String CUSTOMER_ID = "customerId";
-
+    private static final String ROLE_ID = "roleId";
     private final JwtSettings settings;
 
     @Autowired
@@ -90,6 +91,9 @@ public class JwtTokenFactory {
         if (securityUser.getCustomerId() != null) {
             jwtBuilder.claim(CUSTOMER_ID, securityUser.getCustomerId().getId().toString());
         }
+        if (securityUser.getRoleId() != null) {
+            jwtBuilder.claim(ROLE_ID, securityUser.getRoleId().getId().toString());
+        }
 
         String token = jwtBuilder.compact();
 
@@ -118,6 +122,10 @@ public class JwtTokenFactory {
         String customerId = claims.get(CUSTOMER_ID, String.class);
         if (customerId != null) {
             securityUser.setCustomerId(new CustomerId(UUID.fromString(customerId)));
+        }
+        String roleId = claims.get(ROLE_ID, String.class);
+        if (roleId != null) {
+            securityUser.setRoleId(new RoleId((UUID.fromString(roleId))));
         }
 
         UserPrincipal principal;

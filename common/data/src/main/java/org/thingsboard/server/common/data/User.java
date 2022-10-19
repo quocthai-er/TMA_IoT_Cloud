@@ -21,10 +21,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
-import org.thingsboard.server.common.data.id.CustomerId;
-import org.thingsboard.server.common.data.id.EntityId;
-import org.thingsboard.server.common.data.id.TenantId;
-import org.thingsboard.server.common.data.id.UserId;
+import org.thingsboard.server.common.data.id.*;
 import org.thingsboard.server.common.data.security.Authority;
 import org.thingsboard.server.common.data.validation.Length;
 import org.thingsboard.server.common.data.validation.NoXss;
@@ -47,6 +44,10 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
     @Length(fieldName = "last name")
     private String lastName;
 
+    private RoleId roleId;
+
+    private String roleTitle;
+
     public User() {
         super();
     }
@@ -64,8 +65,9 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.phone = user.getPhone();
+        this.roleId = user.getRoleId();
+        this.roleTitle = user.getRoleTitle();
     }
-
 
     @ApiModelProperty(position = 1, value = "JSON object with the User Id. " +
             "Specify this field to update the device. " +
@@ -163,6 +165,16 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
         return getPhone();
     }
 
+    @ApiModelProperty(position = 12, value = "JSON object with Role Id")
+    public RoleId getRoleId() { return roleId; }
+
+    @ApiModelProperty(position = 13, value = "Title of user role")
+    public String getRoleTitle() { return roleTitle; }
+
+    public void setRoleId(RoleId roleId) { this.roleId = roleId;}
+
+    public void setRoleTitle(String roleTitle) { this.roleTitle = roleTitle;}
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -186,6 +198,10 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
         builder.append(id);
         builder.append(", phone=");
         builder.append(phone);
+        builder.append(", roleId=");
+        builder.append(roleId);
+        builder.append(", roleTitle=");
+        builder.append(roleTitle);
         builder.append("]");
         return builder.toString();
     }

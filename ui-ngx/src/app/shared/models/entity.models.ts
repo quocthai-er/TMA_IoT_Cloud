@@ -111,6 +111,11 @@ export const entityFields: {[fieldName: string]: EntityField} = {
     name: 'entity-field.last-name',
     value: 'lastName'
   },
+  phone: {
+    keyName: 'phone',
+    name: 'entity-field.phone',
+    value: 'phone'
+  },
   email: {
     keyName: 'email',
     name: 'entity-field.email',
@@ -150,11 +155,6 @@ export const entityFields: {[fieldName: string]: EntityField} = {
     keyName: 'zip',
     name: 'entity-field.zip',
     value: 'zip'
-  },
-  phone: {
-    keyName: 'phone',
-    name: 'entity-field.phone',
-    value: 'phone'
   },
   label: {
     keyName: 'label',
