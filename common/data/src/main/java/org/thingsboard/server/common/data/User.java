@@ -178,6 +178,7 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
     @ApiModelProperty(position = 12, value = "JSON object with Role Id")
     public RoleId getRoleId() { return roleId; }
 
+    @ApiModelProperty(position = 13, value = "Title of user role")
     public String getRoleTitle() { return roleTitle; }
 
     public void setRoleId(RoleId roleId) { this.roleId = roleId;}
