@@ -1375,6 +1375,42 @@ public class ControllerConstants {
             "      }\n" +
             "   }\n" +
             "}" + MARKDOWN_CODE_BLOCK_END;
+
+    protected static final String DEFAULT_ROLE_PERMISSIONS_DATA_EXAMPLE = MARKDOWN_CODE_BLOCK_START + "{\n" +
+            "  \"id\": {\n" +
+            "    \"id\": \"784f394c-42b6-435a-983c-b7beff2784f9\",\n" +
+            "    \"entityType\": \"ROLE\"\n" +
+            "  },\n" +
+            "  \"label\": \"MANAGER\",\n" +
+            "  \"title\": \"MANAGER\",\n" +
+            "  \"permissions\": {\n" +
+            "    \"ALL\": [\n" +
+            "      \"READ\",\n" +
+            "      \"RPC_CALL\",\n" +
+            "      \"READ_CREDENTIALS\",\n" +
+            "      \"READ_ATTRIBUTES\",\n" +
+            "      \"READ_TELEMETRY\",\n" +
+            "      \"WRITE_ATTRIBUTES\",\n" +
+            "      \"WRITE_TELEMETRY\",\n" +
+            "      \"UNASSIGN_FROM_CUSTOMER\",\n" +
+            "      \"ASSIGN_TO_CUSTOMER\",\n" +
+            "      \"CREATE\",\n" +
+            "      \"READ\",\n" +
+            "      \"WRITE\",\n" +
+            "      \"DELETE\"\n" +
+            "    ],\n" +
+            "    \"DEVICE\": [\n" +
+            "      \"ALL\"\n" +
+            "    ],\n" +
+            "    \"ASSET\": [\n" +
+            "      \"ALL\"\n" +
+            "    ]\n" +
+            "  },\n" +
+            "  \"tenantId\": {\n" +
+            "    \"id\": \"784f394c-42b6-435a-983c-b7beff2784f9\",\n" +
+            "    \"entityType\": \"TENANT\"\n" +
+            "  }\n" +
+            "}" + MARKDOWN_CODE_BLOCK_END;
     protected static final String DEVICE_PROFILE_DATA_DEFINITION = NEW_LINE + "# Device profile data definition" + NEW_LINE +
             "Device profile data object contains alarm rules configuration, device provision strategy and transport type configuration for device connectivity. Let's review some examples. " +
             "First one is the default device profile data configuration and second one - the custom one. " +

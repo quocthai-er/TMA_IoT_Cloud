@@ -16,9 +16,6 @@
 
 --Update Thingsboard customized database
 
-ALTER TABLE customer ADD COLUMN IF NOT EXISTS avatar varchar(1000000);
-ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS phone varchar(255) COLLATE pg_catalog."default";
-
 --start new
 CREATE TABLE IF NOT EXISTS tb_role (
     id uuid NOT NULL CONSTRAINT role_pkey PRIMARY KEY,
@@ -29,14 +26,12 @@ CREATE TABLE IF NOT EXISTS tb_role (
     search_text varchar(255)
 );
 
-ALTER TABLE customer
-    DROP COLUMN IF EXISTS role_id;
-
-ALTER TABLE tb_user
-    ADD COLUMN IF NOT EXISTS role_id uuid;
-
-ALTER TABLE tb_role
-    ADD COLUMN IF NOT EXISTS label varchar(255);
+ALTER TABLE customer DROP COLUMN IF EXISTS role_id;
+ALTER TABLE customer DROP COLUMN IF EXISTS avatar;
+ALTER TABLE tb_role ADD COLUMN IF NOT EXISTS label varchar(255);
+ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS role_id uuid;
+ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS avatar varchar(1000000);
+ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS phone varchar(255) COLLATE pg_catalog."default";
 --end new
 
 DO

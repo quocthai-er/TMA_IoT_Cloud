@@ -26,7 +26,6 @@ import lombok.Setter;
 import org.apache.commons.io.IOUtils;
 import org.springframework.util.Base64Utils;
 import org.thingsboard.server.common.data.id.CustomerId;
-import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.validation.Length;
 import org.thingsboard.server.common.data.validation.NoXss;
@@ -46,9 +45,9 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, E
     @ApiModelProperty(position = 5, required = true, value = "JSON object with Tenant Id")
     private TenantId tenantId;
 
-    @Length(fieldName = "avatar", max = 1000000)
-    @ApiModelProperty(position = 15, value = "Either URL or Base64 data of the avatar")
-    private String avatar;
+//    @Length(fieldName = "avatar", max = 1000000)
+//    @ApiModelProperty(position = 15, value = "Either URL or Base64 data of the avatar")
+//    private String avatar;
 
     //@Length(fieldName = "role_id", max = 1000000)
 //    @ApiModelProperty(position = 16, value = "JSON object with Role Id")
@@ -69,8 +68,7 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, E
         this.tenantId = customer.getTenantId();
         this.title = customer.getTitle();
         this.externalId = customer.getExternalId();
-        this.avatar = customer.getAvatar();
-//        this.roleId = customer.getRoleId();
+//        this.avatar = customer.getAvatar();
     }
 
     public TenantId getTenantId() {
@@ -89,33 +87,27 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, E
         this.title = title;
     }
 
-//    public RoleId getRoleId() { return roleId; }
+//    public String getAvatar() {
+//        if (avatar == null || avatar.length() == 0) {
+//            return getDefaultAvatar();
+//        }
+//        return avatar;
+//    }
 
-//    public void setRoleId(RoleId roleId) { this.roleId = roleId;}
-
-    public String getAvatar() {
-        if (avatar == null || avatar.length() == 0) {
-            return getDefaultAvatar();
-        }
-        return avatar;
-    }
-
-    private String getDefaultAvatar() {
-        String defaultAvatar = "";
-        try {
-            //Get default avatar file from dao/src/main/resources/img/avatar.png
-            InputStream is = this.getClass().getClassLoader().getResourceAsStream("img/avatar.png");
-            byte[] avatarBytes = IOUtils.toByteArray(is);
-            //Convert avatar data to base 64 string..
-            defaultAvatar = "data:image/png;base64,".concat(Base64Utils.encodeToString(avatarBytes));
-        } catch (NullPointerException | IOException e) {
-            throw new RuntimeException("Default avatar is not found or its size is too large");
-        }
-        return defaultAvatar;
-    }
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
+//    private String getDefaultAvatar() {
+//        String defaultAvatar = "";
+//        try {
+//            InputStream is = this.getClass().getClassLoader().getResourceAsStream("img/avatar.png");
+//            byte[] avatarBytes = IOUtils.toByteArray(is);
+//            defaultAvatar = "data:image/png;base64,".concat(Base64Utils.encodeToString(avatarBytes));
+//        } catch (NullPointerException | IOException e) {
+//            throw new RuntimeException("Default avatar is not found or its size is too large");
+//        }
+//        return defaultAvatar;
+//    }
+//    public void setAvatar(String avatar) {
+//        this.avatar = avatar;
+//    }
 
     @ApiModelProperty(position = 1, value = "JSON object with the customer Id. " +
             "Specify this field to update the customer. " +
@@ -241,8 +233,6 @@ public class Customer extends ContactBased<CustomerId> implements HasTenantId, E
         builder.append(createdTime);
         builder.append(", id=");
         builder.append(id);
-//        builder.append(", roleId=");
-//        builder.append(roleId);
         builder.append("]");
         return builder.toString();
     }

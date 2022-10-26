@@ -21,10 +21,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.io.IOUtils;
+import org.springframework.util.Base64Utils;
 import org.thingsboard.server.common.data.id.*;
 import org.thingsboard.server.common.data.security.Authority;
 import org.thingsboard.server.common.data.validation.Length;
 import org.thingsboard.server.common.data.validation.NoXss;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 @ApiModel
 @EqualsAndHashCode(callSuper = true)
@@ -45,8 +50,10 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
     private String lastName;
 
     private RoleId roleId;
-
+    @ApiModelProperty(position = 13, value = "Title of user role", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
     private String roleTitle;
+    @Length(fieldName = "avatar", max = 1000000)
+    private String avatar;
 
     public User() {
         super();
@@ -67,6 +74,7 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
         this.phone = user.getPhone();
         this.roleId = user.getRoleId();
         this.roleTitle = user.getRoleTitle();
+        this.avatar = user.getAvatar();
     }
 
     @ApiModelProperty(position = 1, value = "JSON object with the User Id. " +
@@ -168,12 +176,33 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
     @ApiModelProperty(position = 12, value = "JSON object with Role Id")
     public RoleId getRoleId() { return roleId; }
 
-    @ApiModelProperty(position = 13, value = "Title of user role")
     public String getRoleTitle() { return roleTitle; }
 
     public void setRoleId(RoleId roleId) { this.roleId = roleId;}
 
+    private String getDefaultAvatar() {
+        String defaultAvatar = "";
+        try {
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream("img/avatar.png");
+            byte[] avatarBytes = IOUtils.toByteArray(is);
+            defaultAvatar = "data:image/png;base64,".concat(Base64Utils.encodeToString(avatarBytes));
+        } catch (NullPointerException | IOException e) {
+            throw new RuntimeException("Default avatar is not found or its size is too large");
+        }
+        return defaultAvatar;
+    }
+    @ApiModelProperty(position = 14, value = "Either URL or Base64 data of the avatar")
+    public String getAvatar() {
+        if (avatar == null || avatar.length() == 0) {
+            return getDefaultAvatar();
+        }
+        return avatar;
+    }
     public void setRoleTitle(String roleTitle) { this.roleTitle = roleTitle;}
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
     @Override
     public String toString() {
@@ -202,6 +231,8 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
         builder.append(roleId);
         builder.append(", roleTitle=");
         builder.append(roleTitle);
+        builder.append(", avatar=");
+        builder.append(avatar);
         builder.append("]");
         return builder.toString();
     }

@@ -80,6 +80,9 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
     @Column(name = ModelConstants.USER_ROLE_ID_PROPERTY)
     private UUID roleId;
 
+    @Column(name = ModelConstants.USER_AVATAR_PROPERTY)
+    private String avatar;
+
     public UserEntity() {
     }
 
@@ -103,6 +106,7 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
         if (user.getRoleId() != null) {
             this.roleId = user.getRoleId().getId();
         }
+        this.avatar = user.getAvatar();
     }
 
     @Override
@@ -134,6 +138,7 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
         if (roleId != null) {
             user.setRoleId(new RoleId(roleId));
         }
+        user.setAvatar(avatar);
         return user;
     }
 

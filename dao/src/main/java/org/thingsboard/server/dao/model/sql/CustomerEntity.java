@@ -82,8 +82,8 @@ CustomerEntity extends BaseSqlEntity<Customer> implements SearchTextEntity<Custo
     @Column(name = ModelConstants.EXTERNAL_ID_PROPERTY)
     private UUID externalId;
 
-    @Column(name = ModelConstants.CUSTOMER_AVATAR_PROPERTY)
-    private String avatar;
+//    @Column(name = ModelConstants.CUSTOMER_AVATAR_PROPERTY)
+//    private String avatar;
 
 //    @Column(name = ModelConstants.CUSTOMER_ROLE_ID_PROPERTY)
 //    private UUID roleId;
@@ -111,7 +111,7 @@ CustomerEntity extends BaseSqlEntity<Customer> implements SearchTextEntity<Custo
         if (customer.getExternalId() != null) {
             this.externalId = customer.getExternalId().getId();
         }
-        this.avatar = customer.getAvatar();
+//        this.avatar = customer.getAvatar();
 //        if (customer.getRoleId() != null) {
 //            this.roleId = customer.getRoleId().getId();
 //        }
