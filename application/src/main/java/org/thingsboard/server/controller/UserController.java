@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.thingsboard.rule.engine.api.MailService;
+import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.User;
 import org.thingsboard.server.common.data.exception.ThingsboardErrorCode;
@@ -192,9 +193,15 @@ public class UserController extends BaseController {
             user.setTenantId(getCurrentUser().getTenantId());
         }
         checkEntity(user.getId(), user, Resource.USER);
-        if (Authority.CUSTOMER_USER.equals(user.getAuthority()) && user.getRoleId() == null) {
-            Role defaultRole = findOrCreateDefaultRole(user.getTenantId());
-            user.setRoleId(defaultRole.getId());
+        if (Authority.CUSTOMER_USER.equals(user.getAuthority())) {
+            if (user.getRoleId() == null) {
+                Role defaultRole = findOrCreateDefaultRole(user.getTenantId());
+                user.setRoleId(defaultRole.getId());
+            }
+            if (user.getCustomerId() == null) {
+                Customer defaultCustomer = findOrCreateDefaultCustomer(user.getTenantId());
+                user.setCustomerId(defaultCustomer.getId());
+            }
         }
         return tbUserService.save(getTenantId(), getCurrentUser().getCustomerId(), user, sendActivationMail, request, getCurrentUser());
     }
