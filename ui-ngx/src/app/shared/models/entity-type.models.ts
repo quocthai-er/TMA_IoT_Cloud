@@ -18,6 +18,7 @@ import { TenantId } from './id/tenant-id';
 import { BaseData, HasId } from '@shared/models/base-data';
 
 export enum EntityType {
+  ROLE = 'ROLE',
   TENANT = 'TENANT',
   TENANT_PROFILE = 'TENANT_PROFILE',
   CUSTOMER = 'CUSTOMER',
@@ -78,6 +79,20 @@ export const entityTypeTranslations = new Map<EntityType | AliasEntityType, Enti
         noEntities: 'tenant.no-tenants-text',
         search: 'tenant.search',
         selectedEntities: 'tenant.selected-tenants'
+      }
+    ],
+    [
+      EntityType.ROLE,
+      {
+        type: 'entity.type-role',
+        typePlural: 'entity.type-roles',
+        list: 'entity.list-of-tenants',
+        nameStartsWith: 'entity.role-name-starts-with',
+        details: 'role.role-details',
+        add: 'role.add',
+        noEntities: 'role.no-tenants-text',
+        search: 'role.search',
+        selectedEntities: 'role.selected-tenants'
       }
     ],
     [
@@ -420,6 +435,7 @@ export const entityTypeResources = new Map<EntityType, EntityTypeResource<BaseDa
 
 export const baseDetailsPageByEntityType = new Map<EntityType, string>([
   [EntityType.TENANT, '/tenants'],
+  [EntityType.ROLE, '/roles'],
   [EntityType.TENANT_PROFILE, '/tenantProfiles'],
   [EntityType.CUSTOMER, '/customers'],
   [EntityType.USER, '/users'],

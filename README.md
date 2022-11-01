@@ -24,20 +24,6 @@ Summary: \
 
 ---------------------------------
 
-# Upgrade Thingsboard on Windows
-
-- Step 1 : Download thingsboard-windows.zip and extract it.
-
-- Step 2: Stop service `net stop thingsboard`
-
-- Step 3: Copy folder /conf to other place
-
-- Step 4: Copy new file in folder thingsboard-windows to C:/Program Files (x86)/thingsboard; copy folder conf to replace recent
-
-- Step 5: Run `C:\thingsboard>upgrade_dev_db.bat --fromVersion=3.3.4.1`
-
-- Step 6: Start service `net start thingsboard`
-
 # Custom Only Frontend
 
 ## Step 1: Download source code 
