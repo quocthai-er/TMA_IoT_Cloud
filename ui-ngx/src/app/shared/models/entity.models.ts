@@ -116,6 +116,16 @@ export const entityFields: {[fieldName: string]: EntityField} = {
     name: 'entity-field.phone',
     value: 'phone'
   },
+  roleTitle: {
+    keyName: 'roleTitle',
+    name: 'entity-field.roleTitle',
+    value: 'roleTitle'
+  },
+  avatar: {
+    keyName: 'avatar',
+    name: 'entity-field.avatar',
+    value: 'avatar'
+  },
   email: {
     keyName: 'email',
     name: 'entity-field.email',

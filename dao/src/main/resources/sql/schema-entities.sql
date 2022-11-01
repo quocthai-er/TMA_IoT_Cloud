@@ -145,6 +145,7 @@ CREATE TABLE IF NOT EXISTS customer (
     tenant_id uuid,
     title varchar(255),
     zip varchar(255),
+    avatar varchar(1000000),
     external_id uuid,
     CONSTRAINT customer_external_id_unq_key UNIQUE (tenant_id, external_id)
 );
@@ -375,7 +376,6 @@ CREATE TABLE IF NOT EXISTS tb_user (
     first_name varchar(255),
     last_name varchar(255),
     search_text varchar(255),
-    avatar varchar(1000000),
     tenant_id uuid,
     role_id uuid,
     CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES tb_role (id)

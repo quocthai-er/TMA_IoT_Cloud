@@ -27,8 +27,8 @@
       <header class="tb-nav-header">
         <mat-toolbar color="primary" fxFlex="0%" role="navigation" fxLayout="row" class="tb-side-menu-toolbar mat-elevation-z1 tb-primary-toolbar"
           style="justify-content: space-between;">
-          <div style="height:64px">
-            <img [src]="logo" aria-label="logo" class="tb-logo-title" style="height:100%" />
+          <div fxLayout="column" fxLayoutAlign="start center">
+            <tb-logo class="login-logo"></tb-logo>
           </div>
 
           <div fxLayout="row">
@@ -40,9 +40,9 @@
           </div>
         </mat-toolbar>
       </header>
-      <mat-toolbar fxLayout="row" color="primary" class="mat-elevation-z1 tb-primary-toolbar">
+      <mat-toolbar fxLayout="row" color="primary" class="mat-elevation-z1 tb-primary-toolbar" style="height: 80px;">
         <button [fxShow]="!forceFullscreen" mat-icon-button id="main" [ngClass]="{'tb-invisible': displaySearchMode()}"
-          fxHide.gt-lg (click)="sidenav.toggle()">
+          fxHide.gt-sm (click)="sidenav.toggle()">
           <mat-icon class="material-icons">menu</mat-icon>
         </button>
         <button [fxShow]="forceFullscreen" mat-icon-button [ngClass]="{'tb-invisible': displaySearchMode()}"

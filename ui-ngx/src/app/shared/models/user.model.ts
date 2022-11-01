@@ -28,7 +28,9 @@ export interface User extends BaseData<UserId> {
   firstName: string;
   lastName: string;
   phone?: string;
+  roleTitle?: any;
   additionalInfo: any;
+  avatar?: string;
 }
 
 export enum ActivationMethod {
@@ -50,6 +52,8 @@ export interface AuthUser {
   firstName: string;
   lastName: string;
   phone: string;
+  roleTitle: any;
+  avatar: string;
   enabled: boolean;
   tenantId: string;
   customerId: string;

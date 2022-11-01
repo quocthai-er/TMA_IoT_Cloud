@@ -15,9 +15,9 @@
     limitations under the License.
 
 -->
-<ul fxFlex fxLayout="row" fxLayoutAlign="start stretch" class="tb-side-menu" fxHide.lt-xl >
+<ul fxFlex fxLayout="wrap" class="tb-side-menu" fxHide.lt-md >
   <li *ngFor="let section of menuSections$ | async; trackBy: trackByMenuSection" [ngSwitch]="section.type === 'link'">
     <tb-menu-link *ngSwitchCase="true" [section]="section"></tb-menu-link>
-    <!-- <tb-menu-toggle *ngSwitchCase="false" [section]="section"></tb-menu-toggle> -->
+    <tb-menu-toggle *ngSwitchCase="false" [section]="section"></tb-menu-toggle>
   </li>
 </ul>

@@ -18,7 +18,7 @@
 <header>
   <mat-toolbar class="details-toolbar" color="primary" [ngStyle]="{height: headerHeightPx+'px'}">
     <div class="mat-toolbar-tools" fxLayout="row" fxLayoutAlign="start center" style="height: 100%;">
-      <div class="mat-toolbar-tools tb-details-title-header" fxFlex fxLayout="column" fxLayoutAlign="start start" [fxHide]="showSearchPane">
+      <div class="mat-toolbar-tools tb-details-title-header" style="margin-left: 10px;" fxFlex fxLayout="column" fxLayoutAlign="start start" [fxHide]="showSearchPane">
         <div class="tb-details-title" fxLayout="row" fxLayoutAlign="start center">
           <ng-content select=".prefix-title-buttons"></ng-content>
           <span>{{ headerTitle }}</span>
