@@ -34,7 +34,10 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     UserEntity findByPhone(String phone);
 
-    @Query("SELECT u FROM UserEntity u WHERE u.tenantId = :tenantId " +
+    @Query("SELECT new org.thingsboard.server.dao.model.sql.UserEntity(u.id, u.tenantId, u.customerId, u.createdTime, u.authority, u.email, u.phone, u.searchText, u.firstName, u.lastName, u.additionalInfo, u.roleId, u.avatar, r.title) " +
+            "FROM UserEntity u "+
+            "LEFT JOIN RoleEntity r on r.id = u.roleId " +
+            "WHERE u.tenantId = :tenantId " +
             "AND u.customerId = :customerId AND u.authority = :authority " +
             "AND LOWER(u.searchText) LIKE LOWER(CONCAT('%', :searchText, '%'))")
     Page<UserEntity> findUsersByAuthority(@Param("tenantId") UUID tenantId,

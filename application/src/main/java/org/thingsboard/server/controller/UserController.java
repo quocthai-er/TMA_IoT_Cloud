@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.thingsboard.rule.engine.api.MailService;
+import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.Role;
 import org.thingsboard.server.common.data.User;
 import org.thingsboard.server.common.data.exception.ThingsboardErrorCode;
@@ -192,9 +193,15 @@ public class UserController extends BaseController {
             user.setTenantId(getCurrentUser().getTenantId());
         }
         checkEntity(user.getId(), user, Resource.USER);
-        if (Authority.CUSTOMER_USER.equals(user.getAuthority()) && user.getRoleId() == null) {
-            Role defaultRole = findOrCreateDefaultRole(user.getTenantId());
-            user.setRoleId(defaultRole.getId());
+        if (Authority.CUSTOMER_USER.equals(user.getAuthority())) {
+            if (user.getRoleId() == null) {
+                Role defaultRole = findOrCreateDefaultRole(user.getTenantId());
+                user.setRoleId(defaultRole.getId());
+            }
+            if (user.getCustomerId() == null) {
+                Customer defaultCustomer = findOrCreateDefaultCustomer(user.getTenantId());
+                user.setCustomerId(defaultCustomer.getId());
+            }
         }
         return tbUserService.save(getTenantId(), getCurrentUser().getCustomerId(), user, sendActivationMail, request, getCurrentUser());
     }
@@ -228,13 +235,13 @@ public class UserController extends BaseController {
         }
     }
 
-    @ApiOperation(value = "Get the activation link (getActivationLink)",
-            notes = "Get the activation link for the user. " +
-                    "The base url for activation link is configurable in the general settings of system administrator. " + SYSTEM_OR_TENANT_AUTHORITY_PARAGRAPH)
+    @ApiOperation(value = "Get the activation token (getActivationToken)",
+            notes = "Get the activation token for the user. " +
+                    SYSTEM_OR_TENANT_AUTHORITY_PARAGRAPH)
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN')")
-    @RequestMapping(value = "/user/{userId}/activationLink", method = RequestMethod.GET, produces = "text/plain")
+    @RequestMapping(value = "/user/{userId}/activationToken", method = RequestMethod.GET, produces = "text/plain")
     @ResponseBody
-    public String getActivationLink(
+    public String getActivationToken(
             @ApiParam(value = USER_ID_PARAM_DESCRIPTION)
             @PathVariable(USER_ID) String strUserId,
             HttpServletRequest request) throws ThingsboardException {
@@ -246,9 +253,9 @@ public class UserController extends BaseController {
             UserCredentials userCredentials = userService.findUserCredentialsByUserId(authUser.getTenantId(), user.getId());
             if (!userCredentials.isEnabled() && userCredentials.getActivateToken() != null) {
                 String baseUrl = systemSecurityService.getBaseUrl(getTenantId(), getCurrentUser().getCustomerId(), request);
-                String activateUrl = String.format(ACTIVATE_URL_PATTERN, baseUrl,
-                        userCredentials.getActivateToken());
-                return activateUrl;
+                //String activateUrl = String.format(ACTIVATE_URL_PATTERN, baseUrl,
+                //        userCredentials.getActivateToken());
+                return userCredentials.getActivateToken();
             } else {
                 throw new ThingsboardException("User is already activated!", ThingsboardErrorCode.BAD_REQUEST_PARAMS);
             }
