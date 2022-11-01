@@ -198,10 +198,6 @@ public class UserController extends BaseController {
                 Role defaultRole = findOrCreateDefaultRole(user.getTenantId());
                 user.setRoleId(defaultRole.getId());
             }
-            if (user.getCustomerId() == null) {
-                Customer defaultCustomer = findOrCreateDefaultCustomer(user.getTenantId());
-                user.setCustomerId(defaultCustomer.getId());
-            }
         }
         return tbUserService.save(getTenantId(), getCurrentUser().getCustomerId(), user, sendActivationMail, request, getCurrentUser());
     }
@@ -234,6 +230,36 @@ public class UserController extends BaseController {
             throw handleException(e);
         }
     }
+
+    @ApiOperation(value = "Get the activation link (getActivationLink)",
+            notes = "Get the activation link for the user. " +
+                    "The base url for activation link is configurable in the general settings of system administrator. " + SYSTEM_OR_TENANT_AUTHORITY_PARAGRAPH)
+    @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN')")
+    @RequestMapping(value = "/user/{userId}/activationLink", method = RequestMethod.GET, produces = "text/plain")
+    @ResponseBody
+    public String getActivationLink(
+            @ApiParam(value = USER_ID_PARAM_DESCRIPTION)
+            @PathVariable(USER_ID) String strUserId,
+            HttpServletRequest request) throws ThingsboardException {
+        checkParameter(USER_ID, strUserId);
+        try {
+            UserId userId = new UserId(toUUID(strUserId));
+            User user = checkUserId(userId, Operation.READ);
+            SecurityUser authUser = getCurrentUser();
+            UserCredentials userCredentials = userService.findUserCredentialsByUserId(authUser.getTenantId(), user.getId());
+            if (!userCredentials.isEnabled() && userCredentials.getActivateToken() != null) {
+                String baseUrl = systemSecurityService.getBaseUrl(getTenantId(), getCurrentUser().getCustomerId(), request);
+                String activateUrl = String.format(ACTIVATE_URL_PATTERN, baseUrl,
+                        userCredentials.getActivateToken());
+                return activateUrl;
+            } else {
+                throw new ThingsboardException("User is already activated!", ThingsboardErrorCode.BAD_REQUEST_PARAMS);
+            }
+        } catch (Exception e) {
+            throw handleException(e);
+        }
+    }
+
 
     @ApiOperation(value = "Get the activation token (getActivationToken)",
             notes = "Get the activation token for the user. " +

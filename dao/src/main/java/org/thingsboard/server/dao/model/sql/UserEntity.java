@@ -91,48 +91,33 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
     }
 
     public UserEntity(User user) {
-        log.info("Called--------------------------------------------");
         this.setUuid(user.getUuidId());
-        log.info("-1--------------------------------------------");
         this.setCreatedTime(user.getCreatedTime());
-        log.info("0--------------------------------------------");
         if (user.getTenantId() != null && !user.getTenantId().isNullUid()) {
             this.tenantId = user.getTenantId().getId();
-            log.info("1--------------------------------------------");
         }
         if (user.getCustomerId() != null) {
             this.customerId = user.getCustomerId().getId();
-            log.info("2--------------------------------------------");
         }
         this.authority = user.getAuthority();
-        log.info("3--------------------------------------------");
 
         this.email = user.getEmail();
-        log.info("4--------------------------------------------");
 
         this.phone = user.getPhone();
-        log.info("5--------------------------------------------");
 
         this.searchText = user.getSearchText();
-        log.info("6--------------------------------------------");
 
         this.firstName = user.getFirstName();
-        log.info("7--------------------------------------------");
 
         this.lastName = user.getLastName();
-        log.info("8--------------------------------------------");
 
         this.additionalInfo = objectMapper.valueToTree(additionalInfo);
-        log.info("9--------------------------------------------");
 
         if (user.getRoleId() != null && !user.getRoleId().isNullUid()) {
             this.roleId = user.getRoleId().getId();
-            log.info("10--------------------------------------------");
             this.roleTitle = user.getRoleTitle();
-            log.info("11--------------------------------------------");
         }
         this.avatar = user.getAvatar();
-        log.info("12--------------------------------------------");
     }
 
     public UserEntity(UUID id, UUID tenantId, UUID customerId, Long createdTime, Authority authority,

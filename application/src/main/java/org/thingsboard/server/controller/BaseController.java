@@ -518,26 +518,6 @@ public abstract class BaseController {
         }
     }
 
-    Customer findOrCreateDefaultCustomer(TenantId tenantId) throws ThingsboardException {
-        try {
-            Customer defaultCustomer;
-            Optional<Customer> existingDefaultCustomer = customerService.findCustomerByTenantIdAndTitle(tenantId, this.CUSTOMER_DEFAULT_TITLE);
-            if (existingDefaultCustomer.isEmpty()) {
-                defaultCustomer = new Customer();
-                defaultCustomer.setTenantId(tenantId);
-                defaultCustomer.setTitle(this.CUSTOMER_DEFAULT_TITLE);
-                defaultCustomer = customerService.saveCustomer(defaultCustomer);
-            }
-            else {
-                defaultCustomer = existingDefaultCustomer.get();
-            }
-            return defaultCustomer;
-        }
-        catch (Exception e) {
-            throw handleException(e, false);
-        }
-    }
-
     User checkUserId(UserId userId, Operation operation) throws ThingsboardException {
         try {
             validateId(userId, "Incorrect userId " + userId);
