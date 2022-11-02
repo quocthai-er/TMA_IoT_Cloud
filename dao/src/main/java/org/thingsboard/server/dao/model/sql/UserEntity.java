@@ -16,8 +16,10 @@
 package org.thingsboard.server.dao.model.sql;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.thingsboard.server.common.data.User;
@@ -31,22 +33,21 @@ import org.thingsboard.server.dao.model.ModelConstants;
 import org.thingsboard.server.dao.model.SearchTextEntity;
 import org.thingsboard.server.dao.util.mapping.JsonStringType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 /**
  * Created by Valerii Sosliuk on 4/21/2017.
  */
+@Slf4j
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @TypeDef(name = "json", typeClass = JsonStringType.class)
 @Table(name = ModelConstants.USER_PG_HIBERNATE_COLUMN_FAMILY_NAME)
 public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<User> {
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Column(name = ModelConstants.USER_TENANT_ID_PROPERTY)
     private UUID tenantId;
@@ -83,30 +84,62 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
     @Column(name = ModelConstants.USER_AVATAR_PROPERTY)
     private String avatar;
 
+    @Transient
+    private String roleTitle;
+
     public UserEntity() {
     }
 
     public UserEntity(User user) {
-        if (user.getId() != null) {
-            this.setUuid(user.getId().getId());
-        }
+        this.setUuid(user.getUuidId());
         this.setCreatedTime(user.getCreatedTime());
-        this.authority = user.getAuthority();
-        if (user.getTenantId() != null) {
+        if (user.getTenantId() != null && !user.getTenantId().isNullUid()) {
             this.tenantId = user.getTenantId().getId();
         }
         if (user.getCustomerId() != null) {
             this.customerId = user.getCustomerId().getId();
         }
+        this.authority = user.getAuthority();
+
         this.email = user.getEmail();
+
         this.phone = user.getPhone();
+
+        this.searchText = user.getSearchText();
+
         this.firstName = user.getFirstName();
+
         this.lastName = user.getLastName();
-        this.additionalInfo = user.getAdditionalInfo();
-        if (user.getRoleId() != null) {
+
+        this.additionalInfo = objectMapper.valueToTree(additionalInfo);
+
+        if (user.getRoleId() != null && !user.getRoleId().isNullUid()) {
             this.roleId = user.getRoleId().getId();
+            this.roleTitle = user.getRoleTitle();
         }
         this.avatar = user.getAvatar();
+    }
+
+    public UserEntity(UUID id, UUID tenantId, UUID customerId, Long createdTime, Authority authority,
+                      String email, String phone, String searchText, String firstName,
+                      String lastName, Object additionalInfo, UUID roleId, String avatar, String roleTitle) {
+        this.setUuid(id);
+        this.tenantId = tenantId;
+        this.customerId = customerId;
+        this.authority = authority;
+        this.setCreatedTime(createdTime);
+        this.email = email;
+        this.phone = phone;
+        this.searchText = searchText;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.additionalInfo = objectMapper.valueToTree(additionalInfo);
+        this.roleId = roleId;
+        this.avatar = avatar;
+        log.info("Role Title: " + roleTitle);
+        this.roleTitle = roleTitle;
+        log.info("Role Title: " + this.roleTitle);
+
     }
 
     @Override
@@ -137,7 +170,9 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
         user.setAdditionalInfo(additionalInfo);
         if (roleId != null) {
             user.setRoleId(new RoleId(roleId));
+            user.setRoleTitle(roleTitle);
         }
+        log.info("Role Title: " + user.getRoleTitle());
         user.setAvatar(avatar);
         return user;
     }

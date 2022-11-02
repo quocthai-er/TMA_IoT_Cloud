@@ -15,7 +15,7 @@
 ///
 
 import { Component } from '@angular/core';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'tb-logo',
   templateUrl: './logo.component.html',
@@ -25,8 +25,12 @@ export class LogoComponent {
 
   logo = 'assets/logo_title_white.svg';
 
+  constructor(
+    private router: Router) { }
+
   gotoThingsboard(): void {
-    window.open('https://thingsboard.io', '_blank');
+    this.router.navigate(['/home']);
   }
+
 
 }

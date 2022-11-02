@@ -16,6 +16,9 @@
 
 --Update Thingsboard customized database
 
+ALTER TABLE asset ADD COLUMN IF NOT EXISTS avatar varchar(1000000);
+ALTER TABLE device ADD COLUMN IF NOT EXISTS avatar varchar(1000000);
+
 --start new
 CREATE TABLE IF NOT EXISTS tb_role (
     id uuid NOT NULL CONSTRAINT role_pkey PRIMARY KEY,

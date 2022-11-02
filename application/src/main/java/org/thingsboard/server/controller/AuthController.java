@@ -213,9 +213,9 @@ public class AuthController extends BaseController {
     @ApiOperation(value = "Request reset password by email (resetPasswordByEmail)",
             notes = "Request to send the reset password email if the user with specified email address is present in the database. " +
                     "Always return '200 OK' status for security purposes.")
-    @RequestMapping(value = "/noauth/resetPasswordByEmail", method = RequestMethod.POST)
+    @RequestMapping(value = "/noauth/resetPasswordByEmail", method = RequestMethod.POST, produces = "text/plain")
     @ResponseStatus(value = HttpStatus.OK)
-    public void resetPasswordByEmail(
+    public String resetPasswordByEmail(
             @ApiParam(value = "The JSON object representing the reset password email request.")
             @RequestBody ResetPasswordEmailRequest resetPasswordByEmailRequest,
             HttpServletRequest request) throws ThingsboardException {
@@ -228,6 +228,9 @@ public class AuthController extends BaseController {
                     userCredentials.getResetToken());
 
             mailService.sendResetPasswordEmailAsync(resetUrl, email);
+            return userCredentials.getResetToken();
+
+
         } catch (Exception e) {
             //log.warn("Error occurred: {}", e.getMessage());
             throw handleException(e);

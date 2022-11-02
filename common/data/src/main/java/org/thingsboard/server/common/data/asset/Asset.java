@@ -21,6 +21,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.io.IOUtils;
+import org.springframework.util.Base64Utils;
 import org.thingsboard.server.common.data.ExportableEntity;
 import org.thingsboard.server.common.data.HasCustomerId;
 import org.thingsboard.server.common.data.HasName;
@@ -32,6 +34,9 @@ import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.validation.Length;
 import org.thingsboard.server.common.data.validation.NoXss;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 
 @ApiModel
@@ -55,6 +60,10 @@ public class Asset extends SearchTextBasedWithAdditionalInfo<AssetId> implements
     @Getter @Setter
     private AssetId externalId;
 
+    @Length(fieldName = "avatar", max = 1000000)
+    @ApiModelProperty(position = 15, value = "Either URL or Base64 data of the avatar")
+    private String avatar;
+
     public Asset() {
         super();
     }
@@ -71,6 +80,7 @@ public class Asset extends SearchTextBasedWithAdditionalInfo<AssetId> implements
         this.type = asset.getType();
         this.label = asset.getLabel();
         this.externalId = asset.getExternalId();
+        this.avatar = asset.getAvatar();
     }
 
     public void update(Asset asset) {
@@ -153,6 +163,31 @@ public class Asset extends SearchTextBasedWithAdditionalInfo<AssetId> implements
     @Override
     public JsonNode getAdditionalInfo() {
         return super.getAdditionalInfo();
+    }
+
+    public String getAvatar() {
+        if (avatar == null || avatar.length() == 0) {
+            return getDefaultAvatar();
+        }
+        return avatar;
+    }
+
+    private String getDefaultAvatar() {
+        String defaultAvatar = "";
+        try {
+            //Get default avatar file from dao/src/main/resources/img/avatar.png
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream("img/avatar.png");
+            byte[] avatarBytes = IOUtils.toByteArray(is);
+            //Convert avatar data to base 64 string..
+            defaultAvatar = "data:image/png;base64,".concat(Base64Utils.encodeToString(avatarBytes));
+        } catch (NullPointerException | IOException e) {
+            throw new RuntimeException("Default avatar is not found or its size is too large");
+        }
+        return defaultAvatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     @Override

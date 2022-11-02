@@ -83,6 +83,14 @@
         <mat-label translate>user.last-name</mat-label>
         <input matInput formControlName="lastName">
       </mat-form-field>
+      <mat-form-field class="mat-block">
+        <mat-label translate>user.roleTitle</mat-label>
+        <input matInput formControlName="roleTitle">
+      </mat-form-field>
+      <!-- <mat-form-field class="mat-block">
+        <mat-label translate>user.avatar</mat-label>
+      </mat-form-field> -->
+      <img src="{{'user.avatar'}}" alt="avatar" />
       <div formGroupName="additionalInfo" fxLayout="column">
         <mat-form-field class="mat-block">
           <mat-label translate>user.description</mat-label>

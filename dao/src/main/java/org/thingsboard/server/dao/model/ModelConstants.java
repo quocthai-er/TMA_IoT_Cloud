@@ -177,6 +177,7 @@ public class ModelConstants {
     public static final String DEVICE_DEVICE_DATA_PROPERTY = "device_data";
     public static final String DEVICE_FIRMWARE_ID_PROPERTY = "firmware_id";
     public static final String DEVICE_SOFTWARE_ID_PROPERTY = "software_id";
+    public static final String DEVICE_AVATAR_PROPERTY = "avatar";
 
     public static final String DEVICE_BY_TENANT_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME = "device_by_tenant_and_search_text";
     public static final String DEVICE_BY_TENANT_BY_TYPE_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME = "device_by_tenant_by_type_and_search_text";
@@ -261,6 +262,9 @@ public class ModelConstants {
     public static final String ASSET_TYPE_PROPERTY = "type";
     public static final String ASSET_LABEL_PROPERTY = "label";
     public static final String ASSET_ADDITIONAL_INFO_PROPERTY = ADDITIONAL_INFO_PROPERTY;
+
+    public static final String ASSET_AVATAR_PROPERTY = "avatar";
+
 
     public static final String ASSET_BY_TENANT_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME = "asset_by_tenant_and_search_text";
     public static final String ASSET_BY_TENANT_BY_TYPE_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME = "asset_by_tenant_by_type_and_search_text";

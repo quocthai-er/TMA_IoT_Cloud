@@ -24,6 +24,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.springframework.util.Base64Utils;
 import org.thingsboard.server.common.data.device.data.DeviceData;
 import org.thingsboard.server.common.data.id.CustomerId;
 import org.thingsboard.server.common.data.id.DeviceId;
@@ -35,6 +37,7 @@ import org.thingsboard.server.common.data.validation.NoXss;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 
 @ApiModel
@@ -66,6 +69,10 @@ public class Device extends SearchTextBasedWithAdditionalInfo<DeviceId> implemen
     @Getter @Setter
     private DeviceId externalId;
 
+    @Length(fieldName = "avatar", max = 1000000)
+    @ApiModelProperty(position = 15, value = "Either URL or Base64 data of the avatar")
+    private String avatar;
+
     public Device() {
         super();
     }
@@ -86,6 +93,7 @@ public class Device extends SearchTextBasedWithAdditionalInfo<DeviceId> implemen
         this.firmwareId = device.getFirmwareId();
         this.softwareId = device.getSoftwareId();
         this.externalId = device.getExternalId();
+        this.avatar = device.getAvatar();
     }
 
     public Device updateDevice(Device device) {
@@ -228,6 +236,30 @@ public class Device extends SearchTextBasedWithAdditionalInfo<DeviceId> implemen
     @Override
     public JsonNode getAdditionalInfo() {
         return super.getAdditionalInfo();
+    }
+
+    public String getAvatar() {
+        if (avatar == null || avatar.length() == 0) {
+            return getDefaultAvatar();
+        }
+        return avatar;
+    }
+
+    private String getDefaultAvatar() {
+        String defaultAvatar = "";
+        try {
+            //Get default avatar file from dao/src/main/resources/img/avatar.png
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream("img/avatar.png");
+            byte[] avatarBytes = IOUtils.toByteArray(is);
+            //Convert avatar data to base 64 string..
+            defaultAvatar = "data:image/png;base64,".concat(Base64Utils.encodeToString(avatarBytes));
+        } catch (NullPointerException | IOException e) {
+            throw new RuntimeException("Default avatar is not found or its size is too large");
+        }
+        return defaultAvatar;
+    }
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     @Override

@@ -151,9 +151,10 @@ public abstract class BaseController {
 
     private static final ObjectMapper json = new ObjectMapper();
 
-    public static final String CUSTOMER_USER_DEFAULT_TITLE = "DEFAULT";
-    public static final String CUSTOMER_USER_PERMISSIONS_JSON_STRING = "{\"ALL\":[\"READ\",\"RPC_CALL\",\"READ_CREDENTIALS\",\"READ_ATTRIBUTES\",\"READ_TELEMETRY\",\"WRITE_ATTRIBUTES\",\"WRITE_TELEMETRY\",\"UNASSIGN_FROM_CUSTOMER\",\"ASSIGN_TO_CUSTOMER\",\"CREATE\",\"READ\",\"WRITE\",\"DELETE\"],\"DEVICE\":[\"ALL\"],\"ASSET\":[\"ALL\"]}";
+    public static final String CUSTOMER_USER_DEFAULT_TITLE = "default";
 
+    public static final String CUSTOMER_DEFAULT_TITLE = "default";
+    public static final String CUSTOMER_USER_PERMISSIONS_JSON_STRING = "{\"ALL\":[\"READ\",\"RPC_CALL\",\"READ_CREDENTIALS\",\"READ_ATTRIBUTES\",\"READ_TELEMETRY\",\"WRITE_ATTRIBUTES\",\"WRITE_TELEMETRY\",\"UNASSIGN_FROM_CUSTOMER\",\"ASSIGN_TO_CUSTOMER\",\"CREATE\",\"READ\",\"WRITE\",\"DELETE\"],\"DEVICE\":[\"ALL\"],\"ASSET\":[\"ALL\"]}";
 
     @Autowired
     private ThingsboardErrorResponseHandler errorResponseHandler;

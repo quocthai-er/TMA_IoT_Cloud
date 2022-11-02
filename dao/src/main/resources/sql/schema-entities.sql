@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS asset (
     tenant_id uuid,
     type varchar(255),
     external_id uuid,
+    avatar varchar(1000000),
     CONSTRAINT asset_name_unq_key UNIQUE (tenant_id, name),
     CONSTRAINT asset_external_id_unq_key UNIQUE (tenant_id, external_id)
 );
@@ -301,6 +302,7 @@ CREATE TABLE IF NOT EXISTS device (
     name varchar(255),
     label varchar(255),
     search_text varchar(255),
+    avatar varchar(1000000),
     tenant_id uuid,
     firmware_id uuid,
     software_id uuid,

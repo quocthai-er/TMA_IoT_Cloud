@@ -736,6 +736,7 @@
         "address": "Address",
         "address2": "Address 2",
         "phone": "Phone",
+        "roleTitle": "Role",
         "email": "Email",
         "no-address": "No address",
         "state-max-length": "State length should be less than 256",
