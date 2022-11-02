@@ -122,6 +122,7 @@ public abstract class AbstractDeviceEntity<T extends Device> extends BaseSqlEnti
         if (device.getExternalId() != null) {
             this.externalId = device.getExternalId().getId();
         }
+        this.avatar = device.getAvatar();
     }
 
     public AbstractDeviceEntity(DeviceEntity deviceEntity) {
@@ -139,6 +140,7 @@ public abstract class AbstractDeviceEntity<T extends Device> extends BaseSqlEnti
         this.firmwareId = deviceEntity.getFirmwareId();
         this.softwareId = deviceEntity.getSoftwareId();
         this.externalId = deviceEntity.getExternalId();
+        this.avatar = deviceEntity.getAvatar();
     }
 
     @Override
@@ -177,6 +179,7 @@ public abstract class AbstractDeviceEntity<T extends Device> extends BaseSqlEnti
         if (externalId != null) {
             device.setExternalId(new DeviceId(externalId));
         }
+        device.setAvatar(avatar);
         return device;
     }
 

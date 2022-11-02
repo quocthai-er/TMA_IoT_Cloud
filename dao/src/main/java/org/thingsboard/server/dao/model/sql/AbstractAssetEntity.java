@@ -97,6 +97,7 @@ public abstract class AbstractAssetEntity<T extends Asset> extends BaseSqlEntity
         if (asset.getExternalId() != null) {
             this.externalId = asset.getExternalId().getId();
         }
+        this.avatar = asset.getAvatar();
     }
 
     public AbstractAssetEntity(AssetEntity assetEntity) {
@@ -110,6 +111,7 @@ public abstract class AbstractAssetEntity<T extends Asset> extends BaseSqlEntity
         this.searchText = assetEntity.getSearchText();
         this.additionalInfo = assetEntity.getAdditionalInfo();
         this.externalId = assetEntity.getExternalId();
+        this.avatar = assetEntity.getAvatar();
     }
 
     @Override
@@ -142,6 +144,7 @@ public abstract class AbstractAssetEntity<T extends Asset> extends BaseSqlEntity
         if (externalId != null) {
             asset.setExternalId(new AssetId(externalId));
         }
+        asset.setAvatar(avatar);
         return asset;
     }
 
