@@ -87,6 +87,9 @@ public abstract class AbstractDeviceEntity<T extends Device> extends BaseSqlEnti
     @Column(name = ModelConstants.EXTERNAL_ID_PROPERTY, columnDefinition = "uuid")
     private UUID externalId;
 
+    @Column(name = ModelConstants.DEVICE_AVATAR_PROPERTY, columnDefinition = "avatar")
+    private String avatar;
+
     public AbstractDeviceEntity() {
         super();
     }

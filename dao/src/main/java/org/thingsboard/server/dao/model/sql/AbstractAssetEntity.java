@@ -72,6 +72,9 @@ public abstract class AbstractAssetEntity<T extends Asset> extends BaseSqlEntity
     @Column(name = EXTERNAL_ID_PROPERTY)
     private UUID externalId;
 
+    @Column(name = ModelConstants.ASSET_AVATAR_PROPERTY)
+    private String avatar;
+
     public AbstractAssetEntity() {
         super();
     }
