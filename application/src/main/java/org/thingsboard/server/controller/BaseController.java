@@ -520,18 +520,16 @@ public abstract class BaseController {
 
     Customer findOrCreateDefaultCustomer(TenantId tenantId) throws ThingsboardException {
         try {
-            Customer defaultCustomer;
-            Optional<Customer> existingDefaultCustomer = customerService.findCustomerByTenantIdAndTitle(tenantId, this.CUSTOMER_DEFAULT_TITLE);
-            if (existingDefaultCustomer.isEmpty()) {
-                defaultCustomer = new Customer();
-                defaultCustomer.setTenantId(tenantId);
-                defaultCustomer.setTitle(this.CUSTOMER_DEFAULT_TITLE);
-                defaultCustomer = customerService.saveCustomer(defaultCustomer);
+            Optional<Customer> defaultCustomerOpt = customerService.findCustomerByTenantIdAndTitle(tenantId, this.CUSTOMER_DEFAULT_TITLE);
+            if (defaultCustomerOpt.isPresent()) {
+                return defaultCustomerOpt.get();
             }
             else {
-                defaultCustomer = existingDefaultCustomer.get();
+                Customer defaultCustomer = new Customer();
+                defaultCustomer.setTenantId(tenantId);
+                defaultCustomer.setTitle(this.CUSTOMER_DEFAULT_TITLE);
+                return customerService.saveCustomer(defaultCustomer);
             }
-            return defaultCustomer;
         }
         catch (Exception e) {
             throw handleException(e, false);

@@ -30,9 +30,17 @@ import java.util.UUID;
  */
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
-    UserEntity findByEmail(String email);
+    @Query("SELECT new org.thingsboard.server.dao.model.sql.UserEntity(u.id, u.tenantId, u.customerId, u.createdTime, u.authority, u.email, u.phone, u.searchText, u.firstName, u.lastName, u.additionalInfo, u.roleId, u.avatar, r.title) " +
+            "FROM UserEntity u "+
+            "LEFT JOIN RoleEntity r on r.id = u.roleId " +
+            "WHERE u.email = :email")
+    UserEntity findByEmail(@Param("email") String email);
 
-    UserEntity findByPhone(String phone);
+    @Query("SELECT new org.thingsboard.server.dao.model.sql.UserEntity(u.id, u.tenantId, u.customerId, u.createdTime, u.authority, u.email, u.phone, u.searchText, u.firstName, u.lastName, u.additionalInfo, u.roleId, u.avatar, r.title) " +
+            "FROM UserEntity u "+
+            "LEFT JOIN RoleEntity r on r.id = u.roleId " +
+            "WHERE u.phone = :phone")
+    UserEntity findByPhone(@Param("phone") String phone);
 
     @Query("SELECT new org.thingsboard.server.dao.model.sql.UserEntity(u.id, u.tenantId, u.customerId, u.createdTime, u.authority, u.email, u.phone, u.searchText, u.firstName, u.lastName, u.additionalInfo, u.roleId, u.avatar, r.title) " +
             "FROM UserEntity u "+
@@ -46,7 +54,10 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
                                           @Param("authority") Authority authority,
                                           Pageable pageable);
 
-    @Query("SELECT u FROM UserEntity u WHERE u.tenantId = :tenantId " +
+    @Query("SELECT new org.thingsboard.server.dao.model.sql.UserEntity(u.id, u.tenantId, u.customerId, u.createdTime, u.authority, u.email, u.phone, u.searchText, u.firstName, u.lastName, u.additionalInfo, u.roleId, u.avatar, r.title) " +
+            "FROM UserEntity u "+
+            "LEFT JOIN RoleEntity r on r.id = u.roleId " +
+            "WHERE u.tenantId = :tenantId " +
             "AND LOWER(u.searchText) LIKE LOWER(CONCAT('%', :searchText, '%'))")
     Page<UserEntity> findByTenantId(@Param("tenantId") UUID tenantId,
                                     @Param("searchText") String searchText,

@@ -20,6 +20,7 @@
 CREATE TABLE IF NOT EXISTS tb_role (
     id uuid NOT NULL CONSTRAINT role_pkey PRIMARY KEY,
     title varchar(255) NOT NULL,
+    label varchar(255),
     permissions varchar,
     tenant_id uuid,
     created_time bigint,
@@ -34,14 +35,14 @@ ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS avatar varchar(1000000);
 ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS phone varchar(255) COLLATE pg_catalog."default";
 --end new
 
-DO
-$$
-    BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'tb_user_phone_key') THEN
-            ALTER TABLE tb_user ADD CONSTRAINT tb_user_phone_key UNIQUE (phone);
-        END IF;
-    END;
-$$;
+--DO
+--$$
+--    BEGIN
+--        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'tb_user_phone_key') THEN
+--            ALTER TABLE tb_user ADD CONSTRAINT tb_user_phone_key UNIQUE (phone);
+--        END IF;
+--    END;
+--$$;
 
 DO
 $$

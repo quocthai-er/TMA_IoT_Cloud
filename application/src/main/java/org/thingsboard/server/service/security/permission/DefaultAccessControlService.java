@@ -104,15 +104,14 @@ public class DefaultAccessControlService implements AccessControlService {
         if (role == null || role.getPermissions().isMissingNode()) {
             return false;
         }
+        
         if (!role.getPermissions().path(resource).isMissingNode()) {
             ArrayNode singleResourcePermissions = (ArrayNode) role.getPermissions().path(resource);
             hasPermission = isOperationContained(singleResourcePermissions, operation);
-            log.info("Single:" + singleResourcePermissions.asText());
         }
         if (hasPermission == false && !role.getPermissions().path("ALL").isMissingNode()) {
             ArrayNode allResourcesPermissions = (ArrayNode) role.getPermissions().path("ALL");
             hasAllPermissions = isOperationContained(allResourcesPermissions, operation);
-            log.info("All: " + allResourcesPermissions.asText());
         }
         return hasPermission || hasAllPermissions;
     }
