@@ -136,10 +136,7 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
         this.additionalInfo = objectMapper.valueToTree(additionalInfo);
         this.roleId = roleId;
         this.avatar = avatar;
-        log.info("Role Title: " + roleTitle);
         this.roleTitle = roleTitle;
-        log.info("Role Title: " + this.roleTitle);
-
     }
 
     @Override
@@ -172,7 +169,6 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
             user.setRoleId(new RoleId(roleId));
             user.setRoleTitle(roleTitle);
         }
-        log.info("Role Title: " + user.getRoleTitle());
         user.setAvatar(avatar);
         return user;
     }

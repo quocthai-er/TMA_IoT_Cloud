@@ -50,8 +50,10 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
     private String lastName;
 
     private RoleId roleId;
+
     @ApiModelProperty(position = 13, value = "Title of user role", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
     private String roleTitle;
+
     @Length(fieldName = "avatar", max = 1000000)
     private String avatar;
 
@@ -176,6 +178,7 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
     @ApiModelProperty(position = 12, value = "JSON object with Role Id")
     public RoleId getRoleId() { return roleId; }
 
+    @ApiModelProperty(position = 13, value = "Title of user role")
     public String getRoleTitle() { return roleTitle; }
 
     public void setRoleId(RoleId roleId) { this.roleId = roleId;}
@@ -191,6 +194,7 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
         }
         return defaultAvatar;
     }
+
     @ApiModelProperty(position = 14, value = "Either URL or Base64 data of the avatar")
     public String getAvatar() {
         if (avatar == null || avatar.length() == 0) {
