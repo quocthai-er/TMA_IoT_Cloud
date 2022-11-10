@@ -197,9 +197,6 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
 
     @ApiModelProperty(position = 14, value = "Either URL or Base64 data of the avatar")
     public String getAvatar() {
-        if (avatar == null || avatar.length() == 0) {
-            return getDefaultAvatar();
-        }
         return avatar;
     }
     public void setRoleTitle(String roleTitle) { this.roleTitle = roleTitle;}

@@ -166,9 +166,6 @@ public class Asset extends SearchTextBasedWithAdditionalInfo<AssetId> implements
     }
 
     public String getAvatar() {
-        if (avatar == null || avatar.length() == 0) {
-            return getDefaultAvatar();
-        }
         return avatar;
     }
 

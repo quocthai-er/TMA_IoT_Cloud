@@ -239,9 +239,6 @@ public class Device extends SearchTextBasedWithAdditionalInfo<DeviceId> implemen
     }
 
     public String getAvatar() {
-        if (avatar == null || avatar.length() == 0) {
-            return getDefaultAvatar();
-        }
         return avatar;
     }
 
