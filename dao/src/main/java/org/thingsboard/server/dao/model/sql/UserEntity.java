@@ -22,6 +22,7 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.jetbrains.annotations.NotNull;
 import org.thingsboard.server.common.data.User;
 import org.thingsboard.server.common.data.id.CustomerId;
 import org.thingsboard.server.common.data.id.RoleId;
@@ -90,7 +91,7 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
     public UserEntity() {
     }
 
-    public UserEntity(User user) {
+    public UserEntity(@NotNull User user) {
         this.setUuid(user.getUuidId());
         this.setCreatedTime(user.getCreatedTime());
         if (user.getTenantId() != null && !user.getTenantId().isNullUid()) {
