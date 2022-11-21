@@ -104,7 +104,6 @@ public class DefaultAccessControlService implements AccessControlService {
         if (role == null || role.getPermissions().isMissingNode()) {
             return false;
         }
-        
         if (!role.getPermissions().path(resource).isMissingNode()) {
             ArrayNode singleResourcePermissions = (ArrayNode) role.getPermissions().path(resource);
             hasPermission = isOperationContained(singleResourcePermissions, operation);
