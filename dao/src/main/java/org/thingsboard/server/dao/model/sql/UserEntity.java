@@ -91,53 +91,30 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
     public UserEntity() {
     }
 
-    public UserEntity(@NotNull User user) {
-        this.setUuid(user.getUuidId());
+    public UserEntity(User user) {
+        if (user.getId() != null) {
+            this.setUuid(user.getId().getId());
+        }
         this.setCreatedTime(user.getCreatedTime());
-        if (user.getTenantId() != null && !user.getTenantId().isNullUid()) {
+        this.authority = user.getAuthority();
+        if (user.getTenantId() != null) {
             this.tenantId = user.getTenantId().getId();
         }
         if (user.getCustomerId() != null) {
             this.customerId = user.getCustomerId().getId();
         }
-        this.authority = user.getAuthority();
-
         this.email = user.getEmail();
-
         this.phone = user.getPhone();
-
         this.searchText = user.getSearchText();
-
         this.firstName = user.getFirstName();
-
         this.lastName = user.getLastName();
-
         this.additionalInfo = objectMapper.valueToTree(additionalInfo);
-
-        if (user.getRoleId() != null && !user.getRoleId().isNullUid()) {
+        if (user.getRoleId() != null) {
             this.roleId = user.getRoleId().getId();
-            this.roleTitle = user.getRoleTitle();
+//            this.roleTitle = "TEST";
+//            this.roleTitle = user.getRoleId();
         }
         this.avatar = user.getAvatar();
-    }
-
-    public UserEntity(UUID id, UUID tenantId, UUID customerId, Long createdTime, Authority authority,
-                      String email, String phone, String searchText, String firstName,
-                      String lastName, Object additionalInfo, UUID roleId, String avatar, String roleTitle) {
-        this.setUuid(id);
-        this.tenantId = tenantId;
-        this.customerId = customerId;
-        this.authority = authority;
-        this.setCreatedTime(createdTime);
-        this.email = email;
-        this.phone = phone;
-        this.searchText = searchText;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.additionalInfo = objectMapper.valueToTree(additionalInfo);
-        this.roleId = roleId;
-        this.avatar = avatar;
-        this.roleTitle = roleTitle;
     }
 
     @Override

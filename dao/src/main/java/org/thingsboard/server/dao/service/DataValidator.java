@@ -45,7 +45,6 @@ public abstract class DataValidator<D extends BaseData<?>> {
     // Returns old instance of the same object that is fetched during validation.
     public D validate(D data, Function<D, TenantId> tenantIdFunction) {
         try {
-            log.info("DataValidator validate: " + data.toString());
             if (data == null) {
                 throw new DataValidationException("Data object can't be null!");
             }

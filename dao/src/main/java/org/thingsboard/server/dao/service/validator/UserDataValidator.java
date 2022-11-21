@@ -111,7 +111,6 @@ public class UserDataValidator extends DataValidator<User> {
         }
         if (!StringUtils.isEmpty(user.getEmail())) {
             validateEmail(user.getEmail());
-            //throw new DataValidationException("User email should be specified!");
             User existentUserWithEmail = userService.findUserByEmail(tenantId, user.getEmail());
             if (existentUserWithEmail != null && !isSameData(existentUserWithEmail, user)) {
                 throw new DataValidationException("User with email '" + user.getEmail() + "' "
