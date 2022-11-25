@@ -26,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.thingsboard.server.common.data.Role;
+import org.thingsboard.server.common.data.RoleTitle;
 import org.thingsboard.server.common.data.exception.ThingsboardException;
 import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
@@ -37,8 +38,6 @@ import org.thingsboard.server.service.entitiy.role.TbRoleService;
 import org.thingsboard.server.service.security.permission.Operation;
 import org.thingsboard.server.service.security.permission.Resource;
 
-import java.util.Arrays;
-
 import static org.thingsboard.server.controller.ControllerConstants.*;
 import static org.thingsboard.server.controller.ControllerConstants.SORT_ORDER_ALLOWABLE_VALUES;
 
@@ -46,11 +45,13 @@ import static org.thingsboard.server.controller.ControllerConstants.SORT_ORDER_A
 @RestController
 @TbCoreComponent
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/tenant")
 public class RoleController extends BaseController{
 
     public static final String ROLE_ID = "roleId";
     public static final String USER_ID = "userId";
+    public static final String ROLE_TITLE = "roleTitle";
+
     private final TbRoleService tbRoleService;
 
     @ApiOperation(value = "Get Role (getRoleById)",
@@ -70,6 +71,25 @@ public class RoleController extends BaseController{
         } catch (Exception e) {
             throw handleException(e);
         }
+    }
+
+   @ApiOperation(value = "Get Role (getRoleByTitle)",
+            notes = "Fetch the User object based on the provided Role Name. " +
+                    "Role Contains a set of permissions. ")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN')")
+    @RequestMapping(value = "/roles", method = RequestMethod.GET)
+    @ResponseBody
+    public Role getRoleByTitle(
+            @ApiParam(value = ROLE_TITLE_PARAM_DESCRIPTION)
+            @RequestParam(ROLE_TITLE) String strRoleTitle) throws ThingsboardException {
+      checkParameter(ROLE_TITLE, strRoleTitle);
+      try {
+            RoleTitle roleTitle = new RoleTitle(strRoleTitle);
+            return checkNotNull(roleService.findRoleByTitle(roleTitle));
+        } catch (Exception e) {
+            throw handleException(e);
+        }
+
     }
 
     @ApiOperation(value = "Check current (customer) user permission (checkPermission) TEST-ONLY")

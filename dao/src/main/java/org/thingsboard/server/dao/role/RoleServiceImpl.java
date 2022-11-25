@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.Role;
+import org.thingsboard.server.common.data.RoleTitle;
 import org.thingsboard.server.common.data.id.CustomerId;
 import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
@@ -58,6 +59,12 @@ public class RoleServiceImpl implements RoleService {
 //        log.trace("Executing findRoleById [{}]", roleId);
         return roleDao.findByRoleId(roleId.getId());
     }
+
+    @Override
+    public Role findRoleByTitle(RoleTitle roleTitle) {
+        return roleDao.findByRoleName(roleTitle.getTitle());
+    }
+
 
 //    @Override
 //    public Optional<Role> findRoleByTitle(RoleId roleId, String title) {
@@ -116,11 +123,11 @@ public class RoleServiceImpl implements RoleService {
         return roleDao.findByUserId(userId.getId());
     }
 
-    @Override
+   /* @Override
     public Role findByRoleTitle(String title) {
         log.info("Executing findRoleByTitle [{}]", title);
         return roleDao.findByRoleTitle(title);
-    }
+    }*/
 
     @Override
     public Role findRoleByTenantIdAndTitle(TenantId tenantId, String title) {

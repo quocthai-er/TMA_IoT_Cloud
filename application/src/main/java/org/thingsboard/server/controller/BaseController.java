@@ -36,25 +36,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.thingsboard.server.cluster.TbClusterService;
-import org.thingsboard.server.common.data.Customer;
-import org.thingsboard.server.common.data.Dashboard;
-import org.thingsboard.server.common.data.DashboardInfo;
-import org.thingsboard.server.common.data.Device;
-import org.thingsboard.server.common.data.DeviceInfo;
-import org.thingsboard.server.common.data.DeviceProfile;
-import org.thingsboard.server.common.data.EntityType;
-import org.thingsboard.server.common.data.EntityView;
-import org.thingsboard.server.common.data.EntityViewInfo;
-import org.thingsboard.server.common.data.HasTenantId;
-import org.thingsboard.server.common.data.OtaPackage;
-import org.thingsboard.server.common.data.OtaPackageInfo;
-import org.thingsboard.server.common.data.TbResource;
-import org.thingsboard.server.common.data.TbResourceInfo;
-import org.thingsboard.server.common.data.Tenant;
-import org.thingsboard.server.common.data.TenantInfo;
-import org.thingsboard.server.common.data.TenantProfile;
-import org.thingsboard.server.common.data.User;
-import org.thingsboard.server.common.data.Role;
+import org.thingsboard.server.common.data.*;
 import org.thingsboard.server.common.data.alarm.Alarm;
 import org.thingsboard.server.common.data.alarm.AlarmInfo;
 import org.thingsboard.server.common.data.asset.Asset;
@@ -500,6 +482,17 @@ public abstract class BaseController {
         }
     }
 
+    /*Role checkRoleName(RoleName roleName, Operation operation) throws ThingsboardException {
+        try {
+            Role role = roleService.findRoleByName(roleName);
+            checkNotNull(role, "Role with name [" + roleName + "] is not found");
+            accessControlService.checkPermission(getCurrentUser(), Resource.ROLE, operation, roleName, role);
+            return role;
+        } catch (Exception e) {
+            throw handleException(e, false);
+        }
+    }
+*/
     Role findOrCreateDefaultRole(TenantId tenantId) throws ThingsboardException {
         try {
             Role defaultRole = roleService.findRoleByTenantIdAndTitle(tenantId, this.CUSTOMER_USER_DEFAULT_TITLE);
@@ -522,6 +515,24 @@ public abstract class BaseController {
         try {
             validateId(userId, "Incorrect userId " + userId);
             User user = userService.findUserById(getCurrentUser().getTenantId(), userId);
+            checkNotNull(user, "User with id [" + userId + "] is not found");
+            if (user.getRoleId() != null) {
+                Role role = roleService.findRoleById(user.getRoleId());
+                if (role != null) {
+                    user.setRoleTitle(role.getTitle());
+                }
+            }
+            accessControlService.checkPermission(getCurrentUser(), Resource.USER, operation, userId, user);
+            return user;
+        } catch (Exception e) {
+            throw handleException(e, false);
+        }
+    }
+
+    User checkUserIdNotAvatar(UserId userId, Operation operation) throws ThingsboardException {
+        try {
+            validateId(userId, "Incorrect userId " + userId);
+            User user = userService.findUserByIdNotAvatar(getCurrentUser().getTenantId(), userId);
             checkNotNull(user, "User with id [" + userId + "] is not found");
             if (user.getRoleId() != null) {
                 Role role = roleService.findRoleById(user.getRoleId());

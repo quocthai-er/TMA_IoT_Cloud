@@ -15,25 +15,37 @@
  */
 package org.thingsboard.server.dao.service.validator;
 
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.thingsboard.server.common.data.User;
 import org.thingsboard.server.common.data.audit.AuditLog;
 import org.thingsboard.server.common.data.id.TenantId;
+import org.thingsboard.server.common.data.security.Authority;
 import org.thingsboard.server.dao.exception.DataValidationException;
+import org.thingsboard.server.dao.model.ModelConstants;
 import org.thingsboard.server.dao.service.DataValidator;
 
 @Component
 public class AuditLogDataValidator extends DataValidator<AuditLog> {
 
+    private static User user;
+
     @Override
     protected void validateDataImpl(TenantId tenantId, AuditLog auditLog) {
+
         if (auditLog.getEntityId() == null) {
             throw new DataValidationException("Entity Id should be specified!");
         }
+
         if (auditLog.getTenantId() == null) {
             throw new DataValidationException("Tenant Id should be specified!");
-        }
+                }
+
         if (auditLog.getUserId() == null) {
             throw new DataValidationException("User Id should be specified!");
+                }
         }
-    }
+
+
 }

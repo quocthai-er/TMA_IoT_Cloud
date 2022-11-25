@@ -80,6 +80,7 @@ public class DefaultAccessControlService implements AccessControlService {
         }
     }
 
+
     private PermissionChecker getPermissionChecker(Authority authority, Resource resource) throws ThingsboardException {
         Permissions permissions = authorityPermissions.get(authority);
         if (permissions == null) {

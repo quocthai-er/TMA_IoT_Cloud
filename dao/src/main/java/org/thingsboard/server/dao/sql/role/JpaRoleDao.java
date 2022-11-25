@@ -53,6 +53,13 @@ public class JpaRoleDao extends JpaAbstractSearchTextDao<RoleEntity, Role> imple
         return role;
     }
 
+
+    @Override
+    public Role findByRoleName(String roleTitle) {
+        Role role = DaoUtil.getData(roleRepository.findByTitle(roleTitle));
+        return role;
+    }
+
     @Override
     public Optional<Role> findRolesByTenantIdAndTitle(UUID tenantId, String title) {
         Role role = DaoUtil.getData(roleRepository.findByTenantIdAndTitle(tenantId, title));
@@ -82,11 +89,11 @@ public class JpaRoleDao extends JpaAbstractSearchTextDao<RoleEntity, Role> imple
         return role;
     }
 
-    @Override
+  /*  @Override
     public Role findByRoleTitle(String title) {
         Role role = DaoUtil.getData(roleRepository.findByTitle(title));
         return role;
-    }
+    }*/
 
     @Override
     public Role findRoleByTenantIdAndTitle(UUID tenantId, String title) {

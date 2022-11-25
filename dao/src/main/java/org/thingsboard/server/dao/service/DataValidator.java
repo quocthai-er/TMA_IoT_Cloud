@@ -25,6 +25,7 @@ import org.thingsboard.server.dao.TenantEntityDao;
 import org.thingsboard.server.dao.TenantEntityWithDataDao;
 import org.thingsboard.server.dao.exception.DataValidationException;
 
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -34,6 +35,8 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public abstract class DataValidator<D extends BaseData<?>> {
+
+
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$", Pattern.CASE_INSENSITIVE);
 
@@ -48,11 +51,12 @@ public abstract class DataValidator<D extends BaseData<?>> {
             if (data == null) {
                 throw new DataValidationException("Data object can't be null!");
             }
-
             ConstraintValidator.validateFields(data);
 
             TenantId tenantId = tenantIdFunction.apply(data);
+
             validateDataImpl(tenantId, data);
+
             D old;
             if (data.getId() == null) {
                 validateCreate(tenantId, data);

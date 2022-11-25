@@ -17,40 +17,35 @@ package org.thingsboard.server.common.data.id;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.thingsboard.server.common.data.EntityType;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 @ApiModel
-public abstract class UUIDBased implements HasUUID, Serializable {
+public abstract class RoleTitleBased implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    //private static final long serialVersionUID = 1L;
 
-    private final UUID id;
+    private final String roleTitle;
 
-
-    public UUIDBased() {
-        this(UUID.randomUUID());
-    }
-
-    public UUIDBased(UUID id) {
+    public RoleTitleBased(String roleTitle) {
         super();
-        this.id = id;
+        this.roleTitle = roleTitle;
     }
 
-    @ApiModelProperty(position = 1, required = true, value = "string", example = "784f394c-42b6-435a-983c-b7beff2784f9")
-    public UUID getId() {
-        return id;
+    @ApiModelProperty(position = 1, required = true, value = "string", example = "TENANT_ADMIN")
+    public String getTitle() {
+        return roleTitle;
     }
 
-    @Override
+ /*   @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((roleName == null) ? 0 : roleName.hashCode());
         return result;
     }
-
+*/
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -59,18 +54,20 @@ public abstract class UUIDBased implements HasUUID, Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        UUIDBased other = (UUIDBased) obj;
-        if (id == null) {
-            if (other.id != null)
+        RoleTitleBased other = (RoleTitleBased) obj;
+        if (roleTitle == null) {
+            if (other.roleTitle != null)
                 return false;
-        } else if (!id.equals(other.id))
+        } else if (!roleTitle.equals(other.roleTitle))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return id.toString();
+        return roleTitle.toString();
     }
 
+    @ApiModelProperty(position = 2, required = true, value = "string", example = "ROLE", allowableValues = "ROLE")
+    public abstract EntityType getEntityType();
 }

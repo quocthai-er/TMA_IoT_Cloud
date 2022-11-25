@@ -30,9 +30,7 @@ public class RoleId extends UUIDBased implements EntityId {
     private static final long serialVersionUID = 1L;
 
     @JsonCreator
-    public RoleId(@JsonProperty("id") UUID id) {
-        super(id);
-    }
+    public RoleId(@JsonProperty("id") UUID id) {super(id);}
 
     public static RoleId fromString(String roleId) {
         return new RoleId(UUID.fromString(roleId));

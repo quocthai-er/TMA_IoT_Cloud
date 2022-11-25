@@ -19,6 +19,7 @@ package org.thingsboard.server.dao.role;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.thingsboard.server.common.data.Customer;
 import org.thingsboard.server.common.data.Role;
+import org.thingsboard.server.common.data.RoleTitle;
 import org.thingsboard.server.common.data.id.CustomerId;
 import org.thingsboard.server.common.data.id.RoleId;
 import org.thingsboard.server.common.data.id.TenantId;
@@ -31,6 +32,9 @@ import java.util.Optional;
 public interface RoleService {
 
     Role findRoleById(RoleId roleId);
+
+    Role findRoleByTitle(RoleTitle roleTitle);
+
 
 //    Optional<Role> findRoleByTitle(RoleId roleId, String title);
 
@@ -47,7 +51,7 @@ public interface RoleService {
 
     Role findRoleByUserId(UserId userId);
 
-    Role findByRoleTitle(String title);
+    //Role findByRoleTitle(String title);
     Role findRoleByTenantIdAndTitle(TenantId tenantId, String title);
 
 }
