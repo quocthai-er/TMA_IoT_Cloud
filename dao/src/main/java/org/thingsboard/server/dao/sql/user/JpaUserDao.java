@@ -74,10 +74,32 @@ public class JpaUserDao extends JpaAbstractSearchTextDao<UserEntity, User> imple
     }
 
     @Override
+    public PageData<User> findByTenantIdNotAvatar(UUID tenantId, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                userRepository
+                        .findByTenantIdNotAvatar(
+                                tenantId,
+                                Objects.toString(pageLink.getTextSearch(), ""),
+                                DaoUtil.toPageable(pageLink)));
+    }
+
+    @Override
     public PageData<User> findTenantAdmins(UUID tenantId, PageLink pageLink) {
         return DaoUtil.toPageData(
                 userRepository
                         .findUsersByAuthority(
+                                tenantId,
+                                NULL_UUID,
+                                Objects.toString(pageLink.getTextSearch(), ""),
+                                Authority.TENANT_ADMIN,
+                                DaoUtil.toPageable(pageLink)));
+    }
+
+    @Override
+    public PageData<User> findTenantAdminsNotAvatar(UUID tenantId, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                userRepository
+                        .findUsersByAuthorityNotAvatar(
                                 tenantId,
                                 NULL_UUID,
                                 Objects.toString(pageLink.getTextSearch(), ""),
@@ -99,6 +121,19 @@ public class JpaUserDao extends JpaAbstractSearchTextDao<UserEntity, User> imple
     }
 
     @Override
+    public PageData<User> findCustomerUsersNotAvatar(UUID tenantId, UUID customerId, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                userRepository
+                        .findUsersByAuthorityNotAvatar(
+                                tenantId,
+                                customerId,
+                                Objects.toString(pageLink.getTextSearch(), ""),
+                                Authority.CUSTOMER_USER,
+                                DaoUtil.toPageable(pageLink)));
+
+    }
+
+    @Override
     public Long countByTenantId(TenantId tenantId) {
         return userRepository.countByTenantId(tenantId.getId());
     }
@@ -106,6 +141,12 @@ public class JpaUserDao extends JpaAbstractSearchTextDao<UserEntity, User> imple
     @Override
     public EntityType getEntityType() {
         return EntityType.USER;
+    }
+
+
+    @Override
+    public User findByIdNotAvatar(TenantId tenantId, UUID userId) {
+        return DaoUtil.getData(userRepository.findByIdNotAvatar(userId));
     }
 
 }

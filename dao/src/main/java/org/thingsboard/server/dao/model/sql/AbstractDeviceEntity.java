@@ -143,6 +143,43 @@ public abstract class AbstractDeviceEntity<T extends Device> extends BaseSqlEnti
         this.avatar = deviceEntity.getAvatar();
     }
 
+    public AbstractDeviceEntity (DeviceEntitys deviceEntitys) {
+        this.setId(deviceEntitys.getId());
+        this.setCreatedTime(deviceEntitys.getCreatedTime());
+        this.tenantId = deviceEntitys.getTenantId();
+        this.customerId = deviceEntitys.getCustomerId();
+        this.deviceProfileId = deviceEntitys.getDeviceProfileId();
+        this.deviceData = deviceEntitys.getDeviceData();
+        this.type = deviceEntitys.getType();
+        this.name = deviceEntitys.getName();
+        this.label = deviceEntitys.getLabel();
+        this.searchText = deviceEntitys.getSearchText();
+        this.additionalInfo = deviceEntitys.getAdditionalInfo();
+        this.firmwareId = deviceEntitys.getFirmwareId();
+        this.softwareId = deviceEntitys.getSoftwareId();
+        this.externalId = deviceEntitys.getExternalId();
+        this.avatar = deviceEntitys.getAvatar();
+    }
+
+   /* public AbstractDeviceEntity(UUID tenantId, UUID customerId, String type, String name, String label, String searchText,
+                                JsonNode additionalInfo, UUID deviceProfileId, UUID firmwareId, UUID softwareId,
+                                JsonNode deviceData, UUID externalId){
+        //this.setId(id);
+        this.tenantId = tenantId;
+        this.customerId = customerId;
+        //this.setCreatedTime(createdTime);
+        this.type = type;
+        this.name = name;
+        this.label = label;
+        this.searchText = searchText;
+        this.additionalInfo = additionalInfo;
+        this.deviceProfileId = deviceProfileId;
+        this.firmwareId = firmwareId;
+        this.softwareId = softwareId;
+        this.deviceData = deviceData;
+        this.externalId = externalId;
+    }*/
+
     @Override
     public String getSearchTextSource() {
         return name;
@@ -183,4 +220,32 @@ public abstract class AbstractDeviceEntity<T extends Device> extends BaseSqlEnti
         return device;
     }
 
+    protected Device toDeviceNotAvatar() {
+        Device device = new Device(new DeviceId(getUuid()));
+        device.setCreatedTime(createdTime);
+        if (tenantId != null) {
+            device.setTenantId(TenantId.fromUUID(tenantId));
+        }
+        if (customerId != null) {
+            device.setCustomerId(new CustomerId(customerId));
+        }
+        if (deviceProfileId != null) {
+            device.setDeviceProfileId(new DeviceProfileId(deviceProfileId));
+        }
+        if (firmwareId != null) {
+            device.setFirmwareId(new OtaPackageId(firmwareId));
+        }
+        if (softwareId != null) {
+            device.setSoftwareId(new OtaPackageId(softwareId));
+        }
+        device.setDeviceData(JacksonUtil.convertValue(deviceData, DeviceData.class));
+        device.setName(name);
+        device.setType(type);
+        device.setLabel(label);
+        device.setAdditionalInfo(additionalInfo);
+        if (externalId != null) {
+            device.setExternalId(new DeviceId(externalId));
+        }
+        return device;
+    }
 }

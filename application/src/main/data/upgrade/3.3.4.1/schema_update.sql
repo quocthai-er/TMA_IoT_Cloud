@@ -36,6 +36,7 @@ ALTER TABLE tb_role ADD COLUMN IF NOT EXISTS label varchar(255);
 ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS role_id uuid;
 ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS avatar varchar(1000000);
 ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS phone varchar(255) COLLATE pg_catalog."default";
+ALTER TABLE tb_user ADD COLUMN IF NOT EXISTS role_title varchar(255);
 --end new
 
 --DO

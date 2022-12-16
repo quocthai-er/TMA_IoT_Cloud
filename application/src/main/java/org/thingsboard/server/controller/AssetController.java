@@ -106,7 +106,9 @@ public class AssetController extends BaseController {
     @RequestMapping(value = "/asset/{assetId}", method = RequestMethod.GET)
     @ResponseBody
     public Asset getAssetById(@ApiParam(value = ASSET_ID_PARAM_DESCRIPTION)
-                              @PathVariable(ASSET_ID) String strAssetId) throws ThingsboardException {
+                              @PathVariable(ASSET_ID) String strAssetId,
+                              @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+                              @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         checkParameter(ASSET_ID, strAssetId);
         try {
             AssetId assetId = new AssetId(toUUID(strAssetId));
@@ -216,7 +218,7 @@ public class AssetController extends BaseController {
             notes = "Returns a page of assets owned by tenant. " +
                     PAGE_DATA_PARAMETERS + TENANT_AUTHORITY_PARAGRAPH, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
-    @RequestMapping(value = "/tenant/assets", params = {"pageSize", "page"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/tenant/assets", params = {"pageSize", "page","avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<Asset> getTenantAssets(
             @ApiParam(value = PAGE_SIZE_DESCRIPTION)
@@ -230,15 +232,29 @@ public class AssetController extends BaseController {
             @ApiParam(value = SORT_PROPERTY_DESCRIPTION, allowableValues = ASSET_SORT_PROPERTY_ALLOWABLE_VALUES)
             @RequestParam(required = false) String sortProperty,
             @ApiParam(value = SORT_ORDER_DESCRIPTION, allowableValues = SORT_ORDER_ALLOWABLE_VALUES)
-            @RequestParam(required = false) String sortOrder) throws ThingsboardException {
+            @RequestParam(required = false) String sortOrder,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         try {
             TenantId tenantId = getCurrentUser().getTenantId();
             PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
-            if (type != null && type.trim().length() > 0) {
-                return checkNotNull(assetService.findAssetsByTenantIdAndType(tenantId, type, pageLink));
-            } else {
-                return checkNotNull(assetService.findAssetsByTenantId(tenantId, pageLink));
+            if(!avatar)
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(assetService.findAssetsByTenantIdAndTypeNotAvatar(tenantId, type, pageLink));
+                } else {
+                    return checkNotNull(assetService.findAssetsByTenantIdNotAvatar(tenantId, pageLink));
+                }
             }
+            else
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(assetService.findAssetsByTenantIdAndType(tenantId, type, pageLink));
+                } else {
+                    return checkNotNull(assetService.findAssetsByTenantId(tenantId, pageLink));
+                }
+            }
+
         } catch (Exception e) {
             throw handleException(e);
         }
@@ -248,7 +264,7 @@ public class AssetController extends BaseController {
             notes = "Returns a page of assets info objects owned by tenant. " +
                     PAGE_DATA_PARAMETERS + ASSET_INFO_DESCRIPTION + TENANT_AUTHORITY_PARAGRAPH, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
-    @RequestMapping(value = "/tenant/assetInfos", params = {"pageSize", "page"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/tenant/assetInfos", params = {"pageSize", "page", "avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<AssetInfo> getTenantAssetInfos(
             @ApiParam(value = PAGE_SIZE_DESCRIPTION)
@@ -262,15 +278,29 @@ public class AssetController extends BaseController {
             @ApiParam(value = SORT_PROPERTY_DESCRIPTION, allowableValues = ASSET_SORT_PROPERTY_ALLOWABLE_VALUES)
             @RequestParam(required = false) String sortProperty,
             @ApiParam(value = SORT_ORDER_DESCRIPTION, allowableValues = SORT_ORDER_ALLOWABLE_VALUES)
-            @RequestParam(required = false) String sortOrder) throws ThingsboardException {
+            @RequestParam(required = false) String sortOrder,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         try {
             TenantId tenantId = getCurrentUser().getTenantId();
             PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
-            if (type != null && type.trim().length() > 0) {
-                return checkNotNull(assetService.findAssetInfosByTenantIdAndType(tenantId, type, pageLink));
-            } else {
-                return checkNotNull(assetService.findAssetInfosByTenantId(tenantId, pageLink));
+            if(!avatar)
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(assetService.findAssetInfosByTenantIdAndTypeNotAvatar(tenantId, type, pageLink));
+                } else {
+                    return checkNotNull(assetService.findAssetInfosByTenantIdNotAvatar(tenantId, pageLink));
+                }
             }
+            else
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(assetService.findAssetInfosByTenantIdAndType(tenantId, type, pageLink));
+                } else {
+                    return checkNotNull(assetService.findAssetInfosByTenantId(tenantId, pageLink));
+                }
+            }
+
         } catch (Exception e) {
             throw handleException(e);
         }
@@ -280,14 +310,23 @@ public class AssetController extends BaseController {
             notes = "Requested asset must be owned by tenant that the user belongs to. " +
                     "Asset name is an unique property of asset. So it can be used to identify the asset." + TENANT_AUTHORITY_PARAGRAPH, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
-    @RequestMapping(value = "/tenant/assets", params = {"assetName"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/tenant/assets", params = {"assetName","avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public Asset getTenantAsset(
             @ApiParam(value = ASSET_NAME_DESCRIPTION)
-            @RequestParam String assetName) throws ThingsboardException {
+            @RequestParam String assetName,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         try {
             TenantId tenantId = getCurrentUser().getTenantId();
-            return checkNotNull(assetService.findAssetByTenantIdAndName(tenantId, assetName));
+            if(!avatar)
+            {
+                return checkNotNull(assetService.findAssetByTenantIdAndNameNotAvatar(tenantId, assetName));
+            }
+            else
+            {
+                return checkNotNull(assetService.findAssetByTenantIdAndName(tenantId, assetName));
+            }
         } catch (Exception e) {
             throw handleException(e);
         }
@@ -297,7 +336,7 @@ public class AssetController extends BaseController {
             notes = "Returns a page of assets objects assigned to customer. " +
                     PAGE_DATA_PARAMETERS, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
-    @RequestMapping(value = "/customer/{customerId}/assets", params = {"pageSize", "page"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/customer/{customerId}/assets", params = {"pageSize", "page","avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<Asset> getCustomerAssets(
             @ApiParam(value = CUSTOMER_ID_PARAM_DESCRIPTION)
@@ -313,18 +352,32 @@ public class AssetController extends BaseController {
             @ApiParam(value = SORT_PROPERTY_DESCRIPTION, allowableValues = ASSET_SORT_PROPERTY_ALLOWABLE_VALUES)
             @RequestParam(required = false) String sortProperty,
             @ApiParam(value = SORT_ORDER_DESCRIPTION, allowableValues = SORT_ORDER_ALLOWABLE_VALUES)
-            @RequestParam(required = false) String sortOrder) throws ThingsboardException {
+            @RequestParam(required = false) String sortOrder,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         checkParameter("customerId", strCustomerId);
         try {
             TenantId tenantId = getCurrentUser().getTenantId();
             CustomerId customerId = new CustomerId(toUUID(strCustomerId));
             checkCustomerId(customerId, Operation.READ);
             PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
-            if (type != null && type.trim().length() > 0) {
-                return checkNotNull(assetService.findAssetsByTenantIdAndCustomerIdAndType(tenantId, customerId, type, pageLink));
-            } else {
-                return checkNotNull(assetService.findAssetsByTenantIdAndCustomerId(tenantId, customerId, pageLink));
+            if(!avatar)
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(assetService.findAssetsByTenantIdAndCustomerIdAndTypeNotAvatar(tenantId, customerId, type, pageLink));
+                } else {
+                    return checkNotNull(assetService.findAssetsByTenantIdAndCustomerIdNotAvatar(tenantId, customerId, pageLink));
+                }
             }
+            else
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(assetService.findAssetsByTenantIdAndCustomerIdAndType(tenantId, customerId, type, pageLink));
+                } else {
+                    return checkNotNull(assetService.findAssetsByTenantIdAndCustomerId(tenantId, customerId, pageLink));
+                }
+            }
+
         } catch (Exception e) {
             throw handleException(e);
         }
@@ -334,7 +387,7 @@ public class AssetController extends BaseController {
             notes = "Returns a page of assets info objects assigned to customer. " +
                     PAGE_DATA_PARAMETERS + ASSET_INFO_DESCRIPTION, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
-    @RequestMapping(value = "/customer/{customerId}/assetInfos", params = {"pageSize", "page"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/customer/{customerId}/assetInfos", params = {"pageSize", "page", "avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<AssetInfo> getCustomerAssetInfos(
             @ApiParam(value = CUSTOMER_ID_PARAM_DESCRIPTION)
@@ -350,18 +403,31 @@ public class AssetController extends BaseController {
             @ApiParam(value = SORT_PROPERTY_DESCRIPTION, allowableValues = ASSET_SORT_PROPERTY_ALLOWABLE_VALUES)
             @RequestParam(required = false) String sortProperty,
             @ApiParam(value = SORT_ORDER_DESCRIPTION, allowableValues = SORT_ORDER_ALLOWABLE_VALUES)
-            @RequestParam(required = false) String sortOrder) throws ThingsboardException {
+            @RequestParam(required = false) String sortOrder,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         checkParameter("customerId", strCustomerId);
         try {
             TenantId tenantId = getCurrentUser().getTenantId();
             CustomerId customerId = new CustomerId(toUUID(strCustomerId));
             checkCustomerId(customerId, Operation.READ);
             PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
-            if (type != null && type.trim().length() > 0) {
-                return checkNotNull(assetService.findAssetInfosByTenantIdAndCustomerIdAndType(tenantId, customerId, type, pageLink));
-            } else {
-                return checkNotNull(assetService.findAssetInfosByTenantIdAndCustomerId(tenantId, customerId, pageLink));
+            if(!avatar)
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(assetService.findAssetInfosByTenantIdAndCustomerIdAndTypeNotAvatar(tenantId, customerId, type, pageLink));
+                } else {
+                    return checkNotNull(assetService.findAssetInfosByTenantIdAndCustomerIdNotAvatar(tenantId, customerId, pageLink));
+                }
             }
+            else {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(assetService.findAssetInfosByTenantIdAndCustomerIdAndType(tenantId, customerId, type, pageLink));
+                } else {
+                    return checkNotNull(assetService.findAssetInfosByTenantIdAndCustomerId(tenantId, customerId, pageLink));
+                }
+            }
+
         } catch (Exception e) {
             throw handleException(e);
         }

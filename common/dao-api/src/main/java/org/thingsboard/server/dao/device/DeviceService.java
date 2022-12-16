@@ -42,9 +42,14 @@ public interface DeviceService {
 
     Device findDeviceById(TenantId tenantId, DeviceId deviceId);
 
+    Device findDeviceByIdNotAvatar(TenantId tenantId, DeviceId deviceId);
+
     ListenableFuture<Device> findDeviceByIdAsync(TenantId tenantId, DeviceId deviceId);
 
     Device findDeviceByTenantIdAndName(TenantId tenantId, String name);
+
+    Device findDeviceByTenantIdAndNameNotAvatar(TenantId tenantId, String name);
+
 
     Device saveDevice(Device device, boolean doValidate);
 
@@ -64,9 +69,18 @@ public interface DeviceService {
 
     PageData<Device> findDevicesByTenantId(TenantId tenantId, PageLink pageLink);
 
+    PageData<Device> findDevicesByTenantIdNotAvatar(TenantId tenantId, PageLink pageLink);
+
+
     PageData<DeviceInfo> findDeviceInfosByTenantId(TenantId tenantId, PageLink pageLink);
 
+    PageData<DeviceInfo> findDeviceInfosByTenantIdNotAvatar(TenantId tenantId, PageLink pageLink);
+
+
     PageData<Device> findDevicesByTenantIdAndType(TenantId tenantId, String type, PageLink pageLink);
+
+    PageData<Device> findDevicesByTenantIdAndTypeNotAvatar(TenantId tenantId, String type, PageLink pageLink);
+
 
     PageData<Device> findDevicesByTenantIdAndTypeAndEmptyOtaPackage(TenantId tenantId, DeviceProfileId deviceProfileId, OtaPackageType type, PageLink pageLink);
 
@@ -74,7 +88,13 @@ public interface DeviceService {
 
     PageData<DeviceInfo> findDeviceInfosByTenantIdAndType(TenantId tenantId, String type, PageLink pageLink);
 
+    PageData<DeviceInfo> findDeviceInfosByTenantIdAndTypeNotAvatar(TenantId tenantId, String type, PageLink pageLink);
+
+
     PageData<DeviceInfo> findDeviceInfosByTenantIdAndDeviceProfileId(TenantId tenantId, DeviceProfileId deviceProfileId, PageLink pageLink);
+
+    PageData<DeviceInfo> findDeviceInfosByTenantIdAndDeviceProfileIdNotAvatar(TenantId tenantId, DeviceProfileId deviceProfileId, PageLink pageLink);
+
 
     ListenableFuture<List<Device>> findDevicesByTenantIdAndIdsAsync(TenantId tenantId, List<DeviceId> deviceIds);
 
@@ -82,13 +102,23 @@ public interface DeviceService {
 
     PageData<Device> findDevicesByTenantIdAndCustomerId(TenantId tenantId, CustomerId customerId, PageLink pageLink);
 
+    PageData<Device> findDevicesByTenantIdAndCustomerIdNotAvatar(TenantId tenantId, CustomerId customerId, PageLink pageLink);
+
     PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerId(TenantId tenantId, CustomerId customerId, PageLink pageLink);
+
+    PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdNotAvatar(TenantId tenantId, CustomerId customerId, PageLink pageLink);
 
     PageData<Device> findDevicesByTenantIdAndCustomerIdAndType(TenantId tenantId, CustomerId customerId, String type, PageLink pageLink);
 
+    PageData<Device> findDevicesByTenantIdAndCustomerIdAndTypeNotAvatar(TenantId tenantId, CustomerId customerId, String type, PageLink pageLink);
+
     PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndType(TenantId tenantId, CustomerId customerId, String type, PageLink pageLink);
 
+    PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndTypeNotAvatar(TenantId tenantId, CustomerId customerId, String type, PageLink pageLink);
+
     PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileId(TenantId tenantId, CustomerId customerId, DeviceProfileId deviceProfileId, PageLink pageLink);
+
+    PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileIdNotAvatar(TenantId tenantId, CustomerId customerId, DeviceProfileId deviceProfileId, PageLink pageLink);
 
     ListenableFuture<List<Device>> findDevicesByTenantIdCustomerIdAndIdsAsync(TenantId tenantId, CustomerId customerId, List<DeviceId> deviceIds);
 

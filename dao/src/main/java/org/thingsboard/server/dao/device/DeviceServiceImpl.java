@@ -135,6 +135,21 @@ public class DeviceServiceImpl extends AbstractCachedEntityService<DeviceCacheKe
     }
 
     @Override
+    public Device findDeviceByIdNotAvatar(TenantId tenantId, DeviceId deviceId) {
+        log.trace("Executing findDeviceById [{}]", deviceId);
+        validateId(deviceId, INCORRECT_DEVICE_ID + deviceId);
+        return cache.getAndPutInTransaction(new DeviceCacheKey(tenantId, deviceId),
+                () -> {
+                    //TODO: possible bug source since sometimes we need to clear cache by tenant id and sometimes by sys tenant id?
+                    if (TenantId.SYS_TENANT_ID.equals(tenantId)) {
+                        return deviceDao.findDeviceByIdNotAvatar(tenantId, deviceId.getId());
+                    } else {
+                        return deviceDao.findDeviceByTenantIdAndIdNotAvatar(tenantId, deviceId.getId());
+                    }
+                }, true);
+    }
+
+    @Override
     public ListenableFuture<Device> findDeviceByIdAsync(TenantId tenantId, DeviceId deviceId) {
         log.trace("Executing findDeviceById [{}]", deviceId);
         validateId(deviceId, INCORRECT_DEVICE_ID + deviceId);
@@ -151,6 +166,14 @@ public class DeviceServiceImpl extends AbstractCachedEntityService<DeviceCacheKe
         validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
         return cache.getAndPutInTransaction(new DeviceCacheKey(tenantId, name),
                 () -> deviceDao.findDeviceByTenantIdAndName(tenantId.getId(), name).orElse(null), true);
+    }
+
+    @Override
+    public Device findDeviceByTenantIdAndNameNotAvatar(TenantId tenantId, String name) {
+        log.trace("Executing findDeviceByTenantIdAndName [{}][{}]", tenantId, name);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        return cache.getAndPutInTransaction(new DeviceCacheKey(tenantId, name),
+                () -> deviceDao.findDeviceByTenantIdAndNameNotAvatar(tenantId.getId(), name).orElse(null), true);
     }
 
     @Override
@@ -339,11 +362,27 @@ public class DeviceServiceImpl extends AbstractCachedEntityService<DeviceCacheKe
     }
 
     @Override
+    public PageData<Device> findDevicesByTenantIdNotAvatar(TenantId tenantId, PageLink pageLink) {
+        log.trace("Executing findDevicesByTenantId, tenantId [{}], pageLink [{}]", tenantId, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validatePageLink(pageLink);
+        return deviceDao.findDevicesByTenantIdNotAvatar(tenantId.getId(), pageLink);
+    }
+
+    @Override
     public PageData<DeviceInfo> findDeviceInfosByTenantId(TenantId tenantId, PageLink pageLink) {
         log.trace("Executing findDeviceInfosByTenantId, tenantId [{}], pageLink [{}]", tenantId, pageLink);
         validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
         validatePageLink(pageLink);
         return deviceDao.findDeviceInfosByTenantId(tenantId.getId(), pageLink);
+    }
+
+    @Override
+    public PageData<DeviceInfo> findDeviceInfosByTenantIdNotAvatar(TenantId tenantId, PageLink pageLink) {
+        log.trace("Executing findDeviceInfosByTenantId, tenantId [{}], pageLink [{}]", tenantId, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validatePageLink(pageLink);
+        return deviceDao.findDeviceInfosByTenantIdNotAvatar(tenantId.getId(), pageLink);
     }
 
     @Override
@@ -353,6 +392,15 @@ public class DeviceServiceImpl extends AbstractCachedEntityService<DeviceCacheKe
         validateString(type, "Incorrect type " + type);
         validatePageLink(pageLink);
         return deviceDao.findDevicesByTenantIdAndType(tenantId.getId(), type, pageLink);
+    }
+
+    @Override
+    public PageData<Device> findDevicesByTenantIdAndTypeNotAvatar(TenantId tenantId, String type, PageLink pageLink) {
+        log.trace("Executing findDevicesByTenantIdAndType, tenantId [{}], type [{}], pageLink [{}]", tenantId, type, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateString(type, "Incorrect type " + type);
+        validatePageLink(pageLink);
+        return deviceDao.findDevicesByTenantIdAndTypeNotAvatar(tenantId.getId(), type, pageLink);
     }
 
     @Override
@@ -386,12 +434,30 @@ public class DeviceServiceImpl extends AbstractCachedEntityService<DeviceCacheKe
     }
 
     @Override
+    public PageData<DeviceInfo> findDeviceInfosByTenantIdAndTypeNotAvatar(TenantId tenantId, String type, PageLink pageLink) {
+        log.trace("Executing findDeviceInfosByTenantIdAndType, tenantId [{}], type [{}], pageLink [{}]", tenantId, type, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateString(type, "Incorrect type " + type);
+        validatePageLink(pageLink);
+        return deviceDao.findDeviceInfosByTenantIdAndTypeNotAvatar(tenantId.getId(), type, pageLink);
+    }
+
+    @Override
     public PageData<DeviceInfo> findDeviceInfosByTenantIdAndDeviceProfileId(TenantId tenantId, DeviceProfileId deviceProfileId, PageLink pageLink) {
         log.trace("Executing findDeviceInfosByTenantIdAndDeviceProfileId, tenantId [{}], deviceProfileId [{}], pageLink [{}]", tenantId, deviceProfileId, pageLink);
         validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
         validateId(deviceProfileId, INCORRECT_DEVICE_PROFILE_ID + deviceProfileId);
         validatePageLink(pageLink);
         return deviceDao.findDeviceInfosByTenantIdAndDeviceProfileId(tenantId.getId(), deviceProfileId.getId(), pageLink);
+    }
+
+    @Override
+    public PageData<DeviceInfo> findDeviceInfosByTenantIdAndDeviceProfileIdNotAvatar(TenantId tenantId, DeviceProfileId deviceProfileId, PageLink pageLink) {
+        log.trace("Executing findDeviceInfosByTenantIdAndDeviceProfileId, tenantId [{}], deviceProfileId [{}], pageLink [{}]", tenantId, deviceProfileId, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateId(deviceProfileId, INCORRECT_DEVICE_PROFILE_ID + deviceProfileId);
+        validatePageLink(pageLink);
+        return deviceDao.findDeviceInfosByTenantIdAndDeviceProfileIdNotAvatar(tenantId.getId(), deviceProfileId.getId(), pageLink);
     }
 
     @Override
@@ -420,12 +486,30 @@ public class DeviceServiceImpl extends AbstractCachedEntityService<DeviceCacheKe
     }
 
     @Override
+    public PageData<Device> findDevicesByTenantIdAndCustomerIdNotAvatar(TenantId tenantId, CustomerId customerId, PageLink pageLink) {
+        log.trace("Executing findDevicesByTenantIdAndCustomerId, tenantId [{}], customerId [{}], pageLink [{}]", tenantId, customerId, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
+        validatePageLink(pageLink);
+        return deviceDao.findDevicesByTenantIdAndCustomerIdNotAvatar(tenantId.getId(), customerId.getId(), pageLink);
+    }
+
+    @Override
     public PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerId(TenantId tenantId, CustomerId customerId, PageLink pageLink) {
         log.trace("Executing findDeviceInfosByTenantIdAndCustomerId, tenantId [{}], customerId [{}], pageLink [{}]", tenantId, customerId, pageLink);
         validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
         validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
         validatePageLink(pageLink);
         return deviceDao.findDeviceInfosByTenantIdAndCustomerId(tenantId.getId(), customerId.getId(), pageLink);
+    }
+
+    @Override
+    public PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdNotAvatar(TenantId tenantId, CustomerId customerId, PageLink pageLink) {
+        log.trace("Executing findDeviceInfosByTenantIdAndCustomerId, tenantId [{}], customerId [{}], pageLink [{}]", tenantId, customerId, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
+        validatePageLink(pageLink);
+        return deviceDao.findDeviceInfosByTenantIdAndCustomerIdNotAvatar(tenantId.getId(), customerId.getId(), pageLink);
     }
 
     @Override
@@ -439,6 +523,16 @@ public class DeviceServiceImpl extends AbstractCachedEntityService<DeviceCacheKe
     }
 
     @Override
+    public PageData<Device> findDevicesByTenantIdAndCustomerIdAndTypeNotAvatar(TenantId tenantId, CustomerId customerId, String type, PageLink pageLink) {
+        log.trace("Executing findDevicesByTenantIdAndCustomerIdAndType, tenantId [{}], customerId [{}], type [{}], pageLink [{}]", tenantId, customerId, type, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
+        validateString(type, "Incorrect type " + type);
+        validatePageLink(pageLink);
+        return deviceDao.findDevicesByTenantIdAndCustomerIdAndTypeNotAvatar(tenantId.getId(), customerId.getId(), type, pageLink);
+    }
+
+    @Override
     public PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndType(TenantId tenantId, CustomerId customerId, String type, PageLink pageLink) {
         log.trace("Executing findDeviceInfosByTenantIdAndCustomerIdAndType, tenantId [{}], customerId [{}], type [{}], pageLink [{}]", tenantId, customerId, type, pageLink);
         validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
@@ -446,6 +540,16 @@ public class DeviceServiceImpl extends AbstractCachedEntityService<DeviceCacheKe
         validateString(type, "Incorrect type " + type);
         validatePageLink(pageLink);
         return deviceDao.findDeviceInfosByTenantIdAndCustomerIdAndType(tenantId.getId(), customerId.getId(), type, pageLink);
+    }
+
+  @Override
+    public PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndTypeNotAvatar(TenantId tenantId, CustomerId customerId, String type, PageLink pageLink) {
+        log.trace("Executing findDeviceInfosByTenantIdAndCustomerIdAndType, tenantId [{}], customerId [{}], type [{}], pageLink [{}]", tenantId, customerId, type, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
+        validateString(type, "Incorrect type " + type);
+        validatePageLink(pageLink);
+        return deviceDao.findDeviceInfosByTenantIdAndCustomerIdAndTypeNotAvatar(tenantId.getId(), customerId.getId(), type, pageLink);
     }
 
     @Override
@@ -456,6 +560,16 @@ public class DeviceServiceImpl extends AbstractCachedEntityService<DeviceCacheKe
         validateId(deviceProfileId, INCORRECT_DEVICE_PROFILE_ID + deviceProfileId);
         validatePageLink(pageLink);
         return deviceDao.findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileId(tenantId.getId(), customerId.getId(), deviceProfileId.getId(), pageLink);
+    }
+
+    @Override
+    public PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileIdNotAvatar(TenantId tenantId, CustomerId customerId, DeviceProfileId deviceProfileId, PageLink pageLink) {
+        log.trace("Executing findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileId, tenantId [{}], customerId [{}], deviceProfileId [{}], pageLink [{}]", tenantId, customerId, deviceProfileId, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
+        validateId(deviceProfileId, INCORRECT_DEVICE_PROFILE_ID + deviceProfileId);
+        validatePageLink(pageLink);
+        return deviceDao.findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileIdNotAvatar(tenantId.getId(), customerId.getId(), deviceProfileId.getId(), pageLink);
     }
 
     @Override

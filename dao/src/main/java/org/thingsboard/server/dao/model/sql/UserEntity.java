@@ -22,7 +22,6 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.jetbrains.annotations.NotNull;
 import org.thingsboard.server.common.data.User;
 import org.thingsboard.server.common.data.id.CustomerId;
 import org.thingsboard.server.common.data.id.RoleId;
@@ -85,7 +84,8 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
     @Column(name = ModelConstants.USER_AVATAR_PROPERTY)
     private String avatar;
 
-    @Transient
+    //@Transient
+    @Column(name = ModelConstants.USER_ROLE_TITLE_PROPERTY)
     private String roleTitle;
 
     public UserEntity() {
@@ -113,8 +113,46 @@ public class UserEntity extends BaseSqlEntity<User> implements SearchTextEntity<
             this.roleId = user.getRoleId().getId();
 //            this.roleTitle = "TEST";
 //            this.roleTitle = user.getRoleId();
+            this.roleTitle = user.getRoleTitle();
         }
         this.avatar = user.getAvatar();
+    }
+
+    public UserEntity(UUID id, UUID tenantId, UUID customerId, Long createdTime, Authority authority,
+                      String email, String phone, String searchText, String firstName,
+                      String lastName, Object additionalInfo, UUID roleId, String roleTitle) {
+        this.setUuid(id);
+        this.tenantId = tenantId;
+        this.customerId = customerId;
+        this.authority = authority;
+        this.setCreatedTime(createdTime);
+        this.email = email;
+        this.phone = phone;
+        this.searchText = searchText;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.additionalInfo = objectMapper.valueToTree(additionalInfo);
+        this.roleId = roleId;
+        this.roleTitle = roleTitle;
+    }
+
+    public UserEntity(UUID id, UUID tenantId, UUID customerId, Long createdTime, Authority authority,
+                      String email, String phone, String searchText, String firstName,
+                      String lastName, Object additionalInfo, UUID roleId, String avatar, String roleTitle) {
+        this.setUuid(id);
+        this.tenantId = tenantId;
+        this.customerId = customerId;
+        this.authority = authority;
+        this.setCreatedTime(createdTime);
+        this.email = email;
+        this.phone = phone;
+        this.searchText = searchText;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.additionalInfo = objectMapper.valueToTree(additionalInfo);
+        this.avatar = avatar;
+        this.roleId = roleId;
+        this.roleTitle = roleTitle;
     }
 
     @Override

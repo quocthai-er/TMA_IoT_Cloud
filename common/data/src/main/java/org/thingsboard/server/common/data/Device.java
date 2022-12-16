@@ -96,6 +96,7 @@ public class Device extends SearchTextBasedWithAdditionalInfo<DeviceId> implemen
         this.avatar = device.getAvatar();
     }
 
+
     public Device updateDevice(Device device) {
         this.tenantId = device.getTenantId();
         this.customerId = device.getCustomerId();

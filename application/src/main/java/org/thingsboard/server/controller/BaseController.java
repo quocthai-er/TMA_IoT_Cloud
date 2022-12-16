@@ -640,6 +640,18 @@ public abstract class BaseController {
         }
     }
 
+    Device checkDeviceIdNotAvatar(DeviceId deviceId, Operation operation) throws ThingsboardException {
+        try {
+            validateId(deviceId, "Incorrect deviceId " + deviceId);
+            Device device = deviceService.findDeviceByIdNotAvatar(getCurrentUser().getTenantId(), deviceId);
+            checkNotNull(device, "Device with id [" + deviceId + "] is not found");
+            accessControlService.checkPermission(getCurrentUser(), Resource.DEVICE, operation, deviceId, device);
+            return device;
+        } catch (Exception e) {
+            throw handleException(e, false);
+        }
+    }
+
     DeviceInfo checkDeviceInfoId(DeviceId deviceId, Operation operation) throws ThingsboardException {
         try {
             validateId(deviceId, "Incorrect deviceId " + deviceId);

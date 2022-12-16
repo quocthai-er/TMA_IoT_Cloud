@@ -63,6 +63,9 @@ public interface AssetDao extends Dao<Asset>, TenantEntityDao, ExportableEntityD
      */
     PageData<Asset> findAssetsByTenantId(UUID tenantId, PageLink pageLink);
 
+    PageData<Asset> findAssetsByTenantIdNotAvatar(UUID tenantId, PageLink pageLink);
+
+
     /**
      * Find asset infos by tenantId and page link.
      *
@@ -71,6 +74,9 @@ public interface AssetDao extends Dao<Asset>, TenantEntityDao, ExportableEntityD
      * @return the list of asset info objects
      */
     PageData<AssetInfo> findAssetInfosByTenantId(UUID tenantId, PageLink pageLink);
+
+    PageData<AssetInfo> findAssetInfosByTenantIdNotAvatar(UUID tenantId, PageLink pageLink);
+
 
     /**
      * Find assets by tenantId, type and page link.
@@ -82,6 +88,9 @@ public interface AssetDao extends Dao<Asset>, TenantEntityDao, ExportableEntityD
      */
     PageData<Asset> findAssetsByTenantIdAndType(UUID tenantId, String type, PageLink pageLink);
 
+    PageData<Asset> findAssetsByTenantIdAndTypeNotAvatar(UUID tenantId, String type, PageLink pageLink);
+
+
     /**
      * Find asset infos by tenantId, type and page link.
      *
@@ -91,6 +100,9 @@ public interface AssetDao extends Dao<Asset>, TenantEntityDao, ExportableEntityD
      * @return the list of asset info objects
      */
     PageData<AssetInfo> findAssetInfosByTenantIdAndType(UUID tenantId, String type, PageLink pageLink);
+
+    PageData<AssetInfo> findAssetInfosByTenantIdAndTypeNotAvatar(UUID tenantId, String type, PageLink pageLink);
+
 
     /**
      * Find assets by tenantId and assets Ids.
@@ -110,6 +122,7 @@ public interface AssetDao extends Dao<Asset>, TenantEntityDao, ExportableEntityD
      * @return the list of asset objects
      */
     PageData<Asset> findAssetsByTenantIdAndCustomerId(UUID tenantId, UUID customerId, PageLink pageLink);
+    PageData<Asset> findAssetsByTenantIdAndCustomerIdNotAvatar(UUID tenantId, UUID customerId, PageLink pageLink);
 
     /**
      * Find asset infos by tenantId, customerId and page link.
@@ -121,6 +134,8 @@ public interface AssetDao extends Dao<Asset>, TenantEntityDao, ExportableEntityD
      */
     PageData<AssetInfo> findAssetInfosByTenantIdAndCustomerId(UUID tenantId, UUID customerId, PageLink pageLink);
 
+    PageData<AssetInfo> findAssetInfosByTenantIdAndCustomerIdNotAvatar(UUID tenantId, UUID customerId, PageLink pageLink);
+
     /**
      * Find assets by tenantId, customerId, type and page link.
      *
@@ -131,6 +146,7 @@ public interface AssetDao extends Dao<Asset>, TenantEntityDao, ExportableEntityD
      * @return the list of asset objects
      */
     PageData<Asset> findAssetsByTenantIdAndCustomerIdAndType(UUID tenantId, UUID customerId, String type, PageLink pageLink);
+    PageData<Asset> findAssetsByTenantIdAndCustomerIdAndTypeNotAvatar(UUID tenantId, UUID customerId, String type, PageLink pageLink);
 
     /**
      * Find asset infos by tenantId, customerId, type and page link.
@@ -142,6 +158,8 @@ public interface AssetDao extends Dao<Asset>, TenantEntityDao, ExportableEntityD
      * @return the list of asset info objects
      */
     PageData<AssetInfo> findAssetInfosByTenantIdAndCustomerIdAndType(UUID tenantId, UUID customerId, String type, PageLink pageLink);
+
+    PageData<AssetInfo> findAssetInfosByTenantIdAndCustomerIdAndTypeNotAvatar(UUID tenantId, UUID customerId, String type, PageLink pageLink);
 
     /**
      * Find assets by tenantId, customerId and assets Ids.
@@ -161,6 +179,9 @@ public interface AssetDao extends Dao<Asset>, TenantEntityDao, ExportableEntityD
      * @return the optional asset object
      */
     Optional<Asset> findAssetsByTenantIdAndName(UUID tenantId, String name);
+
+    Optional<Asset> findAssetsByTenantIdAndNameNotAvatar(UUID tenantId, String name);
+
 
     /**
      * Find tenants asset types.

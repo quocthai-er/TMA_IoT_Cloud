@@ -16,7 +16,10 @@
 package org.thingsboard.server.dao.sql.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.thingsboard.server.dao.model.sql.UserCredentialsEntity;
+import org.thingsboard.server.dao.model.sql.UserEntity;
 
 import java.util.UUID;
 

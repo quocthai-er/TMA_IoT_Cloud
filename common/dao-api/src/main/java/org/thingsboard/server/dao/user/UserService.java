@@ -29,7 +29,10 @@ public interface UserService {
 	
 	User findUserById(TenantId tenantId, UserId userId);
 
-	ListenableFuture<User> findUserByIdAsync(TenantId tenantId, UserId userId);
+    User findUserByIdNotAvatar(TenantId tenantId, UserId userId);
+
+
+    ListenableFuture<User> findUserByIdAsync(TenantId tenantId, UserId userId);
 
 	User findUserByEmail(TenantId tenantId, String email);
 
@@ -38,8 +41,8 @@ public interface UserService {
 	User saveUser(User user);
 
 	UserCredentials findUserCredentialsByUserId(TenantId tenantId, UserId userId);
-	
-	UserCredentials findUserCredentialsByActivateToken(TenantId tenantId, String activateToken);
+
+    UserCredentials findUserCredentialsByActivateToken(TenantId tenantId, String activateToken);
 
 	UserCredentials findUserCredentialsByResetToken(TenantId tenantId, String resetToken);
 
@@ -58,12 +61,20 @@ public interface UserService {
     void deleteUser(TenantId tenantId, UserId userId);
 
     PageData<User> findUsersByTenantId(TenantId tenantId, PageLink pageLink);
+    PageData<User> findUsersByTenantIdNotAvatar(TenantId tenantId, PageLink pageLink);
+
 
     PageData<User> findTenantAdmins(TenantId tenantId, PageLink pageLink);
+
+    PageData<User> findTenantAdminsNotAvatar(TenantId tenantId, PageLink pageLink);
+
 
     void deleteTenantAdmins(TenantId tenantId);
 
     PageData<User> findCustomerUsers(TenantId tenantId, CustomerId customerId, PageLink pageLink);
+
+    PageData<User> findCustomerUsersNotAvatar(TenantId tenantId, CustomerId customerId, PageLink pageLink);
+
 
     void deleteCustomerUsers(TenantId tenantId, CustomerId customerId);
 

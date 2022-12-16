@@ -15,6 +15,7 @@
  */
 package org.thingsboard.server.dao.user;
 
+import org.thingsboard.server.common.data.User;
 import org.thingsboard.server.common.data.id.TenantId;
 import org.thingsboard.server.common.data.security.UserCredentials;
 import org.thingsboard.server.dao.Dao;
@@ -41,6 +42,7 @@ public interface UserCredentialsDao extends Dao<UserCredentials> {
      * @return the user credentials object
      */
     UserCredentials findByUserId(TenantId tenantId, UUID userId);
+
 
     /**
      * Find user credentials by activate token.

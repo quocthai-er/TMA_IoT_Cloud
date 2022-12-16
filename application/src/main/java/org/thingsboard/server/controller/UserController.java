@@ -108,29 +108,49 @@ public class UserController extends BaseController {
                     "If the user has the authority of 'TENANT_ADMIN', the server checks that the requested user is owned by the same tenant. " +
                     "If the user has the authority of 'CUSTOMER_USER', the server checks that the requested user is owned by the same customer.")
     @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN', 'CUSTOMER_USER')")
-    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}", params = {"avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public User getUserById(
             @ApiParam(value = USER_ID_PARAM_DESCRIPTION)
-            @PathVariable(USER_ID) String strUserId) throws ThingsboardException {
+            @PathVariable(USER_ID) String strUserId,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar
+    ) throws ThingsboardException {
         checkParameter(USER_ID, strUserId);
         try {
             UserId userId = new UserId(toUUID(strUserId));
-            User user = checkUserId(userId, Operation.READ);
-            if (user.getAdditionalInfo().isObject()) {
-                ObjectNode additionalInfo = (ObjectNode) user.getAdditionalInfo();
-                processDashboardIdFromAdditionalInfo(additionalInfo, DEFAULT_DASHBOARD);
-                processDashboardIdFromAdditionalInfo(additionalInfo, HOME_DASHBOARD);
-                UserCredentials userCredentials = userService.findUserCredentialsByUserId(user.getTenantId(), user.getId());
-                if (userCredentials.isEnabled() && !additionalInfo.has("userCredentialsEnabled")) {
-                    additionalInfo.put("userCredentialsEnabled", true);
+            if (!avatar) {
+                User user = checkUserIdNotAvatar(userId, Operation.READ);
+                if (user.getAdditionalInfo().isObject()) {
+                    ObjectNode additionalInfo = (ObjectNode) user.getAdditionalInfo();
+                    processDashboardIdFromAdditionalInfo(additionalInfo, DEFAULT_DASHBOARD);
+                    processDashboardIdFromAdditionalInfo(additionalInfo, HOME_DASHBOARD);
+                    UserCredentials userCredentials = userService.findUserCredentialsByUserId(user.getTenantId(), user.getId());
+                    if (userCredentials.isEnabled() && !additionalInfo.has("userCredentialsEnabled")) {
+                        additionalInfo.put("userCredentialsEnabled", true);
+                    }
                 }
+                return user;
             }
-            return user;
+            else {
+                User user = checkUserId(userId, Operation.READ);
+                if (user.getAdditionalInfo().isObject()) {
+                    ObjectNode additionalInfo = (ObjectNode) user.getAdditionalInfo();
+                    processDashboardIdFromAdditionalInfo(additionalInfo, DEFAULT_DASHBOARD);
+                    processDashboardIdFromAdditionalInfo(additionalInfo, HOME_DASHBOARD);
+                    UserCredentials userCredentials = userService.findUserCredentialsByUserId(user.getTenantId(), user.getId());
+                    if (userCredentials.isEnabled() && !additionalInfo.has("userCredentialsEnabled")) {
+                        additionalInfo.put("userCredentialsEnabled", true);
+                    }
+                }
+                return user;
+            }
         } catch (Exception e) {
             throw handleException(e);
         }
     }
+
+
 
     @ApiOperation(value = "Check Token Access Enabled (isUserTokenAccessEnabled)",
             notes = "Checks that the system is configured to allow administrators to impersonate themself as other users. " +
@@ -312,7 +332,7 @@ public class UserController extends BaseController {
             notes = "Returns a page of users owned by tenant or customer. The scope depends on authority of the user that performs the request." +
                     PAGE_DATA_PARAMETERS + TENANT_OR_CUSTOMER_AUTHORITY_PARAGRAPH)
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
-    @RequestMapping(value = "/users", params = {"pageSize", "page"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/users", params = {"pageSize", "page", "avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<User> getUsers(
             @ApiParam(value = PAGE_SIZE_DESCRIPTION, required = true)
@@ -324,15 +344,29 @@ public class UserController extends BaseController {
             @ApiParam(value = SORT_PROPERTY_DESCRIPTION, allowableValues = USER_SORT_PROPERTY_ALLOWABLE_VALUES)
             @RequestParam(required = false) String sortProperty,
             @ApiParam(value = SORT_ORDER_DESCRIPTION, allowableValues = SORT_ORDER_ALLOWABLE_VALUES)
-            @RequestParam(required = false) String sortOrder) throws ThingsboardException {
+            @RequestParam(required = false) String sortOrder,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         try {
             PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
             SecurityUser currentUser = getCurrentUser();
-            if (Authority.TENANT_ADMIN.equals(currentUser.getAuthority())) {
-                return checkNotNull(userService.findUsersByTenantId(currentUser.getTenantId(), pageLink));
-            } else {
-                return checkNotNull(userService.findCustomerUsers(currentUser.getTenantId(), currentUser.getCustomerId(), pageLink));
+            if(!avatar)
+            {
+                if (Authority.TENANT_ADMIN.equals(currentUser.getAuthority())) {
+                    return checkNotNull(userService.findUsersByTenantIdNotAvatar(currentUser.getTenantId(), pageLink));
+                } else {
+                    return checkNotNull(userService.findCustomerUsersNotAvatar(currentUser.getTenantId(), currentUser.getCustomerId(), pageLink));
+                }
             }
+            else
+            {
+                if (Authority.TENANT_ADMIN.equals(currentUser.getAuthority())) {
+                    return checkNotNull(userService.findUsersByTenantId(currentUser.getTenantId(), pageLink));
+                } else {
+                    return checkNotNull(userService.findCustomerUsers(currentUser.getTenantId(), currentUser.getCustomerId(), pageLink));
+                }
+            }
+
         } catch (Exception e) {
             throw handleException(e);
         }
@@ -341,7 +375,7 @@ public class UserController extends BaseController {
     @ApiOperation(value = "Get Tenant Users (getTenantAdmins)",
             notes = "Returns a page of users owned by tenant. " + PAGE_DATA_PARAMETERS + SYSTEM_AUTHORITY_PARAGRAPH)
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
-    @RequestMapping(value = "/tenant/{tenantId}/users", params = {"pageSize", "page"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/tenant/{tenantId}/users", params = {"pageSize", "page", "avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<User> getTenantAdmins(
             @ApiParam(value = TENANT_ID_PARAM_DESCRIPTION, required = true)
@@ -355,12 +389,19 @@ public class UserController extends BaseController {
             @ApiParam(value = SORT_PROPERTY_DESCRIPTION, allowableValues = USER_SORT_PROPERTY_ALLOWABLE_VALUES)
             @RequestParam(required = false) String sortProperty,
             @ApiParam(value = SORT_ORDER_DESCRIPTION, allowableValues = SORT_ORDER_ALLOWABLE_VALUES)
-            @RequestParam(required = false) String sortOrder) throws ThingsboardException {
+            @RequestParam(required = false) String sortOrder,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         checkParameter("tenantId", strTenantId);
         try {
             TenantId tenantId = TenantId.fromUUID(toUUID(strTenantId));
             PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
-            return checkNotNull(userService.findTenantAdmins(tenantId, pageLink));
+            if(!avatar)
+            {
+                return checkNotNull(userService.findTenantAdminsNotAvatar(tenantId, pageLink));
+
+            }
+            else return checkNotNull(userService.findTenantAdmins(tenantId, pageLink));
         } catch (Exception e) {
             throw handleException(e);
         }
@@ -369,7 +410,7 @@ public class UserController extends BaseController {
     @ApiOperation(value = "Get Customer Users (getCustomerUsers)",
             notes = "Returns a page of users owned by customer. " + PAGE_DATA_PARAMETERS + TENANT_AUTHORITY_PARAGRAPH)
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
-    @RequestMapping(value = "/customer/{customerId}/users", params = {"pageSize", "page"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/customer/{customerId}/users", params = {"pageSize", "page", "avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<User> getCustomerUsers(
             @ApiParam(value = CUSTOMER_ID_PARAM_DESCRIPTION, required = true)
@@ -383,14 +424,22 @@ public class UserController extends BaseController {
             @ApiParam(value = SORT_PROPERTY_DESCRIPTION, allowableValues = USER_SORT_PROPERTY_ALLOWABLE_VALUES)
             @RequestParam(required = false) String sortProperty,
             @ApiParam(value = SORT_ORDER_DESCRIPTION, allowableValues = SORT_ORDER_ALLOWABLE_VALUES)
-            @RequestParam(required = false) String sortOrder) throws ThingsboardException {
+            @RequestParam(required = false) String sortOrder,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         checkParameter("customerId", strCustomerId);
         try {
             CustomerId customerId = new CustomerId(toUUID(strCustomerId));
             checkCustomerId(customerId, Operation.READ);
             PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
             TenantId tenantId = getCurrentUser().getTenantId();
-            return checkNotNull(userService.findCustomerUsers(tenantId, customerId, pageLink));
+            if(!avatar)
+            {
+                return checkNotNull(userService.findCustomerUsersNotAvatar(tenantId, customerId, pageLink));
+
+            }
+            else return checkNotNull(userService.findCustomerUsers(tenantId, customerId, pageLink));
+
         } catch (Exception e) {
             throw handleException(e);
         }

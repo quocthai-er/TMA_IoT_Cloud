@@ -73,6 +73,9 @@ public interface DeviceDao extends Dao<Device>, TenantEntityDao, ExportableEntit
      */
     PageData<Device> findDevicesByTenantId(UUID tenantId, PageLink pageLink);
 
+    PageData<Device> findDevicesByTenantIdNotAvatar(UUID tenantId, PageLink pageLink);
+
+
     /**
      * Find device infos by tenantId and page link.
      *
@@ -81,6 +84,9 @@ public interface DeviceDao extends Dao<Device>, TenantEntityDao, ExportableEntit
      * @return the list of device info objects
      */
     PageData<DeviceInfo> findDeviceInfosByTenantId(UUID tenantId, PageLink pageLink);
+
+    PageData<DeviceInfo> findDeviceInfosByTenantIdNotAvatar(UUID tenantId, PageLink pageLink);
+
 
     /**
      * Find devices by tenantId, type and page link.
@@ -91,6 +97,8 @@ public interface DeviceDao extends Dao<Device>, TenantEntityDao, ExportableEntit
      * @return the list of device objects
      */
     PageData<Device> findDevicesByTenantIdAndType(UUID tenantId, String type, PageLink pageLink);
+    PageData<Device> findDevicesByTenantIdAndTypeNotAvatar(UUID tenantId, String type, PageLink pageLink);
+
 
     PageData<Device> findDevicesByTenantIdAndTypeAndEmptyOtaPackage(UUID tenantId,
                                                                     UUID deviceProfileId,
@@ -109,6 +117,9 @@ public interface DeviceDao extends Dao<Device>, TenantEntityDao, ExportableEntit
      */
     PageData<DeviceInfo> findDeviceInfosByTenantIdAndType(UUID tenantId, String type, PageLink pageLink);
 
+    PageData<DeviceInfo> findDeviceInfosByTenantIdAndTypeNotAvatar(UUID tenantId, String type, PageLink pageLink);
+
+
     /**
      * Find device infos by tenantId, deviceProfileId and page link.
      *
@@ -118,6 +129,8 @@ public interface DeviceDao extends Dao<Device>, TenantEntityDao, ExportableEntit
      * @return the list of device info objects
      */
     PageData<DeviceInfo> findDeviceInfosByTenantIdAndDeviceProfileId(UUID tenantId, UUID deviceProfileId, PageLink pageLink);
+
+    PageData<DeviceInfo> findDeviceInfosByTenantIdAndDeviceProfileIdNotAvatar(UUID tenantId, UUID deviceProfileId, PageLink pageLink);
 
     /**
      * Find devices by tenantId and devices Ids.
@@ -138,6 +151,8 @@ public interface DeviceDao extends Dao<Device>, TenantEntityDao, ExportableEntit
      */
     PageData<Device> findDevicesByTenantIdAndCustomerId(UUID tenantId, UUID customerId, PageLink pageLink);
 
+    PageData<Device> findDevicesByTenantIdAndCustomerIdNotAvatar(UUID tenantId, UUID customerId, PageLink pageLink);
+
     /**
      * Find device infos by tenantId, customerId and page link.
      *
@@ -147,6 +162,8 @@ public interface DeviceDao extends Dao<Device>, TenantEntityDao, ExportableEntit
      * @return the list of device info objects
      */
     PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerId(UUID tenantId, UUID customerId, PageLink pageLink);
+
+    PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdNotAvatar(UUID tenantId, UUID customerId, PageLink pageLink);
 
     /**
      * Find devices by tenantId, customerId, type and page link.
@@ -159,6 +176,8 @@ public interface DeviceDao extends Dao<Device>, TenantEntityDao, ExportableEntit
      */
     PageData<Device> findDevicesByTenantIdAndCustomerIdAndType(UUID tenantId, UUID customerId, String type, PageLink pageLink);
 
+    PageData<Device> findDevicesByTenantIdAndCustomerIdAndTypeNotAvatar(UUID tenantId, UUID customerId, String type, PageLink pageLink);
+
     /**
      * Find device infos by tenantId, customerId, type and page link.
      *
@@ -170,6 +189,8 @@ public interface DeviceDao extends Dao<Device>, TenantEntityDao, ExportableEntit
      */
     PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndType(UUID tenantId, UUID customerId, String type, PageLink pageLink);
 
+    PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndTypeNotAvatar(UUID tenantId, UUID customerId, String type, PageLink pageLink);
+
     /**
      * Find device infos by tenantId, customerId, deviceProfileId and page link.
      *
@@ -180,6 +201,8 @@ public interface DeviceDao extends Dao<Device>, TenantEntityDao, ExportableEntit
      * @return the list of device info objects
      */
     PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileId(UUID tenantId, UUID customerId, UUID deviceProfileId, PageLink pageLink);
+
+    PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileIdNotAvatar(UUID tenantId, UUID customerId, UUID deviceProfileId, PageLink pageLink);
 
     /**
      * Find devices by tenantId, customerId and devices Ids.
@@ -200,6 +223,9 @@ public interface DeviceDao extends Dao<Device>, TenantEntityDao, ExportableEntit
      */
     Optional<Device> findDeviceByTenantIdAndName(UUID tenantId, String name);
 
+    Optional<Device> findDeviceByTenantIdAndNameNotAvatar(UUID tenantId, String name);
+
+
     /**
      * Find tenants device types.
      *
@@ -214,6 +240,10 @@ public interface DeviceDao extends Dao<Device>, TenantEntityDao, ExportableEntit
      * @return the device object
      */
     Device findDeviceByTenantIdAndId(TenantId tenantId, UUID id);
+
+    Device findDeviceByTenantIdAndIdNotAvatar(TenantId tenantId, UUID id);
+
+    Device findDeviceByIdNotAvatar(TenantId tenantId, UUID id);
 
     /**
      * Find devices by tenantId and device id.

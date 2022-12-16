@@ -58,6 +58,8 @@ public interface UserDao extends Dao<User>, TenantEntityDao {
      * @return the list of user entities
      */
     PageData<User> findByTenantId(UUID tenantId, PageLink pageLink);
+    PageData<User> findByTenantIdNotAvatar(UUID tenantId, PageLink pageLink);
+
 
     /**
      * Find tenant admin users by tenantId and page link.
@@ -68,6 +70,9 @@ public interface UserDao extends Dao<User>, TenantEntityDao {
      */
     PageData<User> findTenantAdmins(UUID tenantId, PageLink pageLink);
 
+    PageData<User> findTenantAdminsNotAvatar(UUID tenantId, PageLink pageLink);
+
+
     /**
      * Find customer users by tenantId, customerId and page link.
      *
@@ -77,4 +82,10 @@ public interface UserDao extends Dao<User>, TenantEntityDao {
      * @return the list of user entities
      */
     PageData<User> findCustomerUsers(UUID tenantId, UUID customerId, PageLink pageLink);
+
+    PageData<User> findCustomerUsersNotAvatar(UUID tenantId, UUID customerId, PageLink pageLink);
+
+    User findByIdNotAvatar(TenantId tenantId, UUID userId);
+
+
 }

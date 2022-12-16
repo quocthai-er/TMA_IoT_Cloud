@@ -78,9 +78,27 @@ public class JpaAssetDao extends JpaAbstractSearchTextDao<AssetEntity, Asset> im
     }
 
     @Override
+    public PageData<Asset> findAssetsByTenantIdNotAvatar(UUID tenantId, PageLink pageLink) {
+        return DaoUtil.toPageData(assetRepository
+                .findByTenantIdNotAvatar(
+                        tenantId,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink)));
+    }
+
+    @Override
     public PageData<AssetInfo> findAssetInfosByTenantId(UUID tenantId, PageLink pageLink) {
         return DaoUtil.toPageData(
                 assetRepository.findAssetInfosByTenantId(
+                        tenantId,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink, AssetInfoEntity.assetInfoColumnMap)));
+    }
+
+    @Override
+    public PageData<AssetInfo> findAssetInfosByTenantIdNotAvatar(UUID tenantId, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                assetRepository.findAssetInfosByTenantIdNotAvatar(
                         tenantId,
                         Objects.toString(pageLink.getTextSearch(), ""),
                         DaoUtil.toPageable(pageLink, AssetInfoEntity.assetInfoColumnMap)));
@@ -103,9 +121,29 @@ public class JpaAssetDao extends JpaAbstractSearchTextDao<AssetEntity, Asset> im
     }
 
     @Override
+    public PageData<Asset> findAssetsByTenantIdAndCustomerIdNotAvatar(UUID tenantId, UUID customerId, PageLink pageLink) {
+        return DaoUtil.toPageData(assetRepository
+                .findByTenantIdAndCustomerIdNotAvatar(
+                        tenantId,
+                        customerId,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink)));
+    }
+
+    @Override
     public PageData<AssetInfo> findAssetInfosByTenantIdAndCustomerId(UUID tenantId, UUID customerId, PageLink pageLink) {
         return DaoUtil.toPageData(
                 assetRepository.findAssetInfosByTenantIdAndCustomerId(
+                        tenantId,
+                        customerId,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink, AssetInfoEntity.assetInfoColumnMap)));
+    }
+
+    @Override
+    public PageData<AssetInfo> findAssetInfosByTenantIdAndCustomerIdNotAvatar(UUID tenantId, UUID customerId, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                assetRepository.findAssetInfosByTenantIdAndCustomerIdNotAvatar(
                         tenantId,
                         customerId,
                         Objects.toString(pageLink.getTextSearch(), ""),
@@ -125,6 +163,12 @@ public class JpaAssetDao extends JpaAbstractSearchTextDao<AssetEntity, Asset> im
     }
 
     @Override
+    public Optional<Asset> findAssetsByTenantIdAndNameNotAvatar(UUID tenantId, String name) {
+        Asset asset = DaoUtil.getData(assetRepository.findByTenantIdAndNameNotAvatar(tenantId, name));
+        return Optional.ofNullable(asset);
+    }
+
+    @Override
     public PageData<Asset> findAssetsByTenantIdAndType(UUID tenantId, String type, PageLink pageLink) {
         return DaoUtil.toPageData(assetRepository
                 .findByTenantIdAndType(
@@ -135,9 +179,29 @@ public class JpaAssetDao extends JpaAbstractSearchTextDao<AssetEntity, Asset> im
     }
 
     @Override
+    public PageData<Asset> findAssetsByTenantIdAndTypeNotAvatar(UUID tenantId, String type, PageLink pageLink) {
+        return DaoUtil.toPageData(assetRepository
+                .findByTenantIdAndTypeNotAvatar(
+                        tenantId,
+                        type,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink)));
+    }
+
+    @Override
     public PageData<AssetInfo> findAssetInfosByTenantIdAndType(UUID tenantId, String type, PageLink pageLink) {
         return DaoUtil.toPageData(
                 assetRepository.findAssetInfosByTenantIdAndType(
+                        tenantId,
+                        type,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink, AssetInfoEntity.assetInfoColumnMap)));
+    }
+
+    @Override
+    public PageData<AssetInfo> findAssetInfosByTenantIdAndTypeNotAvatar(UUID tenantId, String type, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                assetRepository.findAssetInfosByTenantIdAndTypeNotAvatar(
                         tenantId,
                         type,
                         Objects.toString(pageLink.getTextSearch(), ""),
@@ -156,9 +220,31 @@ public class JpaAssetDao extends JpaAbstractSearchTextDao<AssetEntity, Asset> im
     }
 
     @Override
+    public PageData<Asset> findAssetsByTenantIdAndCustomerIdAndTypeNotAvatar(UUID tenantId, UUID customerId, String type, PageLink pageLink) {
+        return DaoUtil.toPageData(assetRepository
+                .findByTenantIdAndCustomerIdAndTypeNotAvatar(
+                        tenantId,
+                        customerId,
+                        type,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink)));
+    }
+
+    @Override
     public PageData<AssetInfo> findAssetInfosByTenantIdAndCustomerIdAndType(UUID tenantId, UUID customerId, String type, PageLink pageLink) {
         return DaoUtil.toPageData(
                 assetRepository.findAssetInfosByTenantIdAndCustomerIdAndType(
+                        tenantId,
+                        customerId,
+                        type,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink, AssetInfoEntity.assetInfoColumnMap)));
+    }
+
+    @Override
+    public PageData<AssetInfo> findAssetInfosByTenantIdAndCustomerIdAndTypeNotAvatar(UUID tenantId, UUID customerId, String type, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                assetRepository.findAssetInfosByTenantIdAndCustomerIdAndTypeNotAvatar(
                         tenantId,
                         customerId,
                         type,

@@ -41,6 +41,9 @@ public interface AssetService {
 
     Asset findAssetByTenantIdAndName(TenantId tenantId, String name);
 
+    Asset findAssetByTenantIdAndNameNotAvatar(TenantId tenantId, String name);
+
+
     Asset saveAsset(Asset asset);
 
     Asset assignAssetToCustomer(TenantId tenantId, AssetId assetId, CustomerId customerId);
@@ -51,23 +54,40 @@ public interface AssetService {
 
     PageData<Asset> findAssetsByTenantId(TenantId tenantId, PageLink pageLink);
 
+    PageData<Asset> findAssetsByTenantIdNotAvatar(TenantId tenantId, PageLink pageLink);
+
+
     PageData<AssetInfo> findAssetInfosByTenantId(TenantId tenantId, PageLink pageLink);
+
+    PageData<AssetInfo> findAssetInfosByTenantIdNotAvatar(TenantId tenantId, PageLink pageLink);
+
 
     PageData<Asset> findAssetsByTenantIdAndType(TenantId tenantId, String type, PageLink pageLink);
 
+    PageData<Asset> findAssetsByTenantIdAndTypeNotAvatar(TenantId tenantId, String type, PageLink pageLink);
+
+
     PageData<AssetInfo> findAssetInfosByTenantIdAndType(TenantId tenantId, String type, PageLink pageLink);
+    PageData<AssetInfo> findAssetInfosByTenantIdAndTypeNotAvatar(TenantId tenantId, String type, PageLink pageLink);
+
 
     ListenableFuture<List<Asset>> findAssetsByTenantIdAndIdsAsync(TenantId tenantId, List<AssetId> assetIds);
 
     void deleteAssetsByTenantId(TenantId tenantId);
 
     PageData<Asset> findAssetsByTenantIdAndCustomerId(TenantId tenantId, CustomerId customerId, PageLink pageLink);
+    PageData<Asset> findAssetsByTenantIdAndCustomerIdNotAvatar(TenantId tenantId, CustomerId customerId, PageLink pageLink);
 
     PageData<AssetInfo> findAssetInfosByTenantIdAndCustomerId(TenantId tenantId, CustomerId customerId, PageLink pageLink);
 
+    PageData<AssetInfo> findAssetInfosByTenantIdAndCustomerIdNotAvatar(TenantId tenantId, CustomerId customerId, PageLink pageLink);
+
     PageData<Asset> findAssetsByTenantIdAndCustomerIdAndType(TenantId tenantId, CustomerId customerId, String type, PageLink pageLink);
+    PageData<Asset> findAssetsByTenantIdAndCustomerIdAndTypeNotAvatar(TenantId tenantId, CustomerId customerId, String type, PageLink pageLink);
 
     PageData<AssetInfo> findAssetInfosByTenantIdAndCustomerIdAndType(TenantId tenantId, CustomerId customerId, String type, PageLink pageLink);
+
+    PageData<AssetInfo> findAssetInfosByTenantIdAndCustomerIdAndTypeNotAvatar(TenantId tenantId, CustomerId customerId, String type, PageLink pageLink);
 
     ListenableFuture<List<Asset>> findAssetsByTenantIdCustomerIdAndIdsAsync(TenantId tenantId, CustomerId customerId, List<AssetId> assetIds);
 

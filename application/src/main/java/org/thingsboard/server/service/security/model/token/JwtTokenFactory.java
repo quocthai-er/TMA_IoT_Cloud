@@ -62,6 +62,7 @@ public class JwtTokenFactory {
     private static final String TENANT_ID = "tenantId";
     private static final String CUSTOMER_ID = "customerId";
     private static final String ROLE_ID = "roleId";
+    private static  final String ROLE_TITLE = "roleTitle";
     private final JwtSettings settings;
 
     @Autowired
@@ -76,7 +77,6 @@ public class JwtTokenFactory {
         if (securityUser.getAuthority() == null) {
             throw new IllegalArgumentException("User doesn't have any privileges");
         }
-
         UserPrincipal principal = securityUser.getUserPrincipal();
 
         JwtBuilder jwtBuilder = setUpToken(securityUser, securityUser.getAuthorities().stream()
@@ -84,7 +84,9 @@ public class JwtTokenFactory {
         jwtBuilder.claim(FIRST_NAME, securityUser.getFirstName())
                 .claim(LAST_NAME, securityUser.getLastName())
                 .claim(ENABLED, securityUser.isEnabled())
-                .claim(IS_PUBLIC, principal.getType() == UserPrincipal.Type.PUBLIC_ID);
+                .claim(IS_PUBLIC, principal.getType() == UserPrincipal.Type.PUBLIC_ID)
+                .claim(ROLE_TITLE, securityUser.getRoleTitle())
+        ;
         if (securityUser.getTenantId() != null) {
             jwtBuilder.claim(TENANT_ID, securityUser.getTenantId().getId().toString());
         }
@@ -94,6 +96,9 @@ public class JwtTokenFactory {
         if (securityUser.getRoleId() != null) {
             jwtBuilder.claim(ROLE_ID, securityUser.getRoleId().getId().toString());
         }
+       /* if (securityUser.getRoleTitle() != null) {
+            jwtBuilder.claim(ROLE_TITLE, securityUser.getRoleTitle());
+        }*/
 
         String token = jwtBuilder.compact();
 
@@ -128,6 +133,11 @@ public class JwtTokenFactory {
             securityUser.setRoleId(new RoleId((UUID.fromString(roleId))));
         }
 
+     /*   String roleTitle = claims.get(ROLE_TITLE, String.class);
+        if(roleTitle != null)
+        {
+            securityUser.setRoleTitle(String.valueOf(new RoleTitle(roleTitle)));
+        }*/
         UserPrincipal principal;
         if (securityUser.getAuthority() != Authority.PRE_VERIFICATION_TOKEN) {
             securityUser.setFirstName(claims.get(FIRST_NAME, String.class));
@@ -135,6 +145,7 @@ public class JwtTokenFactory {
             securityUser.setEnabled(claims.get(ENABLED, Boolean.class));
             boolean isPublic = claims.get(IS_PUBLIC, Boolean.class);
             principal = new UserPrincipal(isPublic ? UserPrincipal.Type.PUBLIC_ID : UserPrincipal.Type.USER_NAME, subject);
+            securityUser.setRoleTitle(claims.get(ROLE_TITLE, String.class));
         } else {
             principal = new UserPrincipal(UserPrincipal.Type.USER_NAME, subject);
         }
@@ -178,6 +189,7 @@ public class JwtTokenFactory {
         if (user.getCustomerId() != null) {
             jwtBuilder.claim(CUSTOMER_ID, user.getCustomerId().toString());
         }
+
         return new AccessJwtToken(jwtBuilder.compact());
     }
 

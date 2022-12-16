@@ -100,6 +100,14 @@ public class UserServiceImpl extends AbstractEntityService implements UserServic
     }
 
     @Override
+    public User findUserByIdNotAvatar(TenantId tenantId, UserId userId) {
+        log.trace("Executing findUserById [{}]", userId);
+        validateId(userId, INCORRECT_USER_ID + userId);
+        return userDao.findByIdNotAvatar(tenantId, userId.getId());
+    }
+
+
+    @Override
     public ListenableFuture<User> findUserByIdAsync(TenantId tenantId, UserId userId) {
         log.trace("Executing findUserByIdAsync [{}]", userId);
         validateId(userId, INCORRECT_USER_ID + userId);
@@ -242,11 +250,27 @@ public class UserServiceImpl extends AbstractEntityService implements UserServic
     }
 
     @Override
+    public PageData<User> findUsersByTenantIdNotAvatar(TenantId tenantId, PageLink pageLink) {
+        log.trace("Executing findUsersByTenantId, tenantId [{}], pageLink [{}]", tenantId, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validatePageLink(pageLink);
+        return userDao.findByTenantIdNotAvatar(tenantId.getId(), pageLink);
+    }
+
+    @Override
     public PageData<User> findTenantAdmins(TenantId tenantId, PageLink pageLink) {
         log.trace("Executing findTenantAdmins, tenantId [{}], pageLink [{}]", tenantId, pageLink);
         validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
         validatePageLink(pageLink);
         return userDao.findTenantAdmins(tenantId.getId(), pageLink);
+    }
+
+    @Override
+    public PageData<User> findTenantAdminsNotAvatar(TenantId tenantId, PageLink pageLink) {
+        log.trace("Executing findTenantAdmins, tenantId [{}], pageLink [{}]", tenantId, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validatePageLink(pageLink);
+        return userDao.findTenantAdminsNotAvatar(tenantId.getId(), pageLink);
     }
 
     @Override
@@ -263,6 +287,16 @@ public class UserServiceImpl extends AbstractEntityService implements UserServic
         validateId(customerId, "Incorrect customerId " + customerId);
         validatePageLink(pageLink);
         return userDao.findCustomerUsers(tenantId.getId(), customerId.getId(), pageLink);
+    }
+
+
+    @Override
+    public PageData<User> findCustomerUsersNotAvatar(TenantId tenantId, CustomerId customerId, PageLink pageLink) {
+        log.trace("Executing findCustomerUsers, tenantId [{}], customerId [{}], pageLink [{}]", tenantId, customerId, pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateId(customerId, "Incorrect customerId " + customerId);
+        validatePageLink(pageLink);
+        return userDao.findCustomerUsersNotAvatar(tenantId.getId(), customerId.getId(), pageLink);
     }
 
     @Override

@@ -51,6 +51,18 @@ public class AssetInfoEntity extends AbstractAssetEntity<AssetInfo> {
         }
     }
 
+    public AssetInfoEntity(AssetEntitys assetEntitys,
+                           String customerTitle,
+                           Object customerAdditionalInfo) {
+        super(assetEntitys);
+        this.customerTitle = customerTitle;
+        if (customerAdditionalInfo != null && ((JsonNode)customerAdditionalInfo).has("isPublic")) {
+            this.customerIsPublic = ((JsonNode)customerAdditionalInfo).get("isPublic").asBoolean();
+        } else {
+            this.customerIsPublic = false;
+        }
+    }
+
     @Override
     public AssetInfo toData() {
         return new AssetInfo(super.toAsset(), customerTitle, customerIsPublic);

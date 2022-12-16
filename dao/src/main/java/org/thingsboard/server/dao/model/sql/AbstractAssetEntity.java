@@ -114,6 +114,20 @@ public abstract class AbstractAssetEntity<T extends Asset> extends BaseSqlEntity
         this.avatar = assetEntity.getAvatar();
     }
 
+    public AbstractAssetEntity(AssetEntitys assetEntitys) {
+        this.setId(assetEntitys.getId());
+        this.setCreatedTime(assetEntitys.getCreatedTime());
+        this.tenantId = assetEntitys.getTenantId();
+        this.customerId = assetEntitys.getCustomerId();
+        this.type = assetEntitys.getType();
+        this.name = assetEntitys.getName();
+        this.label = assetEntitys.getLabel();
+        this.searchText = assetEntitys.getSearchText();
+        this.additionalInfo = assetEntitys.getAdditionalInfo();
+        this.externalId = assetEntitys.getExternalId();
+    }
+
+
     @Override
     public String getSearchTextSource() {
         return name;
@@ -145,6 +159,24 @@ public abstract class AbstractAssetEntity<T extends Asset> extends BaseSqlEntity
             asset.setExternalId(new AssetId(externalId));
         }
         asset.setAvatar(avatar);
+        return asset;
+    }
+    protected Asset toAssetNotAvatar() {
+        Asset asset = new Asset(new AssetId(id));
+        asset.setCreatedTime(createdTime);
+        if (tenantId != null) {
+            asset.setTenantId(TenantId.fromUUID(tenantId));
+        }
+        if (customerId != null) {
+            asset.setCustomerId(new CustomerId(customerId));
+        }
+        asset.setName(name);
+        asset.setType(type);
+        asset.setLabel(label);
+        asset.setAdditionalInfo(additionalInfo);
+        if (externalId != null) {
+            asset.setExternalId(new AssetId(externalId));
+        }
         return asset;
     }
 

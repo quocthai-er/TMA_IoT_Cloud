@@ -114,7 +114,7 @@ import static org.thingsboard.server.controller.EdgeController.EDGE_ID;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @Slf4j
-public class DeviceController extends BaseController {
+public class  DeviceController extends BaseController {
 
     protected static final String DEVICE_NAME = "deviceName";
 
@@ -128,13 +128,29 @@ public class DeviceController extends BaseController {
                     "If the user has the authority of 'CUSTOMER_USER', the server checks that the device is assigned to the same customer." +
                     TENANT_OR_CUSTOMER_AUTHORITY_PARAGRAPH)
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
-    @RequestMapping(value = "/device/{deviceId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/device/{deviceId}", params = {"avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public Device getDeviceById(@ApiParam(value = DEVICE_ID_PARAM_DESCRIPTION)
-                                @PathVariable(DEVICE_ID) String strDeviceId) throws ThingsboardException {
-        checkParameter(DEVICE_ID, strDeviceId);
-        DeviceId deviceId = new DeviceId(toUUID(strDeviceId));
-        return checkDeviceId(deviceId, Operation.READ);
+                                @PathVariable(DEVICE_ID) String strDeviceId,
+                                @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+                                @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
+            checkParameter(DEVICE_ID, strDeviceId);
+            try {
+                DeviceId deviceId = new DeviceId(toUUID(strDeviceId));
+                if(!avatar)
+                {
+                    log.info( "false");
+                    return checkDeviceIdNotAvatar(deviceId, Operation.READ);
+                }
+                else
+                {
+                    log.info( "true");
+                    return checkDeviceId(deviceId, Operation.READ);
+                }
+            }
+           catch (Exception e) {
+                throw handleException(e);
+            }
     }
 
     @ApiOperation(value = "Get Device Info (getDeviceInfoById)",
@@ -293,7 +309,7 @@ public class DeviceController extends BaseController {
             notes = "Returns a page of devices owned by tenant. " +
                     PAGE_DATA_PARAMETERS + TENANT_AUTHORITY_PARAGRAPH)
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
-    @RequestMapping(value = "/tenant/devices", params = {"pageSize", "page"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/tenant/devices", params = {"pageSize", "page", "avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<Device> getTenantDevices(
             @ApiParam(value = PAGE_SIZE_DESCRIPTION, required = true)
@@ -307,15 +323,29 @@ public class DeviceController extends BaseController {
             @ApiParam(value = SORT_PROPERTY_DESCRIPTION, allowableValues = DEVICE_SORT_PROPERTY_ALLOWABLE_VALUES)
             @RequestParam(required = false) String sortProperty,
             @ApiParam(value = SORT_ORDER_DESCRIPTION, allowableValues = SORT_ORDER_ALLOWABLE_VALUES)
-            @RequestParam(required = false) String sortOrder) throws ThingsboardException {
+            @RequestParam(required = false) String sortOrder,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         try {
             TenantId tenantId = getCurrentUser().getTenantId();
             PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
-            if (type != null && type.trim().length() > 0) {
-                return checkNotNull(deviceService.findDevicesByTenantIdAndType(tenantId, type, pageLink));
-            } else {
-                return checkNotNull(deviceService.findDevicesByTenantId(tenantId, pageLink));
+            if(!avatar)
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(deviceService.findDevicesByTenantIdAndTypeNotAvatar(tenantId, type, pageLink));
+                } else {
+                    return checkNotNull(deviceService.findDevicesByTenantIdNotAvatar(tenantId, pageLink));
+                }
             }
+            else
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(deviceService.findDevicesByTenantIdAndType(tenantId, type, pageLink));
+                } else {
+                    return checkNotNull(deviceService.findDevicesByTenantId(tenantId, pageLink));
+                }
+            }
+
         } catch (Exception e) {
             throw handleException(e);
         }
@@ -325,7 +355,7 @@ public class DeviceController extends BaseController {
             notes = "Returns a page of devices info objects owned by tenant. " +
                     PAGE_DATA_PARAMETERS + DEVICE_INFO_DESCRIPTION + TENANT_AUTHORITY_PARAGRAPH)
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
-    @RequestMapping(value = "/tenant/deviceInfos", params = {"pageSize", "page"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/tenant/deviceInfos", params = {"pageSize", "page", "avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<DeviceInfo> getTenantDeviceInfos(
             @ApiParam(value = PAGE_SIZE_DESCRIPTION, required = true)
@@ -341,19 +371,36 @@ public class DeviceController extends BaseController {
             @ApiParam(value = SORT_PROPERTY_DESCRIPTION, allowableValues = DEVICE_SORT_PROPERTY_ALLOWABLE_VALUES)
             @RequestParam(required = false) String sortProperty,
             @ApiParam(value = SORT_ORDER_DESCRIPTION, allowableValues = SORT_ORDER_ALLOWABLE_VALUES)
-            @RequestParam(required = false) String sortOrder
+            @RequestParam(required = false) String sortOrder,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar
     ) throws ThingsboardException {
         try {
             TenantId tenantId = getCurrentUser().getTenantId();
             PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
-            if (type != null && type.trim().length() > 0) {
-                return checkNotNull(deviceService.findDeviceInfosByTenantIdAndType(tenantId, type, pageLink));
-            } else if (deviceProfileId != null && deviceProfileId.length() > 0) {
-                DeviceProfileId profileId = new DeviceProfileId(toUUID(deviceProfileId));
-                return checkNotNull(deviceService.findDeviceInfosByTenantIdAndDeviceProfileId(tenantId, profileId, pageLink));
-            } else {
-                return checkNotNull(deviceService.findDeviceInfosByTenantId(tenantId, pageLink));
+            if(!avatar)
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(deviceService.findDeviceInfosByTenantIdAndTypeNotAvatar(tenantId, type, pageLink));
+                } else if (deviceProfileId != null && deviceProfileId.length() > 0) {
+                    DeviceProfileId profileId = new DeviceProfileId(toUUID(deviceProfileId));
+                    return checkNotNull(deviceService.findDeviceInfosByTenantIdAndDeviceProfileIdNotAvatar(tenantId, profileId, pageLink));
+                } else {
+                    return checkNotNull(deviceService.findDeviceInfosByTenantIdNotAvatar(tenantId, pageLink));
+                }
             }
+            else
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(deviceService.findDeviceInfosByTenantIdAndType(tenantId, type, pageLink));
+                } else if (deviceProfileId != null && deviceProfileId.length() > 0) {
+                    DeviceProfileId profileId = new DeviceProfileId(toUUID(deviceProfileId));
+                    return checkNotNull(deviceService.findDeviceInfosByTenantIdAndDeviceProfileId(tenantId, profileId, pageLink));
+                } else {
+                    return checkNotNull(deviceService.findDeviceInfosByTenantId(tenantId, pageLink));
+                }
+            }
+
         } catch (Exception e) {
             throw handleException(e);
         }
@@ -363,14 +410,19 @@ public class DeviceController extends BaseController {
             notes = "Requested device must be owned by tenant that the user belongs to. " +
                     "Device name is an unique property of device. So it can be used to identify the device." + TENANT_AUTHORITY_PARAGRAPH)
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")
-    @RequestMapping(value = "/tenant/devices", params = {"deviceName"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/tenant/devices", params = {"deviceName","avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public Device getTenantDevice(
             @ApiParam(value = DEVICE_NAME_DESCRIPTION)
-            @RequestParam String deviceName) throws ThingsboardException {
+            @RequestParam String deviceName,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         try {
             TenantId tenantId = getCurrentUser().getTenantId();
-            return checkNotNull(deviceService.findDeviceByTenantIdAndName(tenantId, deviceName));
+            if(!avatar)
+            {return checkNotNull(deviceService.findDeviceByTenantIdAndNameNotAvatar(tenantId, deviceName));}
+            else
+            {return checkNotNull(deviceService.findDeviceByTenantIdAndName(tenantId, deviceName));}
         } catch (Exception e) {
             throw handleException(e);
         }
@@ -380,7 +432,7 @@ public class DeviceController extends BaseController {
             notes = "Returns a page of devices objects assigned to customer. " +
                     PAGE_DATA_PARAMETERS + TENANT_OR_CUSTOMER_AUTHORITY_PARAGRAPH)
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
-    @RequestMapping(value = "/customer/{customerId}/devices", params = {"pageSize", "page"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/customer/{customerId}/devices", params = {"pageSize", "page", "avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<Device> getCustomerDevices(
             @ApiParam(value = CUSTOMER_ID_PARAM_DESCRIPTION, required = true)
@@ -396,18 +448,32 @@ public class DeviceController extends BaseController {
             @ApiParam(value = SORT_PROPERTY_DESCRIPTION, allowableValues = DEVICE_SORT_PROPERTY_ALLOWABLE_VALUES)
             @RequestParam(required = false) String sortProperty,
             @ApiParam(value = SORT_ORDER_DESCRIPTION, allowableValues = SORT_ORDER_ALLOWABLE_VALUES)
-            @RequestParam(required = false) String sortOrder) throws ThingsboardException {
+            @RequestParam(required = false) String sortOrder,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         checkParameter("customerId", strCustomerId);
         try {
             TenantId tenantId = getCurrentUser().getTenantId();
             CustomerId customerId = new CustomerId(toUUID(strCustomerId));
             checkCustomerId(customerId, Operation.READ);
             PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
-            if (type != null && type.trim().length() > 0) {
-                return checkNotNull(deviceService.findDevicesByTenantIdAndCustomerIdAndType(tenantId, customerId, type, pageLink));
-            } else {
-                return checkNotNull(deviceService.findDevicesByTenantIdAndCustomerId(tenantId, customerId, pageLink));
+            if(!avatar)
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(deviceService.findDevicesByTenantIdAndCustomerIdAndTypeNotAvatar(tenantId, customerId, type, pageLink));
+                } else {
+                    return checkNotNull(deviceService.findDevicesByTenantIdAndCustomerIdNotAvatar(tenantId, customerId, pageLink));
+                }
             }
+            else
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(deviceService.findDevicesByTenantIdAndCustomerIdAndType(tenantId, customerId, type, pageLink));
+                } else {
+                    return checkNotNull(deviceService.findDevicesByTenantIdAndCustomerId(tenantId, customerId, pageLink));
+                }
+            }
+
         } catch (Exception e) {
             throw handleException(e);
         }
@@ -417,7 +483,7 @@ public class DeviceController extends BaseController {
             notes = "Returns a page of devices info objects assigned to customer. " +
                     PAGE_DATA_PARAMETERS + DEVICE_INFO_DESCRIPTION + TENANT_OR_CUSTOMER_AUTHORITY_PARAGRAPH)
     @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
-    @RequestMapping(value = "/customer/{customerId}/deviceInfos", params = {"pageSize", "page"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/customer/{customerId}/deviceInfos", params = {"pageSize", "page", "avatar"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<DeviceInfo> getCustomerDeviceInfos(
             @ApiParam(value = CUSTOMER_ID_PARAM_DESCRIPTION, required = true)
@@ -435,20 +501,35 @@ public class DeviceController extends BaseController {
             @ApiParam(value = SORT_PROPERTY_DESCRIPTION, allowableValues = DEVICE_SORT_PROPERTY_ALLOWABLE_VALUES)
             @RequestParam(required = false) String sortProperty,
             @ApiParam(value = SORT_ORDER_DESCRIPTION, allowableValues = SORT_ORDER_ALLOWABLE_VALUES)
-            @RequestParam(required = false) String sortOrder) throws ThingsboardException {
+            @RequestParam(required = false) String sortOrder,
+            @ApiParam(value = "Disable (\"true\") or enable (\"false\") the avatar.", defaultValue = "true")
+            @RequestParam(required = false, defaultValue = "true") boolean avatar) throws ThingsboardException {
         checkParameter("customerId", strCustomerId);
         try {
             TenantId tenantId = getCurrentUser().getTenantId();
             CustomerId customerId = new CustomerId(toUUID(strCustomerId));
             checkCustomerId(customerId, Operation.READ);
             PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
-            if (type != null && type.trim().length() > 0) {
-                return checkNotNull(deviceService.findDeviceInfosByTenantIdAndCustomerIdAndType(tenantId, customerId, type, pageLink));
-            } else if (deviceProfileId != null && deviceProfileId.length() > 0) {
-                DeviceProfileId profileId = new DeviceProfileId(toUUID(deviceProfileId));
-                return checkNotNull(deviceService.findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileId(tenantId, customerId, profileId, pageLink));
-            } else {
-                return checkNotNull(deviceService.findDeviceInfosByTenantIdAndCustomerId(tenantId, customerId, pageLink));
+            if(!avatar)
+            {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(deviceService.findDeviceInfosByTenantIdAndCustomerIdAndTypeNotAvatar(tenantId, customerId, type, pageLink));
+                } else if (deviceProfileId != null && deviceProfileId.length() > 0) {
+                    DeviceProfileId profileId = new DeviceProfileId(toUUID(deviceProfileId));
+                    return checkNotNull(deviceService.findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileIdNotAvatar(tenantId, customerId, profileId, pageLink));
+                } else {
+                    return checkNotNull(deviceService.findDeviceInfosByTenantIdAndCustomerIdNotAvatar(tenantId, customerId, pageLink));
+                }
+            }
+            else {
+                if (type != null && type.trim().length() > 0) {
+                    return checkNotNull(deviceService.findDeviceInfosByTenantIdAndCustomerIdAndType(tenantId, customerId, type, pageLink));
+                } else if (deviceProfileId != null && deviceProfileId.length() > 0) {
+                    DeviceProfileId profileId = new DeviceProfileId(toUUID(deviceProfileId));
+                    return checkNotNull(deviceService.findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileId(tenantId, customerId, profileId, pageLink));
+                } else {
+                    return checkNotNull(deviceService.findDeviceInfosByTenantIdAndCustomerId(tenantId, customerId, pageLink));
+                }
             }
         } catch (Exception e) {
             throw handleException(e);

@@ -30,13 +30,14 @@ import org.thingsboard.server.common.data.validation.NoXss;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 @ApiModel
 @EqualsAndHashCode(callSuper = true)
 public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements HasName, HasTenantId, HasCustomerId {
 
     private static final long serialVersionUID = 8250339805336035966L;
-
     private TenantId tenantId;
     private CustomerId customerId;
     private String email;
@@ -51,11 +52,13 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
 
     private RoleId roleId;
 
-    @ApiModelProperty(position = 13, value = "Title of user role", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    //@ApiModelProperty(position = 13, value = "Title of user role", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
     private String roleTitle;
 
     @Length(fieldName = "avatar", max = 1000000)
     private String avatar;
+
+    private boolean enabled;
 
     public User() {
         super();
@@ -251,5 +254,9 @@ public class User extends SearchTextBasedWithAdditionalInfo<UserId> implements H
     @JsonIgnore
     public boolean isCustomerUser() {
         return !isSystemAdmin() && !isTenantAdmin();
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 }

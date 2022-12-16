@@ -98,9 +98,34 @@ public class JpaDeviceDao extends JpaAbstractSearchTextDao<DeviceEntity, Device>
     }
 
     @Override
+    public PageData<Device> findDevicesByTenantIdNotAvatar(UUID tenantId, PageLink pageLink) {
+        if (StringUtils.isEmpty(pageLink.getTextSearch())) {
+            return DaoUtil.toPageData(
+                    deviceRepository.findByTenantIdNotAvatar(
+                            tenantId,
+                            DaoUtil.toPageable(pageLink)));
+        } else {
+            return DaoUtil.toPageData(
+                    deviceRepository.findByTenantIdNotAvatar(
+                            tenantId,
+                            Objects.toString(pageLink.getTextSearch(), ""),
+                            DaoUtil.toPageable(pageLink)));
+        }
+    }
+
+    @Override
     public PageData<DeviceInfo> findDeviceInfosByTenantId(UUID tenantId, PageLink pageLink) {
         return DaoUtil.toPageData(
                 deviceRepository.findDeviceInfosByTenantId(
+                        tenantId,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink, DeviceInfoEntity.deviceInfoColumnMap)));
+    }
+
+    @Override
+    public PageData<DeviceInfo> findDeviceInfosByTenantIdNotAvatar(UUID tenantId, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                deviceRepository.findDeviceInfosByTenantIdNotAvatar(
                         tenantId,
                         Objects.toString(pageLink.getTextSearch(), ""),
                         DaoUtil.toPageable(pageLink, DeviceInfoEntity.deviceInfoColumnMap)));
@@ -115,6 +140,16 @@ public class JpaDeviceDao extends JpaAbstractSearchTextDao<DeviceEntity, Device>
     public PageData<Device> findDevicesByTenantIdAndCustomerId(UUID tenantId, UUID customerId, PageLink pageLink) {
         return DaoUtil.toPageData(
                 deviceRepository.findByTenantIdAndCustomerId(
+                        tenantId,
+                        customerId,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink)));
+    }
+
+    @Override
+    public PageData<Device> findDevicesByTenantIdAndCustomerIdNotAvatar(UUID tenantId, UUID customerId, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                deviceRepository.findByTenantIdAndCustomerIdNotAvatar(
                         tenantId,
                         customerId,
                         Objects.toString(pageLink.getTextSearch(), ""),
@@ -147,6 +182,16 @@ public class JpaDeviceDao extends JpaAbstractSearchTextDao<DeviceEntity, Device>
     }
 
     @Override
+    public PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdNotAvatar(UUID tenantId, UUID customerId, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                deviceRepository.findDeviceInfosByTenantIdAndCustomerIdNotAvatar(
+                        tenantId,
+                        customerId,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink, DeviceInfoEntity.deviceInfoColumnMap)));
+    }
+
+    @Override
     public ListenableFuture<List<Device>> findDevicesByTenantIdCustomerIdAndIdsAsync(UUID tenantId, UUID customerId, List<UUID> deviceIds) {
         return service.submit(() -> DaoUtil.convertDataList(
                 deviceRepository.findDevicesByTenantIdAndCustomerIdAndIdIn(tenantId, customerId, deviceIds)));
@@ -159,9 +204,25 @@ public class JpaDeviceDao extends JpaAbstractSearchTextDao<DeviceEntity, Device>
     }
 
     @Override
+    public Optional<Device> findDeviceByTenantIdAndNameNotAvatar(UUID tenantId, String name) {
+        Device device = DaoUtil.getData(deviceRepository.findByTenantIdAndNameNotAvatar(tenantId, name));
+        return Optional.ofNullable(device);
+    }
+
+    @Override
     public PageData<Device> findDevicesByTenantIdAndType(UUID tenantId, String type, PageLink pageLink) {
         return DaoUtil.toPageData(
                 deviceRepository.findByTenantIdAndType(
+                        tenantId,
+                        type,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink)));
+    }
+
+    @Override
+    public PageData<Device> findDevicesByTenantIdAndTypeNotAvatar(UUID tenantId, String type, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                deviceRepository.findByTenantIdAndTypeNotAvatar(
                         tenantId,
                         type,
                         Objects.toString(pageLink.getTextSearch(), ""),
@@ -202,6 +263,17 @@ public class JpaDeviceDao extends JpaAbstractSearchTextDao<DeviceEntity, Device>
                         DaoUtil.toPageable(pageLink, DeviceInfoEntity.deviceInfoColumnMap)));
     }
 
+
+    @Override
+    public PageData<DeviceInfo> findDeviceInfosByTenantIdAndTypeNotAvatar(UUID tenantId, String type, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                deviceRepository.findDeviceInfosByTenantIdAndTypeNotAvatar(
+                        tenantId,
+                        type,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink, DeviceInfoEntity.deviceInfoColumnMap)));
+    }
+
     @Override
     public PageData<DeviceInfo> findDeviceInfosByTenantIdAndDeviceProfileId(UUID tenantId, UUID deviceProfileId, PageLink pageLink) {
         return DaoUtil.toPageData(
@@ -213,9 +285,30 @@ public class JpaDeviceDao extends JpaAbstractSearchTextDao<DeviceEntity, Device>
     }
 
     @Override
+    public PageData<DeviceInfo> findDeviceInfosByTenantIdAndDeviceProfileIdNotAvatar(UUID tenantId, UUID deviceProfileId, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                deviceRepository.findDeviceInfosByTenantIdAndDeviceProfileIdNotAvatar(
+                        tenantId,
+                        deviceProfileId,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink, DeviceInfoEntity.deviceInfoColumnMap)));
+    }
+
+    @Override
     public PageData<Device> findDevicesByTenantIdAndCustomerIdAndType(UUID tenantId, UUID customerId, String type, PageLink pageLink) {
         return DaoUtil.toPageData(
                 deviceRepository.findByTenantIdAndCustomerIdAndType(
+                        tenantId,
+                        customerId,
+                        type,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink)));
+    }
+
+    @Override
+    public PageData<Device> findDevicesByTenantIdAndCustomerIdAndTypeNotAvatar(UUID tenantId, UUID customerId, String type, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                deviceRepository.findByTenantIdAndCustomerIdAndTypeNotAvatar(
                         tenantId,
                         customerId,
                         type,
@@ -235,9 +328,31 @@ public class JpaDeviceDao extends JpaAbstractSearchTextDao<DeviceEntity, Device>
     }
 
     @Override
+    public PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndTypeNotAvatar(UUID tenantId, UUID customerId, String type, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                deviceRepository.findDeviceInfosByTenantIdAndCustomerIdAndTypeNotAvatar(
+                        tenantId,
+                        customerId,
+                        type,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink, DeviceInfoEntity.deviceInfoColumnMap)));
+    }
+
+    @Override
     public PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileId(UUID tenantId, UUID customerId, UUID deviceProfileId, PageLink pageLink) {
         return DaoUtil.toPageData(
                 deviceRepository.findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileId(
+                        tenantId,
+                        customerId,
+                        deviceProfileId,
+                        Objects.toString(pageLink.getTextSearch(), ""),
+                        DaoUtil.toPageable(pageLink, DeviceInfoEntity.deviceInfoColumnMap)));
+    }
+
+   @Override
+    public PageData<DeviceInfo> findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileIdNotAvatar(UUID tenantId, UUID customerId, UUID deviceProfileId, PageLink pageLink) {
+        return DaoUtil.toPageData(
+                deviceRepository.findDeviceInfosByTenantIdAndCustomerIdAndDeviceProfileIdNotAvatar(
                         tenantId,
                         customerId,
                         deviceProfileId,
@@ -253,6 +368,18 @@ public class JpaDeviceDao extends JpaAbstractSearchTextDao<DeviceEntity, Device>
     @Override
     public Device findDeviceByTenantIdAndId(TenantId tenantId, UUID id) {
         return DaoUtil.getData(deviceRepository.findByTenantIdAndId(tenantId.getId(), id));
+    }
+
+    @Override
+    public Device findDeviceByTenantIdAndIdNotAvatar(TenantId tenantId, UUID id) {
+        return
+                DaoUtil.getData(deviceRepository.findByTenantIdAndIdNotAvatar(tenantId.getId(), id));
+    }
+
+    @Override
+    public Device findDeviceByIdNotAvatar(TenantId tenantId, UUID id) {
+        return
+               DaoUtil.getData(deviceRepository.findByIdNotAvatar(id));
     }
 
     @Override
